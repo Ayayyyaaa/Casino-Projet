@@ -106,116 +106,6 @@ class Bouton:
         self.y = y
 
 
-
-class Pistolet_blanc(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y):
-        super().__init__()
-        self.tourne_animation = False
-        self.sprites = []
-        self.sprites.append(pygame.image.load('pistolet_blanc/vide.png'))
-        i = 0
-        for i in range(3):
-            self.sprites.append(pygame.image.load('pistolet/pf-1.png.png'))
-            self.sprites.append(pygame.image.load('pistolet/pf-2.png.png'))
-            self.sprites.append(pygame.image.load('pistolet/pf-3.png.png'))
-            self.sprites.append(pygame.image.load('pistolet/pf-14.png.png'))
-            self.sprites.append(pygame.image.load('pistolet/pf-4.png.png'))
-            self.sprites.append(pygame.image.load('pistolet/pf-5.png.png'))
-        for j in range(1,10):
-            self.sprites.append(pygame.image.load(f'pistolet_blanc/pbf-{j}.png'))
-
-        self.actuel_sprite = 0
-        self.image = self.sprites[self.actuel_sprite]
-
-        self.rect = self.image.get_rect()
-        self.rect.topleft = [pos_x, pos_y]
-
-    def activer_rotation(self):
-        """
-        permet d'activer l'animation de rotation du barillet de la roulette russe
-        """
-        self.tourne_animation = True
-
-    def desactiver_rotation(self):
-        """
-        permet de désactiver la rotation du barillet de la roulette russe
-        """
-        self.tourne_animation = False
-
-    def update(self, speed, joueur):
-        """
-        permet de jouer l'animation 
-        speed(float): la vitesse de l'animation
-        joueur(object): l'objet joueur1
-        """
-        if self.tourne_animation:
-            self.actuel_sprite += speed
-            if int(self.actuel_sprite) >= len(self.sprites):
-                self.actuel_sprite = 0
-                joueur.modifier_cagnotte(joueur.get_cagnotte()//2)
-                self.tourne_animation = False
-        self.image = self.sprites[int(self.actuel_sprite)]
-
-
-
-class Pistolet(pygame.sprite.Sprite):   #classe spéciale de pygame pour les objets de jeu
-    def __init__(self, pos_x, pos_y, son):
-        super().__init__()
-        self.tourne_animation = False
-        self.sprites = []
-        self.sprites.append(pygame.image.load('pistolet/vide.png'))
-        self.son = son
-        for i in range(3):
-            self.sprites.append(pygame.image.load('pistolet/pf-1.png.png'))
-            self.sprites.append(pygame.image.load('pistolet/pf-2.png.png'))
-            self.sprites.append(pygame.image.load('pistolet/pf-3.png.png'))
-            self.sprites.append(pygame.image.load('pistolet/pf-14.png.png'))
-            self.sprites.append(pygame.image.load('pistolet/pf-4.png.png'))
-            self.sprites.append(pygame.image.load('pistolet/pf-5.png.png'))
-        for j in range(6,14):
-            self.sprites.append(pygame.image.load(f'pistolet/pf-{j}.png.png'))
-        
-
-        self.actuel_sprite = 0
-        self.image = self.sprites[self.actuel_sprite]
-
-        self.rect = self.image.get_rect()
-        self.rect.topleft = [pos_x, pos_y]
-
-    def activer_rotation(self):
-        """permet d'activer l'animation
-        """
-        self.tourne_animation = True
-
-    def update(self, speed,joueur):
-        """
-        permet de jouer l'animation 
-        speed(float): la vitesse de l'animation
-        joueur(object): l'objet joueur1
-        """
-        if self.tourne_animation:
-            self.actuel_sprite += speed
-            if self.actuel_sprite == 21:
-                self.son.play()
-            if int(self.actuel_sprite) >= len(self.sprites):
-                self.actuel_sprite = 0
-                joueur.set_cagnotte(0)
-                self.tourne_animation = False
-        self.image = self.sprites[int(self.actuel_sprite)]
-
-
-class Emplacement(pygame.sprite.Sprite):
-
-    def __init__(self, pos_x, pos_y):
-        super().__init__()
-        self.image = pygame.image.load('machine_a_sou/pomme_doree.png') #image par default a changer
-        self.rect = self.image.get_rect()
-        self.rect.x = pos_x
-        self.rect.y = pos_y
-
-    def set_image(self, image):
-        self.image = image
-
 class Piece:
     def __init__(self):
         self.cote = None
@@ -304,5 +194,6 @@ class Pile_ou_face(pygame.sprite.Sprite):
                     print(piece.get_choix(), piece.get_cote())
                 self.animation = False
         self.image = self.sprites[int(self.actuel_sprite)]
+
 
 piece = Piece()

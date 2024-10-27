@@ -1,9 +1,11 @@
 import pygame
 import sys
-from fonctions import dessiner_zone_texte, rouletterusse, affiche_ecran1, affiche_ecran2, affiche_ecran3, affiche_ecran4, pseudos, lancement, affiche_ecran_fin
+from fonctions import dessiner_zone_texte
 from img import *
 from objets_et_variables import *
 from sons import *
+from Ecrans import ecran1,ecran2,ecran_mort,ecran_victoire
+from Machine_a_sous import ecran_machine_a_sous
 
 pygame.init()
 pygame.mixer.init()
@@ -20,6 +22,7 @@ class Jeu():
 
     def running(self):
         son_joue = False
+        win = False
         while self.run:
             # Fermer la fenêtre
             for event in pygame.event.get():
@@ -41,19 +44,19 @@ class Jeu():
                         self.code_cb_actif = False
                     # Gérer les boutons pour accéder à l'écran 2 (écran principal)
                     if bouton1.get_x() <= event.pos[0] <= bouton1.get_x() + bouton1.get_largeur() and bouton1.get_y() <= event.pos[1] <= bouton1.get_y() + bouton1.get_hauteur():
-                        if ecran_fin.get_actif():
-                            ecran_fin.set_actif(False)
-                            ecran2.set_actif(True)
-                        else:
-                            ecran1.set_actif(not ecran1.get_actif())
-                            ecran2.set_actif(not ecran2.get_actif())
+                        if ecran_victoire.ecran.get_actif():
+                            ecran_victoire.ecran.set_actif(False)
+                            ecran2.ecran.set_actif(True)
+                        elif ecran1.ecran.get_actif() or ecran2.ecran.get_actif():
+                            ecran1.ecran.set_actif(not ecran1.ecran.get_actif())
+                            ecran2.ecran.set_actif(not ecran2.ecran.get_actif())
 
                     # Gérer les interactions de l'écran 2 (écran principal)
-                    if ecran2.get_actif():
+                    if ecran2.ecran.get_actif():
                         # Lancer la roulette russe
-                        if ecran2.get_actif() and 330 <= event.pos[0] <= 390 and 45 <= event.pos[1] <= 75 :
+                        if ecran2.ecran.get_actif() and 330 <= event.pos[0] <= 390 and 45 <= event.pos[1] <= 75 :
                             joueur1.set_roulette_active(True)
-                            rouletterusse()
+                            pistolet.rouletterusse(joueur1)
                             joueur1.set_roulette_active(False)
                         # Affichage du jeu de pile ou face
                         if 335 <= event.pos[0] <= 385 and 100 <= event.pos[1] <= 150 :
@@ -76,13 +79,13 @@ class Jeu():
 
                         # Affichage du jeu de machine à sous depuis l'écran principal
                         if 330 <= event.pos[0] <= 390 and 170 <= event.pos[1] <= 220 : 
-                                ecran2.set_actif(not ecran2.get_actif())
-                                ecran4.set_actif(not ecran4.get_actif())
+                                ecran2.ecran.set_actif(not ecran2.ecran.get_actif())
+                                ecran_machine_a_sous.ecran.set_actif(not ecran_machine_a_sous.ecran.get_actif())
 
                     # Affichage de l'écran principal depuis la machine à sous
-                    elif ecran4.get_actif() and 340 <= event.pos[0] <= 390 and 20 <= event.pos[1] <= 70 :
-                        ecran2.set_actif(not ecran2.get_actif())
-                        ecran4.set_actif(not ecran4.get_actif())
+                    elif ecran_machine_a_sous.ecran.get_actif() and 340 <= event.pos[0] <= 390 and 20 <= event.pos[1] <= 70 :
+                        ecran2.ecran.set_actif(not ecran2.ecran.get_actif())
+                        ecran_machine_a_sous.ecran.set_actif(not ecran_machine_a_sous.ecran.get_actif())
                     
                     # Gérer le champ pour entrer son pseudo de joueur
                     if champ_joueur.collidepoint(event.pos):
@@ -93,7 +96,7 @@ class Jeu():
                 # Touche pressée
                 elif event.type == pygame.KEYDOWN:
                     # Gérer la saisie du nom de joueur
-                    if self.nom_actif and ecran1.get_actif():
+                    if self.nom_actif and ecran1.ecran.get_actif():
                         if event.key == pygame.K_RETURN:
                             joueur1.set_pseudo(self.text)
                             if joueur1.get_pseudo().lower() == 'abel':
@@ -104,7 +107,7 @@ class Jeu():
                         elif len(self.text) <= 9:
                             self.text += event.unicode
 
-                    if ecran3.get_actif():
+                    if ecran_mort.ecran.get_actif():
                         # Gérer la saisie du numéro de carte bleue
                         if self.nb_cb_actif:
                             if event.key == pygame.K_BACKSPACE:
@@ -123,44 +126,43 @@ class Jeu():
                                     self.nbr_cb = ''
                                     self.codee_cb = ''
                                     joueur1.set_cagnotte(2000)
-                                    ecran2.set_actif(True)
-                                    ecran3.set_actif(False)
+                                    ecran2.ecran.set_actif(True)
+                                    ecran_mort.ecran.set_actif(False)
                             elif event.key == pygame.K_BACKSPACE:
                                 self.codee_cb = self.codee_cb[:-1]
                             elif len(self.codee_cb) < 4 and event.unicode in "123456789":
                                 self.codee_cb += event.unicode
                     
-                    if ecran4.get_actif():
+                    if ecran_machine_a_sous.ecran.get_actif():
                         # Lancer la machine à sous
                         if event.key == pygame.K_SPACE and joueur1.get_cagnotte() >= 100:
                             son_gambling.play()
-                            lancement() 
+                            ecran_machine_a_sous.lancement()
                             joueur1.modifier_cagnotte(-100)
 
-            if not ecran2.get_actif():
+            if not ecran2.ecran.get_actif():
                 pofactif = True
+            
+            ecran1.affiche(self.text,self.nom_actif)
 
             # Conditions de défaite
             if joueur1.get_cagnotte() <= 0:
-                ecran1.set_actif(False), ecran2.set_actif(False), ecran4.set_actif(False), ecran3.set_actif(True) 
+                ecran1.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_mort.ecran.set_actif(True) 
                 if son_joue is False:
                     son_fall.play()
                     son_joue = True
 
             # Conditions de victoire
             if joueur1.get_cagnotte() >= 1000000 and not win:
-                ecran1.set_actif(False), ecran2.set_actif(False), ecran4.set_actif(False), ecran_fin.set_actif(True)
+                ecran1.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_victoire.ecran.set_actif(True)
                 win = True 
 
             # Affichage de l'écran de début de jeu
-            if ecran1.get_actif():
-                affiche_ecran1()
-                dessiner_zone_texte(fenetre, champ_joueur, self.text, self.nom_actif)
+                
 
             # Affichage de l'écran principal
-            if ecran2.get_actif():
-                pseudos()
-                affiche_ecran2()
+            if ecran2.ecran.get_actif():
+                ecran2.affiche()
                 # Affichage des boutons des choix du pile ou face
                 if not pofactif:
                     fenetre.blit(face2, (125, 230))
@@ -171,18 +173,18 @@ class Jeu():
                         fenetre.blit(pile, (170, 140))
                     
 
-            elif ecran3.get_actif():
+            elif ecran_mort.ecran.get_actif():
                 # Affichage de l'écran de défaite
-                affiche_ecran3()
+                ecran_mort.affiche()
                 dessiner_zone_texte(fenetre, nb_cb, self.nbr_cb, self.nb_cb_actif)
                 dessiner_zone_texte(fenetre, code_cb, self.codee_cb, self.code_cb_actif)
 
-            elif ecran4.get_actif():
+            elif ecran_machine_a_sous.ecran.get_actif():
                 # Affichage de l'écran de la machine à sous
-                affiche_ecran4()
+                ecran_machine_a_sous.affiche()
             
-            elif ecran_fin.get_actif():
+            elif ecran_victoire.ecran.get_actif():
                 # Affichage de l'écran de victoire
-                affiche_ecran_fin()
+                ecran_victoire.affiche()
 
             pygame.display.flip()
