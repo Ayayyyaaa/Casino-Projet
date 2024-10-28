@@ -6,6 +6,8 @@ from objets_et_variables import *
 from sons import *
 from Ecrans import ecran1,ecran2,ecran_mort,ecran_victoire
 from Machine_a_sous import ecran_machine_a_sous
+from PileouFace import *
+from Roulette_Russe import pistolet
 
 pygame.init()
 pygame.mixer.init()
@@ -23,6 +25,7 @@ class Jeu():
     def running(self):
         son_joue = False
         win = False
+        choix_fait = False
         while self.run:
             # Fermer la fenêtre
             for event in pygame.event.get():
@@ -60,17 +63,17 @@ class Jeu():
                             joueur1.set_roulette_active(False)
                         # Affichage du jeu de pile ou face
                         if 335 <= event.pos[0] <= 385 and 100 <= event.pos[1] <= 150 :
-                            pofactif = not pofactif
-                            piece.set_cote(None)
+                            pileouface.set_actif(not pileouface.get_actif())
+                            pileouface.set_cote(None)
                         
                         # Gestion des boutons de choix pour le pile ou face
-                        elif not pofactif:
+                        elif pileouface.get_actif():
                             if 125 <= event.pos[0] <= 175 and 230 <= event.pos[1] <= 280 :
-                                piece.set_choix('Face') 
+                                pileouface.set_choix('Face') 
                                 choix_fait = True
 
                             elif 230 <= event.pos[0] <= 280 and 230 <= event.pos[1] <= 280 :
-                                piece.set_choix('Pile')
+                                pileouface.set_choix('Pile')
                                 choix_fait = True
 
                             if choix_fait:
@@ -141,7 +144,7 @@ class Jeu():
                             joueur1.modifier_cagnotte(-100)
 
             if not ecran2.ecran.get_actif():
-                pofactif = True
+                pileouface.set_actif(False)
             
             ecran1.affiche(self.text,self.nom_actif)
 
@@ -164,13 +167,9 @@ class Jeu():
             if ecran2.ecran.get_actif():
                 ecran2.affiche()
                 # Affichage des boutons des choix du pile ou face
-                if not pofactif:
+                if pileouface.get_actif():
                     fenetre.blit(face2, (125, 230))
                     fenetre.blit(pile2, (230, 230))
-                    if piece.get_cote() == 'Face':
-                        fenetre.blit(face, (170, 140))
-                    elif piece.get_cote() == 'Pile':
-                        fenetre.blit(pile, (170, 140))
                     
 
             elif ecran_mort.ecran.get_actif():

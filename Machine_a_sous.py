@@ -1,6 +1,7 @@
 import pygame
 import numpy
 from fonctions import *
+from Ecrans import Ecran
 
 class Emplacement(pygame.sprite.Sprite):
 

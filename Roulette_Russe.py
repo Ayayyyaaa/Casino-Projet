@@ -1,10 +1,10 @@
 import pygame
 from random import randint
+from sons import tire_balle
 
 
 class RouletteRusse:
     def __init__(self, pos_x, pos_y,son):
-        super().__init__()
         self.tourne_animation_vict = False
         self.tourne_animation_def = False
         self.sprites_vict = []
@@ -122,4 +122,5 @@ class RouletteRusse:
     def get_pos(self):
         return(self.pos_x,self.pos_y)
 
+pistolet = RouletteRusse(110, 120, tire_balle)
 

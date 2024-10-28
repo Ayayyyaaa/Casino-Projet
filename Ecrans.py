@@ -1,9 +1,19 @@
 import pygame
 from fonctions import dessiner_zone_texte, dessiner_bouton
 from objets_et_variables import *
-from classes import Ecran
 from img import *
+from Roulette_Russe import pistolet
+from PileouFace import pileouface
 
+class Ecran:
+    def __init__(self, actif=False):
+        self.actif = actif
+
+    def get_actif(self):
+        return self.actif
+
+    def set_actif(self, actif):
+        self.actif = actif
 
 class Ecran1:
     def __init__(self):
@@ -21,14 +31,13 @@ class Ecran1:
 class Ecran2:
     def __init__(self):
         self.ecran = Ecran()
-        self.fond = pygame.image.load('images/coeurfredou.png').convert()
+        self.fond = None
     def affiche(self):
         '''
         Permet d'afficher l'écran principal et de gérer l'animation des boutons et mettre à jour les animations des jeux.
         '''
         if joueur1.get_pseudo() == 'Mr.Maurice' or joueur1.get_pseudo() == 'Mr Maurice' or joueur1.get_pseudo() == 'Maurice':
             joueur1.set_pseudo('Le meilleur')  #Mettez nous des tickets et un 20/20 svp
-
         if joueur1.get_pseudo() == 'Fredou':
             self.fond = pygame.image.load('images/coeurfredou.png').convert()
         else:
@@ -49,25 +58,21 @@ class Ecran2:
             fenetre.blit(machine_a_sous2, (320, 160))
         else:
             fenetre.blit(machine_a_sous1, (320, 160))
-        if pofactif:
-            if 330 <= pygame.mouse.get_pos()[0] <= 390 and 100 <= pygame.mouse.get_pos()[1] <= 150 :
-                fenetre.blit(imgpof2, (320, 90))
-            else:
-                fenetre.blit(imgpof, (320, 90))
-        elif not pofactif:
-            dessiner_bouton(fenetre, "pile", 150, 200, 50, 50, blanc, noir, 25)
-            dessiner_bouton(fenetre, "face", 250, 200, 50, 50, blanc, noir, 25)
+        if 330 <= pygame.mouse.get_pos()[0] <= 390 and 100 <= pygame.mouse.get_pos()[1] <= 150 :
+            fenetre.blit(imgpof2, (320, 90))
+        else:
+            fenetre.blit(imgpof, (320, 90))
                 
 
         mvmt_sprites.draw(fenetre)
         mvmt_sprites.update(0.15)
 
-        fenetre.blit(pistolet.get_image(),(120,120))
+        fenetre.blit(pistolet.get_image(),pistolet.get_pos())
         pistolet.update_def(0.5,joueur1)  
         pistolet.update_vict(0.5,joueur1)  
 
-        pileouface_sprites.draw(fenetre)
-        pileouface_sprites.update(0.65, joueur1, piece)
+        fenetre.blit(pileouface.get_image(),(170,140))
+        pileouface.update(0.65, joueur1)
 
         if joueur1.get_pseudo() == '666' or joueur1.get_pseudo() == 'Satan':
             fenetre.blit(diable, (100, 2))
