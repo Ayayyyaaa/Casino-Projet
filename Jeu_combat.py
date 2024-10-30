@@ -2,6 +2,7 @@ import pygame
 import sys
 import time
 from objets_et_variables import *
+from fonctions import dessiner_bouton
 
 fond_combat = pygame.image.load('images/enfer.jpg').convert()
 mort_boss = [f'Boss/Mort/Mort{i}.png' for i in range(1,8)]
@@ -16,6 +17,7 @@ marche_hero_droite = [f'Hero/Marche/Droite/Hero_course{i}.png' for i in range(1,
 marche_hero_gauche = [f'Hero/Marche/Gauche/Hero_course{i}.png' for i in range(1,7)]
 attaque_hero_img = [f'Hero/Attaque/Attaque{i}.png' for i in range(1,13)]
 degats_hero_img = [f'Hero/Degats/degats{i}.png' for i in range(1,4)]
+block_hero_img = [f'Hero/Block/Block ({i}).png' for i in range(1,19)]
 mort_hero_img = [f'Hero/Mort/_afrm{i},70.png' for i in range(1,23)]
 
 class Boss:
@@ -82,6 +84,9 @@ class Hero:
         self.attaque = False
         self.degats_subis = False
         self.victoire = False
+        self.block = False
+        self.cd_block = time.time()
+        self.cd_atk = time.time()
     def get_pv(self):
         return self.pv
     def get_pos_x(self):
@@ -94,6 +99,12 @@ class Hero:
         return self.degats_subis
     def get_victoire(self):
         return self.victoire
+    def get_block(self):
+        return self.block
+    def get_cd_block(self):
+        return time.time() - self.cd_block
+    def get_cd_atk(self):
+        return time.time() - self.cd_atk
     def modif_pv(self, nb):
         self.pv += nb
     def modif_pos_x(self, nb):
@@ -110,9 +121,20 @@ class Hero:
         self.degats_subis = degats_subis
     def set_victoire(self):
         self.victoire = True
+    def set_block(self, actif):
+        self.block = actif
+    def set_cd_block(self):
+        self.cd_block = time.time()
+    def set_cd_atk(self):
+        self.cd_atk = time.time()
     
 class JeuCombat:
     def __init__(self):
+        self.fond = pygame.image.load("images/Arène.png")
+        self.dgt10 = pygame.image.load("images/-10.png")
+        self.dgt20 = pygame.image.load("images/-20.png")
+        self.dgt5 = pygame.image.load("images/-5.png")
+        self.block = pygame.image.load("images/Block.png")
         self.boss = Boss(mort_boss[0])
         self.hero = Hero(marche_hero_droite[0])
         self.boss_sprite_marche = 0
@@ -128,8 +150,16 @@ class JeuCombat:
         self.hero_sprite_attaque = 0
         self.hero_sprite_degats = 0
         self.hero_sprite_mort = 0
+        self.hero_sprite_block = 0
         self.reussi = False
         self.run = False
+        self.cd_dgt10 = time.time()
+        self.cd_dgt20 = time.time()
+        self.cd_dgt5 = time.time()
+        self.cd_block_img = time.time()
+        self.vie_hero = pygame.image.load("images/compteur.png")
+        self.vie_boss = pygame.image.load("images/compteur.png")
+        self.police = pygame.font.Font('8-bitanco.ttf', 15)
 
     def actif(self, etat):
         self.run = etat
@@ -146,7 +176,8 @@ class JeuCombat:
     def attaque_hero(self,speed):
         if self.hero_sprite_attaque == 10:
             if self.hero.get_pos_x()-120 < self.boss.get_pos_x() < self.hero.get_pos_x() + 120:
-                self.boss.modif_pv(-20)
+                self.boss.modif_pv(-5)
+                self.cd_dgt5 = time.time()
                 print(self.boss.get_pv())
         elif int(self.hero_sprite_attaque) == len(attaque_hero_img)-1:
             self.hero_sprite_attaque = 0
@@ -182,6 +213,14 @@ class JeuCombat:
             self.hero_sprite_degats = 0
             self.hero.set_degats_subis(False)
 
+    def block_hero(self, speed):
+        self.hero_sprite_block += speed
+        if not self.hero.get_attaque():
+            self.hero.modif_img(block_hero_img[int(self.hero_sprite_block)])
+        if int(self.hero_sprite_block) == len(block_hero_img)-1:
+            self.hero_sprite_block = 0
+            self.hero.set_block(False)
+
     def anim_mort_boss(self,speed):
         if not self.hero.get_victoire():
             self.boss_sprite_mort += speed
@@ -195,10 +234,14 @@ class JeuCombat:
         self.atk1 = True
         self.boss.modif_img(attaque1_boss[int(self.boss_sprite_attaque1)])
         if int(self.boss_sprite_attaque1) == len(attaque1_boss)-1:
-            if self.boss.get_pos_x()+120 > self.hero.get_pos_x() > self.hero.get_pos_x() - 120 and self.hero.get_pos_y() > 250:
-                self.hero.modif_pv(-5)
+            if self.boss.get_pos_x()+120 > self.hero.get_pos_x() > self.hero.get_pos_x() - 120 and self.hero.get_pos_y() > 250 and not self.hero.get_block():
+                self.hero.modif_pv(-10)
                 self.hero.set_degats_subis(True)
+                self.cd_dgt10 = time.time()
                 print(f'Attaque coup de poing : Pv hero {self.hero.get_pv()}')
+            elif self.hero.get_block():
+                self.cd_block_img = time.time()
+                print("Bloqué !")
             self.boss_sprite_attaque1 = 0
             self.boss.set_cd_attaque1()
             self.boss.set_attaque1_dispo(False)
@@ -209,10 +252,14 @@ class JeuCombat:
         self.boss_sprite_attaque2 += speed
         self.boss.modif_img(attaque2_boss[int(self.boss_sprite_attaque2)])
         if int(self.boss_sprite_attaque2) == len(attaque2_boss)-1:
-            if self.boss.get_pos_x()+120 > self.hero.get_pos_x() > self.boss.get_pos_x() - 120 and self.hero.get_pos_y() > 250:
-                self.hero.modif_pv(-15)
+            if self.boss.get_pos_x()+120 > self.hero.get_pos_x() > self.boss.get_pos_x() - 120 and self.hero.get_pos_y() > 250 and not self.hero.get_block():
+                self.hero.modif_pv(-20)
                 self.hero.set_degats_subis(True)
+                self.cd_dgt20 = time.time()
                 print(f'Attaque faux : Pv hero : {self.hero.get_pv()}')
+            elif self.hero.get_block():
+                self.cd_block_img = time.time()
+                print("Bloqué !")
             self.boss_sprite_attaque2 = 0
             self.atk2 = False
             self.boss.set_cd_attaque2()
@@ -248,14 +295,12 @@ class JeuCombat:
             self.ulti_anim = False
 
     def patern_boss(self):
-        if self.boss.get_pv() <= 30:
-            print(time.time()-self.boss.get_cd_ulti())
+        if self.boss.get_pv() <= 25:
             # Gestion de la guérison du boss à faible PV
             if self.boss.get_cd_ulti() == 0:
                 self.boss.set_cd_ulti(time.time())
-            elif time.time() - self.boss.get_cd_ulti() > 7:
+            elif time.time() - self.boss.get_cd_ulti() > 6:
                 self.ulti_anim = True
-                print("help")
                 if self.boss.get_pos_x() < 900:
                     self.animation_marche_boss_droite(0.1)
                     self.boss.modif_pos_x(1.2)
@@ -294,15 +339,18 @@ class JeuCombat:
         self.boss.modif_pos_x(-self.boss.get_pos_x()+1000)
         self.hero.modif_img(marche_hero_droite[0])
         while not self.hero.get_victoire() and not self.boss.get_victoire() and self.run:
-            self.fenetre.fill((0,0,0))
-            #self.fenetre.blit(fond_combat, (0, 0))
+            self.fenetre.blit(self.fond, (0,0))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_KP1:
+                    if event.key == pygame.K_KP1 and self.hero.get_cd_atk() > 1.2:
+                        self.hero.set_cd_atk()
                         self.hero.set_attaque(True)
+                    elif event.key == pygame.K_KP0 and self.hero.get_cd_block() > 5:
+                        self.hero.set_cd_block()
+                        self.hero.set_block(True)
 
             if not self.boss.get_pv() <= 0:
                 if self.hero.get_pv() > 0:
@@ -330,13 +378,30 @@ class JeuCombat:
 
             if self.boss.get_cd_attaque1() > 1.5:
                 self.boss.set_attaque1_dispo(True)
-            if self.boss.get_cd_attaque2() > 4:
+            if self.boss.get_cd_attaque2() > 3.5:
                 self.boss.set_attaque2_dispo(True)
             if self.hero.get_degats_subis():
                 self.degats_hero(0.4)
 
+            if self.hero.get_block():
+                self.block_hero(0.15)
+            if time.time() - self.cd_dgt10 < 1:
+                fenetre.blit(self.dgt10, (self.hero.get_pos_x()+30, self.hero.get_pos_y() - 50))
+            if time.time() - self.cd_dgt20 < 1:
+                fenetre.blit(self.dgt20, (self.hero.get_pos_x()+30, self.hero.get_pos_y() - 80))
+            if time.time() - self.cd_block_img < 1:
+                fenetre.blit(self.block, (self.hero.get_pos_x()+30, self.hero.get_pos_y() - 20))
+            if time.time() - self.cd_dgt5 < 1:
+                fenetre.blit(self.dgt5, (self.boss.get_pos_x()+120, self.boss.get_pos_y() - 80))
+
             self.fenetre.blit(self.boss.image, (self.boss.get_pos_x(), self.boss.get_pos_y()))
             self.fenetre.blit(self.hero.image, (self.hero.get_pos_x(), self.hero.get_pos_y()))
+            self.fenetre.blit(self.vie_hero, (0, -50))
+            self.fenetre.blit(self.vie_boss, (950, -50))
+            pvheros = self.police.render("Pv du heros : " + str(self.hero.get_pv()), True, noir)
+            pvboss = self.police.render("Pv du boss : " + str(self.boss.get_pv()), True, noir)
+            fenetre.blit(pvheros, (60, 70))
+            fenetre.blit(pvboss, (1010, 70))
             pygame.display.flip()
             self.clock.tick(60)
         self.actif(False)
