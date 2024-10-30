@@ -163,130 +163,237 @@ class JeuCombat:
 
     def actif(self, etat):
         self.run = etat
-
     def get_actif(self):
         return self.run
-    
     def set_reussi(self):
         self.reussi = True
-
     def get_reussi(self):
         return self.reussi
 
-    def attaque_hero(self,speed):
+    def attaque_hero(self,speed:float):
+        '''Permet de jouer l'animation d'attaque du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
         if self.hero_sprite_attaque == 10:
+            # Si le boss est à portée du héros
             if self.hero.get_pos_x()-120 < self.boss.get_pos_x() < self.hero.get_pos_x() + 120:
+                # Le boss perd 5 Pv
                 self.boss.modif_pv(-5)
+                # Affichage des dégâts subis
                 self.cd_dgt5 = time.time()
-                print(self.boss.get_pv())
+        # Si toutes les images ont été jouées :
         elif int(self.hero_sprite_attaque) == len(attaque_hero_img)-1:
+            # On remet tout à 0
             self.hero_sprite_attaque = 0
             self.hero.set_attaque(False)
+        # Faire progresser les images pour l'animation
         self.hero_sprite_attaque += speed
         self.hero.modif_img(attaque_hero_img[int(self.hero_sprite_attaque)])
 
-    def anim_mort_hero(self,speed):
+    def anim_mort_hero(self,speed:float):
+        '''Permet de jouer l'animation de mort du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_victoire():
+            # Faire progresser les images pour l'animation
             self.hero_sprite_mort += speed
             self.hero.modif_img(mort_hero_img[int(self.hero_sprite_mort)])
+            # Si toutes les images ont été jouées :
             if int(self.hero_sprite_mort) == len(mort_hero_img)-1:
-                self.hero_sprite_mort = 0
-                print("Défaite")
+                # On déclare le boss vainqueur, le combat prend fin
                 self.boss.set_victoire(True)
 
-    def animation_marche_hero_droite(self,speed):
+    def animation_marche_hero_droite(self,speed:float):
+        '''Permet de jouer l'animation de marche (vers la droite) du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        # Faire progresser les images pour l'animation
         self.hero_sprite_marche += speed
         self.hero.modif_img(marche_hero_droite[int(self.hero_sprite_marche)])
+        # Si toutes les images ont été jouées :
         if int(self.hero_sprite_marche) == len(marche_hero_droite)-1:
+            # On remet tout à 0
             self.hero_sprite_marche = 0
 
-    def animation_marche_hero_gauche(self,speed):
+    def animation_marche_hero_gauche(self,speed:float):
+        '''Permet de jouer l'animation de marche (vers la gauche) du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        # Faire progresser les images pour l'animation
         self.hero_sprite_marche += speed
         self.hero.modif_img(marche_hero_gauche[int(self.hero_sprite_marche)])
+        # Si toutes les images ont été jouées :
         if int(self.hero_sprite_marche) == len(marche_hero_gauche)-1:
+            # On remet tout à 0
             self.hero_sprite_marche = 0
 
-    def degats_hero(self,speed):
+    def degats_hero(self,speed:float):
+        '''Permet de jouer l'animation de dégâts subis par le héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        # Faire progresser les images pour l'animation
         self.hero_sprite_degats += speed
         self.hero.modif_img(degats_hero_img[int(self.hero_sprite_degats)])
+        # Si toutes les images ont été jouées :
         if int(self.hero_sprite_degats) == len(degats_hero_img)-1:
+            # On remet tout à 0
             self.hero_sprite_degats = 0
             self.hero.set_degats_subis(False)
 
-    def block_hero(self, speed):
+    def block_hero(self, speed:float):
+        '''Permet de jouer l'animation de parade du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        # Faire progresser les images pour l'animation
         self.hero_sprite_block += speed
+        # On ne joue l'animation que si le héros n'est pas en train d'attaquer
         if not self.hero.get_attaque():
             self.hero.modif_img(block_hero_img[int(self.hero_sprite_block)])
+        # Si toutes les images ont été jouées :
         if int(self.hero_sprite_block) == len(block_hero_img)-1:
+            # On remet tout à 0
             self.hero_sprite_block = 0
             self.hero.set_block(False)
 
-    def anim_mort_boss(self,speed):
+    def anim_mort_boss(self,speed:float):
+        '''Permet de jouer l'animation de mort du Boss.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_victoire():
+            # Faire progresser les images pour l'animation
             self.boss_sprite_mort += speed
             self.boss.modif_img(mort_boss[int(self.boss_sprite_mort)])
+            # Si toutes les images ont été jouées :
             if int(self.boss_sprite_mort) == len(mort_boss)-1:
-                print("victoire")
+                # On déclare le héros vainqueur, le combat prend fin
                 self.hero.set_victoire()
     
-    def animation_attaque1_boss(self,speed):
-        self.boss_sprite_attaque1 += speed
+    def animation_attaque1_boss(self,speed:float):
+        '''Permet de jouer l'attaque au poing du Boss.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        # L'attaque 1 est en train d'être jouée.
         self.atk1 = True
+        # Faire progresser les images pour l'animation
+        self.boss_sprite_attaque1 += speed        
         self.boss.modif_img(attaque1_boss[int(self.boss_sprite_attaque1)])
+        # Si toutes les images ont été jouées :
         if int(self.boss_sprite_attaque1) == len(attaque1_boss)-1:
+            # Si le héros se trouve à portée du boss :
             if self.boss.get_pos_x()+120 > self.hero.get_pos_x() > self.hero.get_pos_x() - 120 and self.hero.get_pos_y() > 250 and not self.hero.get_block():
+                # Le héros perd 10 Pv
                 self.hero.modif_pv(-10)
+                # Animation de dégâts subis
                 self.hero.set_degats_subis(True)
+                # Image des dégâts subis
                 self.cd_dgt10 = time.time()
                 print(f'Attaque coup de poing : Pv hero {self.hero.get_pv()}')
+            # Si le héros a bloqué l'attaque :
             elif self.hero.get_block():
+                # Image du block
                 self.cd_block_img = time.time()
                 print("Bloqué !")
+            # On remet tout à 0
             self.boss_sprite_attaque1 = 0
             self.boss.set_cd_attaque1()
             self.boss.set_attaque1_dispo(False)
             self.atk1 = False
 
-    def animation_attaque2_boss(self,speed):
+    def animation_attaque2_boss(self,speed:float):
+        '''Permet de jouer l'attaque avec la faux du Boss.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        # L'attaque 2 est en train d'être jouée.
         self.atk2= True
+        # Faire progresser les images pour l'animation
         self.boss_sprite_attaque2 += speed
         self.boss.modif_img(attaque2_boss[int(self.boss_sprite_attaque2)])
+        # Si toutes les images ont été jouées :
         if int(self.boss_sprite_attaque2) == len(attaque2_boss)-1:
+            # Si le héros se trouve à portée du boss :
             if self.boss.get_pos_x()+120 > self.hero.get_pos_x() > self.boss.get_pos_x() - 120 and self.hero.get_pos_y() > 250 and not self.hero.get_block():
+                # Le héros perd 20 Pv
                 self.hero.modif_pv(-20)
+                # Animation de dégâts subis
                 self.hero.set_degats_subis(True)
+                # Image des dégâts subis
                 self.cd_dgt20 = time.time()
                 print(f'Attaque faux : Pv hero : {self.hero.get_pv()}')
+            # Si le héros a bloqué l'attaque :
             elif self.hero.get_block():
+                # Image du block
                 self.cd_block_img = time.time()
                 print("Bloqué !")
+            # On remet tout à 0
             self.boss_sprite_attaque2 = 0
             self.atk2 = False
             self.boss.set_cd_attaque2()
             self.boss.set_attaque2_dispo(False)
 
-    def animation_marche_boss_gauche(self,speed):
+    def animation_marche_boss_gauche(self,speed:float):
+        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
         self.boss_sprite_marche += speed
         self.boss.modif_img(marche_boss_gauche[int(self.boss_sprite_marche)])
         if int(self.boss_sprite_marche) == len(marche_boss_gauche)-1:
             self.boss_sprite_marche = 0
 
-    def animation_marche_boss_droite(self,speed):
+    def animation_marche_boss_droite(self,speed:float):
+        '''Permet de jouer l'animation de marche (vers la droite) du Boss.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
         self.boss_sprite_marche += speed
         self.boss.modif_img(marche_boss_droite[int(self.boss_sprite_marche)])
         if int(self.boss_sprite_marche) == len(marche_boss_droite)-1:
             self.boss_sprite_marche = 0
 
-    def animation_inaction_boss(self,speed):
+    def animation_inaction_boss(self,speed:float):
+        '''Permet de jouer l'animation d'inaction du Boss.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
         self.boss_sprite_inaction += speed
         self.boss.modif_img(inaction_boss[int(self.boss_sprite_inaction)])
         if int(self.boss_sprite_inaction) == len(inaction_boss)-1:
             self.boss_sprite_inaction = 0
 
-    def animation_ulti_boss(self,speed):
+    def animation_ulti_boss(self,speed:float):
+        '''Permet de jouer l'animation du l'ulti du Boss.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        # Animation de l'ulti du boss
         self.boss_sprite_ulti += speed
         self.boss.modif_img(ulti_boss[int(self.boss_sprite_ulti)])
         if int(self.boss_sprite_ulti) == len(ulti_boss)-1:
+            # Effets de l'ulti du boss : Fait perdre 30 Pv au héros, et le boss regagne 30 Pv.
             self.boss.modif_pv(30)
             self.hero.modif_pv(-30)
             print(self.boss.get_pv())
@@ -305,7 +412,7 @@ class JeuCombat:
                     self.animation_marche_boss_droite(0.1)
                     self.boss.modif_pos_x(1.2)
                 else:
-                    self.animation_ulti_boss(0.06)
+                    self.animation_ulti_boss(0.08)
         # Si le boss se trouve à portée, lancement des attaques
         if not self.ulti_anim:
             if self.hero.get_pos_x() - 80 < self.boss.get_pos_x() < self.hero.get_pos_x() + 100:
