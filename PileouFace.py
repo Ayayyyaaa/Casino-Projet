@@ -1,6 +1,7 @@
 import pygame
 from random import randint
 from objets_et_variables import *
+from sons import *
 
 class Pile_ou_face:
     def __init__(self, pos_x, pos_y):
@@ -55,8 +56,10 @@ class Pile_ou_face:
                     print('vict')
                     self.set_choix(None) 
                     joueur.modifier_cagnotte(100)
+                    son_piece.play()
                 else:
                     joueur.modifier_cagnotte(-100)
+                    son_faux.play()
                     print('def')
                     print(self.get_choix(), self.get_cote())
                 self.animation = False

@@ -22,8 +22,8 @@ class Jeu():
         self.victoire = False
         self.combat = JeuCombat()
     def running(self):
-        son_joue = False
         choix_fait = False
+        son_joue = False
         while self.run:
             if not self.combat.get_actif():
                 # Fermer la fenêtre
@@ -43,6 +43,9 @@ class Jeu():
                                 ecran_victoire.ecran.set_actif(False)
                                 ecran2.ecran.set_actif(True)
                             elif ecran1.ecran.get_actif() or ecran2.ecran.get_actif():
+                                click.play()
+                                if ecran1.ecran.get_actif():
+                                    rire_diabolique.play()
                                 ecran1.ecran.set_actif(not ecran1.ecran.get_actif())
                                 ecran2.ecran.set_actif(not ecran2.ecran.get_actif())
 
@@ -56,6 +59,7 @@ class Jeu():
                                 joueur1.set_roulette_active(False)
                             # Affichage du jeu de pile ou face
                             if 335 <= event.pos[0] <= 385 and 100 <= event.pos[1] <= 150 :
+                                click.play()
                                 pileouface.set_actif(not pileouface.get_actif())
                                 pileouface.set_cote(None)
                             
@@ -63,10 +67,12 @@ class Jeu():
                             elif pileouface.get_actif():
                                 # Pari sur le côté Face de la piece
                                 if 125 <= event.pos[0] <= 175 and 230 <= event.pos[1] <= 280 :
+                                    click.play()
                                     pileouface.set_choix('Face') 
                                     choix_fait = True
                                 # Pari sur le côté Pile de la piece
                                 elif 230 <= event.pos[0] <= 280 and 230 <= event.pos[1] <= 280 :
+                                    click.play()
                                     pileouface.set_choix('Pile')
                                     choix_fait = True
 
@@ -77,6 +83,7 @@ class Jeu():
 
                             # Affichage du jeu de machine à sous depuis l'écran principal
                             if 330 <= event.pos[0] <= 390 and 170 <= event.pos[1] <= 220 : 
+                                    click.play()
                                     ecran2.ecran.set_actif(not ecran2.ecran.get_actif())
                                     ecran_machine_a_sous.ecran.set_actif(not ecran_machine_a_sous.ecran.get_actif())
 
@@ -103,7 +110,7 @@ class Jeu():
                                 son_gambling.play()
                                 ecran_machine_a_sous.lancement()
                                 joueur1.modifier_cagnotte(-100)
-                #Supprimer le pile ou face au changement d'ecran
+                # Supprimer le pile ou face au changement d'ecran
                 if not ecran2.ecran.get_actif():
                     pileouface.set_actif(False)
                 # Conditions de défaite
@@ -124,6 +131,7 @@ class Jeu():
                     dessiner_zone_texte(fenetre, self.champ_joueur, self.text, self.nom_actif)          
                 # Affichage de l'écran principal
                 if ecran2.ecran.get_actif():
+                    son_joue = False
                     ecran2.affiche()
                 elif ecran_mort.ecran.get_actif():
                     # Affichage de l'écran de défaite

@@ -1,18 +1,20 @@
 import pygame
 from random import randint
-from sons import tire_balle
-
+from sons import tire_balle,tire_balle_blanc
 
 class RouletteRusse:
-    def __init__(self, pos_x, pos_y,son):
+    def __init__(self, pos_x, pos_y,son,son_blanc):
         self.tourne_animation_vict = False
         self.tourne_animation_def = False
         self.sprites_vict = []
         self.sprites_def = []
         self.frame = 0
         self.son = son
+        self.son_blanc = son_blanc
         self.sprites_vict.append(pygame.image.load('pistolet_blanc/vide.png'))
         self.sprites_def.append(pygame.image.load('pistolet_blanc/vide.png'))
+        self.tir_joue = False
+        self.tir_blanc_joue = False
         i = 0
         for i in range(3):
             self.sprites_vict.append(pygame.image.load('pistolet/pf-1.png.png'))
@@ -46,15 +48,16 @@ class RouletteRusse:
             proba = 1
             if joueur1.get_cagnotte() > 800000:
                 proba = 5
-            elif joueur1.get_cagnotte() > 500000:
+            elif joueur1.get_cagnotte() > 600000:
                 proba = 4
-            elif joueur1.get_cagnotte() > 100000:
+            elif joueur1.get_cagnotte() > 400000:
                 proba = 3
-            elif joueur1.get_cagnotte() > 50000:
+            elif joueur1.get_cagnotte() > 100000:
                 proba = 2
             else:
                 proba = 1
             balle = randint(1, 6)
+            print(proba)
             if balle <= proba: 
                 self.activer_rotation_def()
             else:  
@@ -93,8 +96,12 @@ class RouletteRusse:
         """
         if self.tourne_animation_vict:
             self.actuel_sprite += speed
+            if int(self.actuel_sprite) == 19 and not self.tir_joue:
+                self.son_blanc.play()
+                self.tir_joue = True
             if int(self.actuel_sprite) >= len(self.sprites_vict):
                 self.actuel_sprite = 0
+                self.tir_joue = False
                 joueur.modifier_cagnotte(joueur.get_cagnotte()//2)
                 self.tourne_animation_vict = False
             self.image = self.sprites_vict[int(self.actuel_sprite)]
@@ -108,10 +115,12 @@ class RouletteRusse:
         """
         if self.tourne_animation_def:
             self.actuel_sprite += speed
-            if self.actuel_sprite == 21:
+            if int(self.actuel_sprite) == 21 and not self.tir_blanc_joue:
                 self.son.play()
+                self.tir_blanc_joue = True
             if int(self.actuel_sprite) >= len(self.sprites_def):
                 self.actuel_sprite = 0
+                self.tir_blanc_joue = False
                 joueur.set_cagnotte(0)
                 self.tourne_animation_def = False
             self.image = self.sprites_def[int(self.actuel_sprite) % len(self.sprites_def)]
@@ -122,5 +131,6 @@ class RouletteRusse:
     def get_pos(self):
         return(self.pos_x,self.pos_y)
 
-pistolet = RouletteRusse(110, 120, tire_balle)
+pistolet = RouletteRusse(110, 120, tire_balle,tire_balle_blanc)
+
 
