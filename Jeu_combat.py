@@ -10,7 +10,7 @@ marche_boss_droite = [f'Boss/Marche/Droite/Marche{i}.png' for i in range(1,8)]
 attaque1_boss = [f'Boss/Attaque1/Coup_de_poing{i}.png' for i in range(1,5)]
 attaque2_boss = [f'Boss/Attaque2/Faux{i}.png' for i in range(1,8)]
 inaction_boss = [f'Boss/Inaction/Inaction{i}.png' for i in range(1,4)]
-ulti_boss = [f'Boss/ulti/ulti ({i}).png' for i in range(1,7)]
+ulti_boss = [f'Boss/Ulti/Ulti ({i}).png' for i in range(1,7)]
 
 marche_hero_droite = [f'Hero/Marche/Droite/Hero_course{i}.png' for i in range(1,7)]
 marche_hero_gauche = [f'Hero/Marche/Gauche/Hero_course{i}.png' for i in range(1,7)]
