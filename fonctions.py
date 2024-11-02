@@ -1,5 +1,4 @@
 import pygame
-from random import randint
 from objets_et_variables import *
 from img import *
 

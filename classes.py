@@ -3,7 +3,7 @@ import pygame
 
 
 class Joueur:
-    def __init__(self, pseudo='Babibel', cagnotte=170000, roulette_active=False):
+    def __init__(self, pseudo='Babibel', cagnotte=2000, roulette_active=False):
         self.pseudo = pseudo
         self.cagnotte = cagnotte
         self.roulette_active = roulette_active
@@ -34,24 +34,27 @@ class Joueur:
         self.roulette_active = actif
 
 
-class Coin(pygame.sprite.Sprite):
+class Coin:
     def __init__(self, pos_x, pos_y):
-        super().__init__()
         self.tourne_animation = False
         self.sprites = []
         self.sprites.append(pygame.image.load('pieces/coin-1.png.png'))
         self.sprites.append(pygame.image.load('pieces/coin-2.png.png'))
         self.sprites.append(pygame.image.load('pieces/coin-3.png.png'))
         self.sprites.append(pygame.image.load('pieces/coin-4.png.png'))
+        self.pos_x = pos_x
+        self.pos_y = pos_y
 
         self.actuel_sprite = 0
         self.image = self.sprites[self.actuel_sprite]
 
-        self.rect = self.image.get_rect()
-        self.rect.topleft = [pos_x, pos_y]
-
     def activer_rotation(self):
         self.tourne_animation = True
+
+    def get_image(self):
+        return self.image
+    def get_pos(self):
+        return(self.pos_x,self.pos_y)
 
     def update(self, speed):
         if self.tourne_animation:

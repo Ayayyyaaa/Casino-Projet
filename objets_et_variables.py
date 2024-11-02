@@ -10,8 +10,6 @@ bouton2 = Bouton(160, 25, 0, 0)
 bouton3 = Bouton(160, 25, 0, 25)
 clock = pygame.time.Clock()
 
-mvmt_sprites = pygame.sprite.Group()
 coin = Coin(100, -7)
-mvmt_sprites.add(coin)
 
 

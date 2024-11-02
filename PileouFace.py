@@ -4,7 +4,7 @@ from objets_et_variables import *
 from sons import *
 
 class Pile_ou_face:
-    def __init__(self, pos_x, pos_y):
+    def __init__(self):
         self.animation = False
         self.sprites = []
         self.sprites.append(pygame.image.load('pistolet_blanc/vide.png'))
@@ -55,10 +55,10 @@ class Pile_ou_face:
                     print(self.get_choix(), self.get_cote())
                     print('vict')
                     self.set_choix(None) 
-                    joueur.modifier_cagnotte(100)
+                    joueur.modifier_cagnotte(100 + joueur.get_cagnotte()/20)
                     son_piece.play()
                 else:
-                    joueur.modifier_cagnotte(-100)
+                    joueur.modifier_cagnotte(-100 - joueur.get_cagnotte()/20)
                     son_faux.play()
                     print('def')
                     print(self.get_choix(), self.get_cote())
@@ -100,4 +100,4 @@ class Pile_ou_face:
         else:
             return False
 
-pileouface = Pile_ou_face(170,170)
+pileouface = Pile_ou_face()

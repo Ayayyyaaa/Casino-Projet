@@ -40,9 +40,13 @@ class EcranMachineASous:
         fenetre.blit(self.fond, (0, 0))
         self.emplacements.draw(fenetre)
         comic = pygame.font.SysFont("comicsansms", 30)
-        text = comic.render(str(joueur1.get_cagnotte()) + " pièces", True, blanc)
+        text = comic.render(str(int(joueur1.get_cagnotte())) + " pièces", True, blanc)
         fenetre.blit(text, (10, 0))
-        dessiner_bouton(fenetre, "Retour", 340, 20, 50, 50, blanc, noir, 15)
+        if 340 <= pygame.mouse.get_pos()[0] <= 390 and 25 <= pygame.mouse.get_pos()[1] <= 65:
+            fenetre.blit(fleche_retour2, (341, 21))
+        else:
+            fenetre.blit(fleche_retour, (340, 20))
+
     def lancement(self):
         '''
         Permet de lancer la machine à sous.
