@@ -100,7 +100,6 @@ class Jeu():
                                     click.play()
                                     pileouface.set_choix('Pile')
                                     choix_fait = True
-
                                 # Lancer l'animation de Pile ou Face quand le joueur a effectué son choix
                                 if choix_fait:
                                     pileouface.activer_animation()
@@ -119,12 +118,12 @@ class Jeu():
                                 ecran2.ecran.set_actif(not ecran2.ecran.get_actif())
                                 ecran_machine_a_sous.ecran.set_actif(not ecran_machine_a_sous.ecran.get_actif())
                             # Lancer la machine à sous
-                            elif 340 <= event.pos[0] <= 390 and 100 <= event.pos[1] <= 250 and joueur1.get_cagnotte() >= 100:
+                            elif 340 <= event.pos[0] <= 390 and 100 <= event.pos[1] <= 250:
                                 if time.time() - dernier_son >= 1.5:
                                     son_gambling.play()
                                     dernier_son = time.time()
                                 ecran_machine_a_sous.lancement()
-                                joueur1.modifier_cagnotte(-100)
+                                joueur1.modifier_cagnotte(-100 - joueur1.get_cagnotte()//100)
                         
                     elif event.type == pygame.KEYDOWN:
                         # Gérer la saisie du nom de joueur

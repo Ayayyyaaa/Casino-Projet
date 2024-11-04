@@ -16,7 +16,8 @@ ulti_boss = [f'Boss/Ulti/Ulti ({i}).png' for i in range(1,7)]
 
 marche_hero_droite = [f'Hero/Marche/Droite/Hero_course{i}.png' for i in range(1,7)]
 marche_hero_gauche = [f'Hero/Marche/Gauche/Hero_course{i}.png' for i in range(1,7)]
-attaque_hero_img = [f'Hero/Attaque/Attaque{i}.png' for i in range(1,13)]
+attaque_hero_droite_img = [f'Hero/Attaque/Attaque_Droite/Attaque{i}.png' for i in range(1,13)]
+attaque_hero_gauche_img = [f'Hero/Attaque/Attaque_Gauche/Attaque{i}.png' for i in range(1,13)]
 degats_hero_img = [f'Hero/Degats/degats{i}.png' for i in range(1,4)]
 block_hero_img = [f'Hero/Block/Block ({i}).png' for i in range(1,19)]
 mort_hero_img = [f'Hero/Mort/_afrm{i},70.png' for i in range(1,23)]
@@ -120,8 +121,8 @@ class Hero:
         self.cd_img = time.time()
     def set_degats_subis(self, degats_subis):
         self.degats_subis = degats_subis
-    def set_victoire(self):
-        self.victoire = True
+    def set_victoire(self,vict):
+        self.victoire = vict
     def set_block(self, actif):
         self.block = actif
     def set_cd_block(self):
@@ -184,17 +185,21 @@ class JeuCombat:
                 # Le boss perd 5 Pv
                 aie_boss.play()
                 self.boss.modif_pv(-5)
+                print(f"Attaque Épée Héros : Pv boss : {self.boss.get_pv()}")
                 # Affichage des dégâts subis
                 self.cd_dgt5 = time.time()
         # Si toutes les images ont été jouées :
-        elif int(self.hero_sprite_attaque) == len(attaque_hero_img)-1:
+        elif int(self.hero_sprite_attaque) == len(attaque_hero_gauche_img)-1:
             # On remet tout à 0
             self.hero_sprite_attaque = 0
             self.hero.set_attaque(False)
             son_epee.play()
         # Faire progresser les images pour l'animation
         self.hero_sprite_attaque += speed
-        self.hero.modif_img(attaque_hero_img[int(self.hero_sprite_attaque)])
+        if self.hero.get_pos_x() >= self.boss.get_pos_x():
+            self.hero.modif_img(attaque_hero_gauche_img[int(self.hero_sprite_attaque)])
+        else:
+            self.hero.modif_img(attaque_hero_droite_img[int(self.hero_sprite_attaque)])
 
     def anim_mort_hero(self,speed:float):
         '''Permet de jouer l'animation de mort du héros.
@@ -264,7 +269,7 @@ class JeuCombat:
         # Faire progresser les images pour l'animation
         self.hero_sprite_block += speed
         # On ne joue l'animation que si le héros n'est pas en train d'attaquer
-        if not self.hero.get_attaque():
+        if not self.hero.get_attaque() and not self.hero.get_pv() <= 0:
             self.hero.modif_img(block_hero_img[int(self.hero_sprite_block)])
         # Si toutes les images ont été jouées :
         if int(self.hero_sprite_block) == len(block_hero_img)-1:
@@ -286,7 +291,7 @@ class JeuCombat:
             # Si toutes les images ont été jouées :
             if int(self.boss_sprite_mort) == len(mort_boss)-1:
                 # On déclare le héros vainqueur, le combat prend fin
-                self.hero.set_victoire()
+                self.hero.set_victoire(False)
     
     def animation_attaque1_boss(self,speed:float):
         '''Permet de jouer l'attaque au poing du Boss.
@@ -405,11 +410,27 @@ class JeuCombat:
         if int(self.boss_sprite_ulti) == len(ulti_boss)-1:
             # Effets de l'ulti du boss : Fait perdre 30 Pv au héros, et le boss regagne 30 Pv.
             self.boss.modif_pv(20)
-            self.hero.modif_pv(-30)
-            print(self.boss.get_pv())
+            self.hero.modif_pv(-20)
+            # Image des dégâts subis
+            self.cd_dgt20 = time.time()
             self.boss_sprite_ulti = 0
             self.boss.set_cd_ulti(0)
             self.ulti_anim = False
+            print(f"Attaque Ultime ! : Pv héros : {self.hero.get_pv()}")
+            print(f"Attaque Ultime ! : Pv boss : {self.boss.get_pv()}")
+
+    def affichage_degats(self):
+        '''Permet d'afficher les dégâts pris par le boss et le héros visuellement (-5,-10,-20,Block)
+        '''
+        if time.time() - self.cd_dgt10 < 1:
+            fenetre.blit(self.dgt10, (self.hero.get_pos_x()+30, self.hero.get_pos_y() - 50))
+        if time.time() - self.cd_dgt20 < 1:
+            fenetre.blit(self.dgt20, (self.hero.get_pos_x()+30, self.hero.get_pos_y() - 80))
+        if time.time() - self.cd_block_img < 1:
+            fenetre.blit(self.block, (self.hero.get_pos_x()+30, self.hero.get_pos_y() - 20))
+        if time.time() - self.cd_dgt5 < 1:
+            fenetre.blit(self.dgt5, (self.boss.get_pos_x()+120, self.boss.get_pos_y() - 80))
+
 
     def patern_boss(self):
         if self.boss.get_pv() <= 25:
@@ -440,10 +461,10 @@ class JeuCombat:
     def boss_vers_hero(self):
         if self.hero.get_pos_x() - 80 < self.boss.get_pos_x():
             self.animation_marche_boss_gauche(0.1)
-            self.boss.modif_pos_x(-1.2)
+            self.boss.modif_pos_x(-1.5)
         elif self.hero.get_pos_x() + 100 > self.boss.get_pos_x():
             self.animation_marche_boss_droite(0.1)
-            self.boss.modif_pos_x(1.2)
+            self.boss.modif_pos_x(1.5)
 
 
     def lancer(self):
@@ -455,6 +476,8 @@ class JeuCombat:
         self.hero.modif_pv(-self.hero.get_pv()+100)
         self.boss.modif_pos_x(-self.boss.get_pos_x()+1000)
         self.hero.modif_img(marche_hero_droite[0])
+        self.hero.set_victoire(False)
+        self.boss.set_victoire(False)
         while not self.hero.get_victoire() and not self.boss.get_victoire() and self.run:
             self.fenetre.blit(self.fond, (0,0))
             for event in pygame.event.get():
@@ -502,14 +525,8 @@ class JeuCombat:
 
             if self.hero.get_block():
                 self.block_hero(0.15)
-            if time.time() - self.cd_dgt10 < 1:
-                fenetre.blit(self.dgt10, (self.hero.get_pos_x()+30, self.hero.get_pos_y() - 50))
-            if time.time() - self.cd_dgt20 < 1:
-                fenetre.blit(self.dgt20, (self.hero.get_pos_x()+30, self.hero.get_pos_y() - 80))
-            if time.time() - self.cd_block_img < 1:
-                fenetre.blit(self.block, (self.hero.get_pos_x()+30, self.hero.get_pos_y() - 20))
-            if time.time() - self.cd_dgt5 < 1:
-                fenetre.blit(self.dgt5, (self.boss.get_pos_x()+120, self.boss.get_pos_y() - 80))
+            
+            self.affichage_degats()
 
             self.fenetre.blit(self.boss.image, (self.boss.get_pos_x(), self.boss.get_pos_y()))
             self.fenetre.blit(self.hero.image, (self.hero.get_pos_x(), self.hero.get_pos_y()))
@@ -521,10 +538,12 @@ class JeuCombat:
             fenetre.blit(pvboss, (1010, 70))
             pygame.display.flip()
             self.clock.tick(60)
+
         self.actif(False)
         self.largeur, self.hauteur = 400, 400
         pygame.display.set_mode((self.largeur, self.hauteur))
         pygame.mixer.music.unload()
+
         if self.boss.get_victoire():
             joueur1.set_cagnotte(0)
         else:
