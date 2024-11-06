@@ -32,11 +32,12 @@ class Blackjack:
         self.score = pygame.Rect(7, 343, 100, 50)
         self.croupier = pygame.Rect(293, 343, 100, 50)
         self.actif = False
-        self.img = [
-            "cartes/joker.png", "cartes/carte-2.png", "cartes/carte-3.png",
-            "cartes/carte-4.png", "cartes/carte-5.png", "cartes/carte-6.png",
-            "cartes/carte-7.png", "cartes/carte-8.png", "cartes/carte-9.png",
-            "cartes/carte-10.png"
+        self.img_joker = pygame.image.load("cartes/joker.png")
+        self.img = [[],
+            ["cartes/Carreau/carte-2.png", "cartes/Carreau/carte-3.png",
+            "cartes/Carreau/carte-4.png", "cartes/Carreau/carte-5.png", "cartes/Carreau/carte-6.png",
+            "cartes/Carreau/carte-7.png", "cartes/Carreau/carte-8.png", "cartes/Carreau/carte-9.png",
+            "cartes/Carreau/carte-10.png"]
             ]
 
         self.dos_de_carte = pygame.image.load("cartes/dos_de_carte.png")
@@ -65,12 +66,11 @@ class Blackjack:
             val_j = randint(1, 10)
             #vérification si la carte tirée est un joker
             if val_j == 1:
-                img_joker = pygame.image.load(self.img[0])
-                fenetre.blit(img_joker, (136, 267))
                 # créer le bouton pour mettre la valeur de la carte à 11
                 dessiner_bouton(fenetre, "le joker prend la valeur 1", self.bouton_val1.x, self.bouton_val1.y, self.bouton_val1[2], self.bouton_val1[3], blanc, noir, 20)
                 # créer le bouton pour mettre la valeur de la carte à 11
                 dessiner_bouton(fenetre, "le joker prend la valeur 11", self.bouton_val11.x, self.bouton_val11.y, self.bouton_val11[2], self.bouton_val11[3], blanc, noir, 20)
+                fenetre.blit(self.img_joker, (171, 287))
                 # Mettre à jour l'affichage pour que les boutons soient visibles
                 pygame.display.update()  
                 
@@ -90,23 +90,24 @@ class Blackjack:
                                 #on enlève les boutons du joker
                                 self.nettoyer_ecran()
                                 #on replace la carte joker
-                                fenetre.blit(img_joker, (136, 267))
+                                fenetre.blit(self.img_joker, (171, 287))
                             elif self.bouton_val11.collidepoint(event.pos):
                                 val_j = 11
                                 #on enlève les boutons du joker
                                 self.nettoyer_ecran()
                                 #on replace la carte joker
-                                fenetre.blit(img_joker, (136, 267))
+                                fenetre.blit(self.img_joker, (171, 287))
             
             
             #additionner la valeur de la carte à la valeur totale
             self.valeur_joueur += val_j
             # montrer la carte en fonction de sa valeur
             if val_j >= 2 and val_j <= 10:
-                img_carte = pygame.image.load(self.img[val_j - 1])
-                fenetre.blit(img_carte, (136, 267))
+                img_carte = pygame.image.load(self.img[1][val_j - 2])
+                self.nettoyer_ecran()
+                fenetre.blit(img_carte, (171, 287))
                 # Mettre à jour l'affichage après avoir tiré la carte
-                pygame.display.update()  
+            pygame.display.update()  
             #autorise le croupier à jouer
             self.c_block = False
             #print dans la console pour débugger
