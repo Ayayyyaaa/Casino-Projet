@@ -26,14 +26,17 @@ class Blackjack:
         self.score_croupier = "score: " + str(self.valeur_croupier)
         self.bouton_val1 = pygame.Rect(139, 7, 190, 50)
         self.bouton_val11 = pygame.Rect(139, 62, 190, 50)
-        self.tirer = pygame.Rect(7, 62, 125, 50)
+        self.tirer = pygame.Rect(171, 171, 58, 88)
         self.arreter = pygame.Rect(7, 7, 125, 50)
         self.bouton_rejouer = pygame.Rect(7, 286, 100, 50)
         self.score = pygame.Rect(7, 343, 100, 50)
         self.croupier = pygame.Rect(293, 343, 100, 50)
         self.actif = False
         self.img_joker = pygame.image.load("cartes/joker.png")
-        self.img = [[],
+        self.img = [["cartes/Pique/carte-2.png", "cartes/Pique/carte-3.png",
+            "cartes/Pique/carte-4.png", "cartes/Pique/carte-5.png", "cartes/Pique/carte-6.png",
+            "cartes/Pique/carte-7.png", "cartes/Pique/carte-8.png", "cartes/Pique/carte-9.png",
+            "cartes/Pique/carte-10.png"],
             ["cartes/Carreau/carte-2.png", "cartes/Carreau/carte-3.png",
             "cartes/Carreau/carte-4.png", "cartes/Carreau/carte-5.png", "cartes/Carreau/carte-6.png",
             "cartes/Carreau/carte-7.png", "cartes/Carreau/carte-8.png", "cartes/Carreau/carte-9.png",
@@ -54,7 +57,6 @@ class Blackjack:
             fenetre = pygame.display.set_mode((400, 400))
             #on replace les éléments à leur place
             fenetre.blit(self.dos_de_carte, (136, 136))
-            dessiner_bouton(fenetre, "tirer une carte", self.tirer.x, self.tirer.y, self.tirer[2], self.tirer[3], blanc, noir, 20)
             dessiner_bouton(fenetre, "arrêter de jouer", self.arreter.x, self.arreter.y, self.arreter[2], self.arreter[3], blanc, noir, 20)
         
     
@@ -103,7 +105,7 @@ class Blackjack:
             self.valeur_joueur += val_j
             # montrer la carte en fonction de sa valeur
             if val_j >= 2 and val_j <= 10:
-                img_carte = pygame.image.load(self.img[1][val_j - 2])
+                img_carte = pygame.image.load(self.img[randint(0,1)][val_j - 2])
                 self.nettoyer_ecran()
                 fenetre.blit(img_carte, (171, 287))
                 # Mettre à jour l'affichage après avoir tiré la carte
@@ -131,7 +133,6 @@ class Blackjack:
     def tour_joueur(self):
         if self.actif:
             #créer les boutons pour prendre les actions du joueur
-            dessiner_bouton(fenetre, "tirer une carte", self.tirer.x, self.tirer.y, self.tirer[2], self.tirer[3], blanc, noir, 20)
             dessiner_bouton(fenetre, "arrêter de jouer", self.arreter.x, self.arreter.y, self.arreter[2], self.arreter[3], blanc, noir, 20)
             
             # Mettre à jour l'affichage
@@ -185,7 +186,6 @@ class Blackjack:
             text = comic.render(str(int(joueur1.get_cagnotte())) + " pièces", True, blanc)
             fenetre.blit(text, (300, 0))
             #on crée les boutons pour ne pas laisser du vide
-            dessiner_bouton(fenetre, "tirer une carte", self.tirer.x, self.tirer.y, self.tirer[2], self.tirer[3], blanc, noir, 20)
             dessiner_bouton(fenetre, "arrêter de jouer", self.arreter.x, self.arreter.y, self.arreter[2], self.arreter[3], blanc, noir, 20)
             
             # le joueur et le croupier commencent avec 1 cartes chacun
