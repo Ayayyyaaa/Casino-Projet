@@ -78,6 +78,7 @@ class Ecran2:
             self.fond = pygame.image.load('images/casino.jpg').convert()
         fenetre.blit(self.fond, (0, 0))
         coin.activer_rotation()
+        # Jouer les animations des icones des jeux
         if ecran2.ecran.get_actif() and 330 <= pygame.mouse.get_pos()[0] <= 390 and 45 <= pygame.mouse.get_pos()[1] <= 75 :
             fenetre.blit(roulette2, (320, 20))
         else:

@@ -35,20 +35,15 @@ class Blackjack:
         self.img_joker = pygame.image.load("cartes/joker.png")
         self.img = [[f"cartes/{couleur}/carte-{i}.png" for i in range(2, 11)] for couleur in ['Carreau', 'Coeur', 'Pique', 'Trefle']] 
         self.dos_de_carte = pygame.image.load("cartes/dos_de_carte.png")
-        fenetre.blit(self.dos_de_carte, (136, 136))
+        self.solde = pygame.image.load("images/compteur2.png")
+        self.police = pygame.font.Font('8-bitanco.ttf', 15)
+        self.retour = False # Booléen qui determine si la souris est sur la fleche
+        self.img_carte = pygame.image.load("images/None.png")
+        self.fin = False
 
     def set_actif(self,valeur):
         self.actif = valeur
         
-    
-    def nettoyer_ecran(self):
-        #on réinitialise la fenêtre pour se débarrasser du bouton
-        if self.actif:
-            pygame.init()
-            fenetre = pygame.display.set_mode((400, 400))
-            #on replace les éléments à leur place
-            fenetre.blit(self.dos_de_carte, (136, 136))
-            dessiner_bouton(fenetre, "arrêter de jouer", self.arreter.x, self.arreter.y, self.arreter[2], self.arreter[3], blanc, noir, 20)
         
     
     def tirer_carte_joueur(self):
@@ -79,26 +74,21 @@ class Blackjack:
                         #vérification de la collision
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             if self.bouton_val1.collidepoint(event.pos):
-                                val_j = 1
-                                #on enlève les boutons du joker
-                                self.nettoyer_ecran()
-                                #on replace la carte joker
-                                fenetre.blit(self.img_joker, (171, 287))
+                                val_j = fenetre.blit(self.img_joker, (171, 287))
                             elif self.bouton_val11.collidepoint(event.pos):
                                 val_j = 11
-                                #on enlève les boutons du joker
-                                self.nettoyer_ecran()
-                                #on replace la carte joker
-                                fenetre.blit(self.img_joker, (171, 287))
             
             
             #additionner la valeur de la carte à la valeur totale
             self.valeur_joueur += val_j
+            #on enlève les boutons du joker
+            self.nettoyer_ecran()
+            fenetre.blit(self.img_joker, (171, 287))
             # montrer la carte en fonction de sa valeur
             if val_j >= 2 and val_j <= 10:
-                img_carte = pygame.image.load(self.img[randint(0,3)][val_j - 2])
+                self.img_carte = pygame.image.load(self.img[randint(0,3)][val_j - 2])
                 self.nettoyer_ecran()
-                fenetre.blit(img_carte, (171, 287))
+                fenetre.blit(self.img_carte, (171, 287))
                 # Mettre à jour l'affichage après avoir tiré la carte
             pygame.display.update()  
             #autorise le croupier à jouer
@@ -117,15 +107,13 @@ class Blackjack:
                 val_c = 11 if self.valeur_croupier <= 10 else 1
             #additionner la valeur de la carte à la valeur totale
             self.valeur_croupier += val_c
+            self.nettoyer_ecran()
             #print dans la console pour débugger
             print("c= ", self.valeur_croupier)
 
     
     def tour_joueur(self):
         if self.actif:
-            #créer les boutons pour prendre les actions du joueur
-            dessiner_bouton(fenetre, "arrêter de jouer", self.arreter.x, self.arreter.y, self.arreter[2], self.arreter[3], blanc, noir, 20)
-            
             # Mettre à jour l'affichage
             pygame.display.update()  
 
@@ -171,23 +159,11 @@ class Blackjack:
     
     def main(self):
         if self.actif:
-            fenetre.fill(noir)
+            self.nettoyer_ecran()
             fenetre.blit(self.dos_de_carte, (136, 136))
-            comic = pygame.font.SysFont("comicsansms", 30)
-            text = comic.render(str(int(joueur1.get_cagnotte())) + " pièces", True, blanc)
-            fenetre.blit(text, (300, 0))
-            #on crée les boutons pour ne pas laisser du vide
-            dessiner_bouton(fenetre, "arrêter de jouer", self.arreter.x, self.arreter.y, self.arreter[2], self.arreter[3], blanc, noir, 20)
             # le joueur et le croupier commencent avec 1 cartes chacun
             self.tirer_carte_croupier()
-            #on affiche le score du croupier
-            self.score_croupier = "croupier: " + str(self.valeur_croupier)
-            dessiner_bouton(fenetre, self.score_croupier , self.croupier.x, self.croupier.y, self.croupier[2], self.croupier[3], blanc, noir, 20)
-            self.tirer_carte_joueur()
-            #on affiche le score du joueur
-            self.score_j = "score: " + str(self.valeur_joueur)
-            dessiner_bouton(fenetre, self.score_j , self.score.x, self.score.y, self.score[2], self.score[3], blanc, noir, 20)
-            
+            self.nettoyer_ecran()
             #la partie continue tant qu'au moins un des deux joueurs veut continuer
             while self.j_jouer == True and self.actif or self.c_jouer == True and self.actif:
                 #fait jouer le joueur si il veut continuer
@@ -196,13 +172,6 @@ class Blackjack:
                 #fait jouer le croupier si il veut continuer
                 if self.c_jouer == True:
                     self.tour_croupier()
-                
-                #on change le score du joueur
-                self.score_j = "score: " + str(self.valeur_joueur)
-                dessiner_bouton(fenetre, self.score_j , self.score.x, self.score.y, self.score[2], self.score[3], blanc, noir, 20)
-                #on affiche le score du croupier
-                self.score_croupier = "croupier: " + str(self.valeur_croupier)
-                dessiner_bouton(fenetre, self.score_croupier , self.croupier.x, self.croupier.y, self.croupier[2], self.croupier[3], blanc, noir, 20)
             
             #print dans la console pour débugger
             print("arrêt")
@@ -227,16 +196,12 @@ class Blackjack:
     def rejouer(self): 
         #créer une boucle pour permettre au joueur de rejouer autant qu'il veut
         while self.actif:
+            self.fin = True
             #remêt tout à 0 pour rejouer
             self.fermer()
-            if 340 <= pygame.mouse.get_pos()[0] <= 390 and 25 <= pygame.mouse.get_pos()[1] <= 65:
-                fenetre.blit(fleche_retour2, (341, 21))
-            else:
-                fenetre.blit(fleche_retour, (340, 20))            
-            #dessine le bouton pour pouvoir rejouer
-            dessiner_bouton(fenetre, "rejouer", self.bouton_rejouer.x, self.bouton_rejouer.y, self.bouton_rejouer[2], self.bouton_rejouer[3], blanc, noir, 20)
+            self.nettoyer_ecran()
             pygame.display.update()
-            #permettre au joueur de quitter le jeux sans qu'il plante
+            #permettre au joueur de quitter le jeu sans qu'il plante
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -246,9 +211,10 @@ class Blackjack:
                     if self.bouton_rejouer.collidepoint(event.pos):
                         #on enlève le bouton "rejouer"
                         self.nettoyer_ecran()
+                        self.fin = False
                         #relancement du jeu
                         self.main()
-                    if 340 <= event.pos[0] <= 390 and 20 <= event.pos[1] <= 70:
+                    if 330 <= event.pos[0] <= 380 and 75 <= event.pos[1] <= 115:
                         click.play()
                         self.actif = False
                         ecran2.ecran.set_actif(True), ecran_black.ecran.set_actif(False)
@@ -258,6 +224,34 @@ class Blackjack:
         self.valeur_croupier = 0
         self.j_jouer = True
         self.c_jouer = True
+
+    def nettoyer_ecran(self):
+        # Efface l’écran en remplissant avec une couleur de fond
+        fenetre.fill(noir)
+        # Redessiner les éléments permanents
+        fenetre.blit(self.dos_de_carte, (136, 136))
+        fenetre.blit(self.solde, (280, 15))
+        solde = self.police.render(str(int(joueur1.get_cagnotte())), True, noir)
+        texte_rect = solde.get_rect(center=(335, 40))
+        fenetre.blit(solde, texte_rect)
+        #on change le score du joueur
+        self.score_j = "score: " + str(self.valeur_joueur)
+        dessiner_bouton(fenetre, self.score_j , self.score.x, self.score.y, self.score[2], self.score[3], blanc, noir, 20)
+        #on affiche le score du croupier
+        self.score_croupier = "croupier: " + str(self.valeur_croupier)
+        dessiner_bouton(fenetre, self.score_croupier , self.croupier.x, self.croupier.y, self.croupier[2], self.croupier[3], blanc, noir, 20)
+        #créer les boutons pour prendre les actions du joueur
+        dessiner_bouton(fenetre, "arrêter de jouer", self.arreter.x, self.arreter.y, self.arreter[2], self.arreter[3], blanc, noir, 20)
+        fenetre.blit(self.img_carte, (171, 287))
+        if self.fin:
+            if 330 <= pygame.mouse.get_pos()[0] <= 380 and 75 <= pygame.mouse.get_pos()[1] <= 115 and not self.retour:
+                fenetre.blit(fleche_retour2, (332, 71))
+            else:
+                fenetre.blit(fleche_retour, (330, 70))  
+            #dessine le bouton pour pouvoir rejouer
+            dessiner_bouton(fenetre, "rejouer", self.bouton_rejouer.x, self.bouton_rejouer.y, self.bouton_rejouer[2], self.bouton_rejouer[3], blanc, noir, 20)
+        # Mettre à jour l’affichage
+        pygame.display.update()
 
 #créer un objet pour pas que le programme plante
 blackjack = Blackjack() 
