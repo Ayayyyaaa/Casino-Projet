@@ -178,7 +178,6 @@ class Blackjack:
             fenetre.blit(text, (300, 0))
             #on crée les boutons pour ne pas laisser du vide
             dessiner_bouton(fenetre, "arrêter de jouer", self.arreter.x, self.arreter.y, self.arreter[2], self.arreter[3], blanc, noir, 20)
-            
             # le joueur et le croupier commencent avec 1 cartes chacun
             self.tirer_carte_croupier()
             #on affiche le score du croupier
@@ -209,7 +208,7 @@ class Blackjack:
             print("arrêt")
             #conditions de victoire
             if self.valeur_joueur > self.valeur_croupier and self.valeur_joueur <= 21 or self.valeur_joueur <= 21 and self.valeur_croupier > 21:
-                joueur1.modifier_cagnotte(joueur1.get_cagnotte()/12 + 150)
+                joueur1.modifier_cagnotte(joueur1.get_cagnotte()/8 + 200)
                 print("le joueur gagne")
             #condition d'égalité
             elif self.valeur_joueur == self.valeur_croupier:
@@ -217,7 +216,7 @@ class Blackjack:
                 print("égalité")
             #conditions de défaite
             else:
-                joueur1.modifier_cagnotte(-joueur1.get_cagnotte()/10 - 200)
+                joueur1.modifier_cagnotte(-joueur1.get_cagnotte()/12 - 150)
                 print("le croupier gagne")
             
             #lance la fonction qui permet de rejouer

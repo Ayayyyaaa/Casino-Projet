@@ -68,12 +68,14 @@ class Ecran2:
         '''
         Permet d'afficher l'écran principal et de gérer l'animation des boutons et mettre à jour les animations des jeux.
         '''
-        if joueur1.get_pseudo() == 'Fredou':
+        if joueur1.get_pseudo().lower() == 'fredou':
             self.fond = pygame.image.load('images/coeurfredou.png').convert()
+        elif joueur1.get_pseudo().lower() == 'mr.maurice' or joueur1.get_pseudo().lower() == 'mr maurice' or joueur1.get_pseudo().lower() == 'maurice':
+            joueur1.set_pseudo('Le meilleur')  #Mettez nous des tickets et un 20/20 svp
+        elif joueur1.get_pseudo() == 'Le meilleur':
+            self.fond = pygame.image.load('images/Metteznous20sur20svp.jpg').convert()
         else:
             self.fond = pygame.image.load('images/casino.jpg').convert()
-        if joueur1.get_pseudo() == 'Mr.Maurice' or joueur1.get_pseudo() == 'Mr Maurice' or joueur1.get_pseudo() == 'Maurice':
-            joueur1.set_pseudo('Le meilleur')  #Mettez nous des tickets et un 20/20 svp
         fenetre.blit(self.fond, (0, 0))
         coin.activer_rotation()
         if ecran2.ecran.get_actif() and 330 <= pygame.mouse.get_pos()[0] <= 390 and 45 <= pygame.mouse.get_pos()[1] <= 75 :
