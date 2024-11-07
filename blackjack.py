@@ -33,16 +33,7 @@ class Blackjack:
         self.croupier = pygame.Rect(293, 343, 100, 50)
         self.actif = False
         self.img_joker = pygame.image.load("cartes/joker.png")
-        self.img = [["cartes/Pique/carte-2.png", "cartes/Pique/carte-3.png",
-            "cartes/Pique/carte-4.png", "cartes/Pique/carte-5.png", "cartes/Pique/carte-6.png",
-            "cartes/Pique/carte-7.png", "cartes/Pique/carte-8.png", "cartes/Pique/carte-9.png",
-            "cartes/Pique/carte-10.png"],
-            ["cartes/Carreau/carte-2.png", "cartes/Carreau/carte-3.png",
-            "cartes/Carreau/carte-4.png", "cartes/Carreau/carte-5.png", "cartes/Carreau/carte-6.png",
-            "cartes/Carreau/carte-7.png", "cartes/Carreau/carte-8.png", "cartes/Carreau/carte-9.png",
-            "cartes/Carreau/carte-10.png"]
-            ]
-
+        self.img = [[f"cartes/{couleur}/carte-{i}.png" for i in range(2, 11)] for couleur in ['Carreau', 'Coeur', 'Pique', 'Trefle']] 
         self.dos_de_carte = pygame.image.load("cartes/dos_de_carte.png")
         fenetre.blit(self.dos_de_carte, (136, 136))
 
@@ -105,7 +96,7 @@ class Blackjack:
             self.valeur_joueur += val_j
             # montrer la carte en fonction de sa valeur
             if val_j >= 2 and val_j <= 10:
-                img_carte = pygame.image.load(self.img[randint(0,1)][val_j - 2])
+                img_carte = pygame.image.load(self.img[randint(0,3)][val_j - 2])
                 self.nettoyer_ecran()
                 fenetre.blit(img_carte, (171, 287))
                 # Mettre à jour l'affichage après avoir tiré la carte
