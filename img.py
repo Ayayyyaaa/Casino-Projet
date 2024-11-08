@@ -30,6 +30,11 @@ fleche_retour = pygame.image.load('images/Fleche_retour.png').convert_alpha()
 fleche_retour2 = pygame.image.load('images/Fleche_retour2.png').convert_alpha()
 bouton_play_bj = pygame.image.load('images/BoutonPlay1.png').convert_alpha()
 bouton_play_bj2 = pygame.image.load('images/BoutonPlay2.png').convert_alpha()
+bouton_stop_bj = pygame.image.load('images/BoutonStop1.png').convert_alpha()
+bouton_stop_bj2 = pygame.image.load('images/BoutonStop2.png').convert_alpha()
+maskot = pygame.image.load('images/maskot.png').convert_alpha()
+fondbj = pygame.image.load('images/fondbj.png').convert_alpha()
+abel = pygame.image.load('images/abel.png').convert_alpha()
 
 
 pygame.display.set_icon(icone)

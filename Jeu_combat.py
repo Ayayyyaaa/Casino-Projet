@@ -285,13 +285,14 @@ class JeuCombat:
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_victoire():
-            # Faire progresser les images pour l'animation
-            self.boss_sprite_mort += speed
-            self.boss.modif_img(mort_boss[int(self.boss_sprite_mort)])
             # Si toutes les images ont été jouées :
             if int(self.boss_sprite_mort) == len(mort_boss)-1:
                 # On déclare le héros vainqueur, le combat prend fin
-                self.hero.set_victoire(False)
+                self.hero.set_victoire(True)
+            else:
+                # Faire progresser les images pour l'animation
+                self.boss_sprite_mort += speed
+                self.boss.modif_img(mort_boss[int(self.boss_sprite_mort)])
     
     def animation_attaque1_boss(self,speed:float):
         '''Permet de jouer l'attaque au poing du Boss.

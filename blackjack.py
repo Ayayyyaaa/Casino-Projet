@@ -28,7 +28,7 @@ class Blackjack:
         self.bouton_val11 = pygame.Rect(139, 62, 190, 50)
         self.tirer = pygame.Rect(171, 171, 58, 88)
         self.arreter = pygame.Rect(7, 7, 125, 50)
-        self.bouton_rejouer = pygame.Rect(15, 286, 80, 50)
+        self.bouton_rejouer = pygame.Rect(15, 290, 80, 50)
         self.score = pygame.Rect(7, 343, 100, 50)
         self.croupier = pygame.Rect(293, 343, 100, 50)
         self.actif = False
@@ -75,15 +75,16 @@ class Blackjack:
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             if self.bouton_val1.collidepoint(event.pos):
                                 val_j = 1
+                                self.img_carte = self.img_joker
                             elif self.bouton_val11.collidepoint(event.pos):
                                 val_j = 11
+                                self.img_carte = self.img_joker
             
             
             #additionner la valeur de la carte à la valeur totale
             self.valeur_joueur += val_j
             #on enlève les boutons du joker
             self.nettoyer_ecran()
-            fenetre.blit(self.img_joker, (171, 287))
             # montrer la carte en fonction de sa valeur
             if val_j >= 2 and val_j <= 10:
                 self.img_carte = pygame.image.load(self.img[randint(0,3)][val_j - 2])
@@ -115,7 +116,7 @@ class Blackjack:
     def tour_joueur(self):
         if self.actif:
             # Mettre à jour l'affichage
-            pygame.display.update()  
+            self.nettoyer_ecran()
 
             for event in pygame.event.get():
                 #permettre au joueur de quitter le jeux sans qu'il plante
@@ -155,14 +156,14 @@ class Blackjack:
                     self.j_jouer = False
             #empêche le croupier de rejouer si c'est pas son tour (il essaie de tricher)
             self.c_block = True
+            self.nettoyer_ecran()
 
     
     def main(self):
         if self.actif:
-            self.nettoyer_ecran()
-            fenetre.blit(self.dos_de_carte, (136, 136))
             # le joueur et le croupier commencent avec 1 cartes chacun
             self.tirer_carte_croupier()
+            # On actualise l'écran
             self.nettoyer_ecran()
             #la partie continue tant qu'au moins un des deux joueurs veut continuer
             while self.j_jouer == True and self.actif or self.c_jouer == True and self.actif:
@@ -220,6 +221,7 @@ class Blackjack:
                         ecran2.ecran.set_actif(True), ecran_black.ecran.set_actif(False)
 
     def fermer(self):
+        # remet tout à 0
         self.valeur_joueur = 0
         self.valeur_croupier = 0
         self.j_jouer = True
@@ -227,7 +229,7 @@ class Blackjack:
 
     def nettoyer_ecran(self):
         # Efface l’écran en remplissant avec une couleur de fond
-        fenetre.fill(noir)
+        fenetre.blit(fondbj, (0, 0))
         # Redessiner les éléments permanents
         fenetre.blit(self.dos_de_carte, (136, 136))
         fenetre.blit(self.solde, (280, 15))
@@ -240,19 +242,21 @@ class Blackjack:
         #on affiche le score du croupier
         self.score_croupier = "croupier: " + str(self.valeur_croupier)
         dessiner_bouton(fenetre, self.score_croupier , self.croupier.x, self.croupier.y, self.croupier[2], self.croupier[3], blanc, noir, 20)
-        #créer les boutons pour prendre les actions du joueur
-        dessiner_bouton(fenetre, "arrêter de jouer", self.arreter.x, self.arreter.y, self.arreter[2], self.arreter[3], blanc, noir, 20)
         fenetre.blit(self.img_carte, (171, 287))
+        if 7 <= pygame.mouse.get_pos()[0] <= 87 and 17 <= pygame.mouse.get_pos()[1] <= 77 and not self.retour:
+                fenetre.blit(bouton_stop_bj2, (7, 7))
+        else:
+            fenetre.blit(bouton_stop_bj, (7, 7))
         if self.fin:
             if 330 <= pygame.mouse.get_pos()[0] <= 380 and 75 <= pygame.mouse.get_pos()[1] <= 115 and not self.retour:
                 fenetre.blit(fleche_retour2, (332, 71))
             else:
                 fenetre.blit(fleche_retour, (330, 70))  
             #dessine le bouton pour pouvoir rejouer
-            if 15 <= pygame.mouse.get_pos()[0] <= 95 and 285 <= pygame.mouse.get_pos()[1] <= 335 and not self.retour:
+            if 15 <= pygame.mouse.get_pos()[0] <= 95 and 290 <= pygame.mouse.get_pos()[1] <= 335 and not self.retour:
                 fenetre.blit(bouton_play_bj2, (15, 285))
             else:
-                fenetre.blit(bouton_play_bj, (15, 285))  
+                fenetre.blit(bouton_play_bj, (15, 285))    
         # Mettre à jour l’affichage
         pygame.display.update()
 

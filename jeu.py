@@ -28,6 +28,8 @@ class Jeu():
         self.txt_codee_cb = ""  
         self.victoire = False
         self.combat = JeuCombat()
+        self.maskotte = False
+        self.curseurabel = False
     def running(self):
         choix_fait = False
         son_joue = False
@@ -131,8 +133,8 @@ class Jeu():
                             if event.key == pygame.K_RETURN:
                                 click.play()
                                 joueur1.set_pseudo(self.text)
-                                if joueur1.get_pseudo() == 'abel':
-                                    joueur1.set_cagnotte(100)
+                                if joueur1.get_pseudo().lower() == 'nils':
+                                    joueur1.set_cagnotte(1)
                                 self.text = ''
                             elif event.key == pygame.K_BACKSPACE:
                                 self.text = self.text[:-1]
@@ -163,19 +165,21 @@ class Jeu():
                                 self.txt_codee_cb = self.txt_codee_cb[:-1]
                             elif len(self.txt_codee_cb) < 4 and event.unicode in "0123456789":
                                 self.txt_codee_cb += event.unicode
-                
+
+                # Afficher l'ecran du Blackjack
                 if ecran_black.ecran.get_actif():
+                    pygame.mouse.set_visible(True)
                     ecran_black.affiche(blackjack)
                 # Supprimer le pile ou face au changement d'ecran
                 if not ecran2.ecran.get_actif():
                     pileouface.set_actif(False)
+
                 # Conditions de défaite
                 if joueur1.get_cagnotte() <= 0:
                     ecran1.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_mort.ecran.set_actif(True) 
                     if son_joue is False:
                         son_fall.play()
                         son_joue = True
-
                 # Conditions de victoire
                 if joueur1.get_cagnotte() >= 10000000 and not self.victoire:
                     ecran1.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_victoire.ecran.set_actif(True)
@@ -208,5 +212,15 @@ class Jeu():
                     pygame.mixer.music.play(-1)
                     self.combat.actif(True)
                     self.combat.lancer()
+                if joueur1.get_pseudo().lower() == 'rulian' or joueur1.get_pseudo().lower() == 'maskottchen':
+                    self.maskotte, self.curseurabel = True, False
+                elif joueur1.get_pseudo().lower() == 'abel':
+                    self.maskotte, self.curseurabel = False, True
+                if self.maskotte:
+                    pygame.mouse.set_visible(False)
+                    fenetre.blit(maskot, (pygame.mouse.get_pos()[0]-25, pygame.mouse.get_pos()[1]-30))
+                elif self.curseurabel:
+                    pygame.mouse.set_visible(False)
+                    fenetre.blit(abel, (pygame.mouse.get_pos()[0]-25, pygame.mouse.get_pos()[1]-30))
             clock.tick(60)
             pygame.display.flip()

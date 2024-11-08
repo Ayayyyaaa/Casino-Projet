@@ -74,6 +74,8 @@ class Ecran2:
             joueur1.set_pseudo('Le meilleur')  #Mettez nous des tickets et un 20/20 svp
         elif joueur1.get_pseudo() == 'Le meilleur':
             self.fond = pygame.image.load('images/Metteznous20sur20svp.jpg').convert()
+        elif joueur1.get_pseudo().lower() == 'abel':
+            self.fond = pygame.image.load('images/FondAbel.png').convert()
         else:
             self.fond = pygame.image.load('images/casino.jpg').convert()
         fenetre.blit(self.fond, (0, 0))
