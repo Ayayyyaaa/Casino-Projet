@@ -5,7 +5,6 @@ pygame.display.set_caption("Le Babelcasino")
 largeur, hauteur = 400, 400
 
 fenetre = pygame.display.set_mode((largeur, hauteur))
-
 fond = pygame.image.load('images/Croupier2.png').convert()
 fond3 = pygame.image.load('images/enfer2.png').convert()
 roulette = pygame.image.load('images/roulette2.png').convert_alpha()
@@ -29,6 +28,8 @@ icone = pygame.image.load('images/icone.png').convert_alpha()
 paradis = pygame.image.load('images/paradis.png').convert_alpha()
 fleche_retour = pygame.image.load('images/Fleche_retour.png').convert_alpha()
 fleche_retour2 = pygame.image.load('images/Fleche_retour2.png').convert_alpha()
+bouton_play_bj = pygame.image.load('images/BoutonPlay1.png').convert_alpha()
+bouton_play_bj2 = pygame.image.load('images/BoutonPlay2.png').convert_alpha()
 
 
 pygame.display.set_icon(icone)

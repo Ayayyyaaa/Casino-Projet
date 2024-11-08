@@ -28,7 +28,7 @@ class Blackjack:
         self.bouton_val11 = pygame.Rect(139, 62, 190, 50)
         self.tirer = pygame.Rect(171, 171, 58, 88)
         self.arreter = pygame.Rect(7, 7, 125, 50)
-        self.bouton_rejouer = pygame.Rect(7, 286, 100, 50)
+        self.bouton_rejouer = pygame.Rect(15, 286, 80, 50)
         self.score = pygame.Rect(7, 343, 100, 50)
         self.croupier = pygame.Rect(293, 343, 100, 50)
         self.actif = False
@@ -249,7 +249,10 @@ class Blackjack:
             else:
                 fenetre.blit(fleche_retour, (330, 70))  
             #dessine le bouton pour pouvoir rejouer
-            dessiner_bouton(fenetre, "rejouer", self.bouton_rejouer.x, self.bouton_rejouer.y, self.bouton_rejouer[2], self.bouton_rejouer[3], blanc, noir, 20)
+            if 15 <= pygame.mouse.get_pos()[0] <= 95 and 285 <= pygame.mouse.get_pos()[1] <= 335 and not self.retour:
+                fenetre.blit(bouton_play_bj2, (15, 285))
+            else:
+                fenetre.blit(bouton_play_bj, (15, 285))  
         # Mettre à jour l’affichage
         pygame.display.update()
 
