@@ -74,7 +74,7 @@ class Blackjack:
                         #vérification de la collision
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             if self.bouton_val1.collidepoint(event.pos):
-                                val_j = fenetre.blit(self.img_joker, (171, 287))
+                                val_j = 1
                             elif self.bouton_val11.collidepoint(event.pos):
                                 val_j = 11
             
@@ -198,7 +198,6 @@ class Blackjack:
         while self.actif:
             self.fin = True
             #remêt tout à 0 pour rejouer
-            self.fermer()
             self.nettoyer_ecran()
             pygame.display.update()
             #permettre au joueur de quitter le jeu sans qu'il plante
@@ -212,6 +211,7 @@ class Blackjack:
                         #on enlève le bouton "rejouer"
                         self.nettoyer_ecran()
                         self.fin = False
+                        self.fermer()
                         #relancement du jeu
                         self.main()
                     if 330 <= event.pos[0] <= 380 and 75 <= event.pos[1] <= 115:
