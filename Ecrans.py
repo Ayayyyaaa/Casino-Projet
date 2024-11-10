@@ -39,7 +39,7 @@ class Ecran1:
             - Si le joueur s'appelle Fredou et qu'il n'y a pas de musique de fond, que le joueur change de pseudo ou que le combat a été réussi, on charge un nouvelle musique (son_champignon)
             - Sinon, s'il n'y a pas de musique de fond, que le joueur change de pseudo ou que le combat a été réussi, on charge un nouvelle musique (musique_de_fond)
         '''
-        if joueur1.get_pseudo() == 'Fredou':
+        if joueur1.get_pseudo().lower() == 'fredou':
             if not pygame.mixer.music.get_busy() or self.ancien_pseudo != joueur1.get_pseudo():
                 pygame.mixer.music.unload()
                 pygame.mixer.music.load(son_champignon)

@@ -206,6 +206,9 @@ class Blackjack:
             #remêt tout à 0 pour rejouer
             self.nettoyer_ecran()
             pygame.display.update()
+            if joueur1.get_cagnotte() <= 1:
+                self.actif = False
+                ecran_black.ecran.set_actif(False), ecran_mort.ecran.set_actif(True)
             #permettre au joueur de quitter le jeu sans qu'il plante
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -223,6 +226,7 @@ class Blackjack:
                         self.main()
                     if 330 <= event.pos[0] <= 380 and 75 <= event.pos[1] <= 115:
                         click.play()
+                        self.fermer()
                         self.actif = False
                         ecran2.ecran.set_actif(True), ecran_black.ecran.set_actif(False)
 
