@@ -4,6 +4,7 @@ import sys
 from fonctions import dessiner_bouton
 from objets_et_variables import *
 from Ecrans import *
+from sons import pioche_carte, click
 
 pygame.init()
 
@@ -74,9 +75,11 @@ class Blackjack:
                         #vérification de la collision
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             if self.bouton_val1.collidepoint(event.pos):
+                                click.play()
                                 val_j = 1
                                 self.img_carte = self.img_joker
                             elif self.bouton_val11.collidepoint(event.pos):
+                                click.play()
                                 val_j = 11
                                 self.img_carte = self.img_joker
             
@@ -126,6 +129,7 @@ class Blackjack:
                 #vérification de la colision
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.tirer.collidepoint(event.pos):
+                        pioche_carte.play()
                         self.tirer_carte_joueur()
                         #fait arrêter le joueur si il a perdu
                         if self.valeur_joueur > 21:
@@ -134,6 +138,7 @@ class Blackjack:
                             self.c_jouer = False
                     #fait arrêter le joueur si il veut arrêter
                     elif self.arreter.collidepoint(event.pos):
+                        click.play()
                         self.j_jouer = False
 
     
@@ -209,6 +214,7 @@ class Blackjack:
                 #vérification de si le joueur veut rejouer
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.bouton_rejouer.collidepoint(event.pos):
+                        click.play()
                         #on enlève le bouton "rejouer"
                         self.nettoyer_ecran()
                         self.fin = False
@@ -255,8 +261,10 @@ class Blackjack:
             #dessine le bouton pour pouvoir rejouer
             if 15 <= pygame.mouse.get_pos()[0] <= 95 and 290 <= pygame.mouse.get_pos()[1] <= 335 and not self.retour:
                 fenetre.blit(bouton_play_bj2, (15, 285))
+                
             else:
-                fenetre.blit(bouton_play_bj, (15, 285))    
+                fenetre.blit(bouton_play_bj, (15, 285)) 
+                  
         # Mettre à jour l’affichage
         pygame.display.update()
 
