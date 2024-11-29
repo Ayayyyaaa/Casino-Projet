@@ -17,3 +17,4 @@ son_epee = pygame.mixer.Sound('son/son_slash.wav')
 aie_hero = pygame.mixer.Sound('son/mc-hurt.mp3')
 aie_boss = pygame.mixer.Sound('son/degat_boss.mp3')
 pioche_carte = pygame.mixer.Sound('son/pioche_carte.mp3')
+vodkaaa = 'son/Vodka.mp3'

@@ -103,6 +103,10 @@ class Ecran2:
             fenetre.blit(imgpof2, (320, 91))
         else:
             fenetre.blit(imgpof, (320, 90))
+        if 25 <= pygame.mouse.get_pos()[0] <= 85 and 55 <= pygame.mouse.get_pos()[1] <= 115 :
+            fenetre.blit(boutique2, (21, 51))
+        else:
+            fenetre.blit(boutique1, (20, 50))
         # Affichage des boutons des choix du pile ou face
         if pileouface.get_actif():
             fenetre.blit(face2, (125, 230))
@@ -161,8 +165,45 @@ class EcranBlack:
         blackjack.set_actif(True)
         blackjack.main()
 
+class EcranBoutique:
+    def __init__(self):
+        self.ecran = Ecran()
+        self.fond = pygame.image.load('images/casino.jpg').convert()
+    def affiche(self):
+        fenetre.blit(self.fond, (0, 0))
+        if 340 <= pygame.mouse.get_pos()[0] <= 390 and 25 <= pygame.mouse.get_pos()[1] <= 65:
+            fenetre.blit(fleche_retour2, (341, 21))
+        else:
+            fenetre.blit(fleche_retour, (340, 20))
+        if 135 <= pygame.mouse.get_pos()[0] <= 195 and 135 <= pygame.mouse.get_pos()[1] <= 195:
+            fenetre.blit(vodka2, (131, 131))
+        else:
+            fenetre.blit(vodka1, (130, 130))
+
+class EcranVodka:
+    def __init__(self):
+        self.ecran = Ecran()
+        self.frames = [f'Vodkaa/_a_frm{i},70.png' for i in range(140)]
+        self.frame = 'Vodkaa/_a_frm0,70.png'
+        self.num_frame = 0
+        self.musique_de_fond = vodkaaa
+    def affiche(self,speed):
+        self.num_frame += speed
+        self.frame = self.frames[int(self.num_frame)]
+        # Si toutes les images ont été jouées :
+        if int(self.num_frame) == len(self.frames)-1:
+            # On remet tout à 0
+            self.num_frame = 0
+        fenetre.blit(pygame.image.load(self.frame),(-60,0))
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.music.load(self.musique_de_fond)
+            pygame.mixer.music.set_volume(0.3)  # Volume pour la musique de fond générale
+            pygame.mixer.music.play(-1)
+
 ecran1 = Ecran1()
 ecran2 = Ecran2()
+boutique = EcranBoutique()
+vodka = EcranVodka()
 ecran_mort = EcranMort()
 ecran_victoire = EcranVictoire()
 ecran_black = EcranBlack()

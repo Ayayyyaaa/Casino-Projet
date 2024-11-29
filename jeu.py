@@ -4,12 +4,13 @@ from fonctions import dessiner_zone_texte
 from img import *
 from objets_et_variables import *
 from sons import *
-from Ecrans import ecran1,ecran2,ecran_mort,ecran_victoire, ecran_black
+from Ecrans import ecran1,ecran2,ecran_mort,ecran_victoire,ecran_black,boutique,vodka
 from Machine_a_sous import ecran_machine_a_sous
 from PileouFace import *
 from Roulette_Russe import pistolet
 from Jeu_combat import JeuCombat
 from blackjack import *
+from SQL import *
 import time
 
 pygame.init()
@@ -34,13 +35,15 @@ class Jeu():
         choix_fait = False
         son_joue = False
         dernier_son = time.time()
+        id_compte = det_id_compte(joueur1.get_pseudo())
+        ajouter_connexion(id_compte)
         while self.run:
             if not self.combat.get_actif():
                 # Fermer la fenêtre
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        pygame.quit()
-                        sys.exit()
+                        if not vodka.ecran.get_actif():
+                            self.run = False
                     # Clic de souris
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                         if self.champ_joueur.collidepoint(event.pos):
@@ -70,9 +73,11 @@ class Jeu():
                                     rire_diabolique.play()
                                 ecran1.ecran.set_actif(not ecran1.ecran.get_actif())
                                 ecran2.ecran.set_actif(not ecran2.ecran.get_actif())
-
                         # Gérer les interactions de l'écran 2 (écran principal)
-                        if ecran2.ecran.get_actif():
+                        elif ecran2.ecran.get_actif():
+                            print(event.pos)
+                            if 25 <= event.pos[0] <= 85 and 55 <= event.pos[1] <= 115 :
+                                boutique.ecran.set_actif(True),ecran2.ecran.set_actif(False)
                             # Lancer la roulette russe
                             if 330 <= event.pos[0] <= 390 and 45 <= event.pos[1] <= 75 :
                                 click.play()
@@ -133,6 +138,10 @@ class Jeu():
                             if event.key == pygame.K_RETURN:
                                 click.play()
                                 joueur1.set_pseudo(self.text)
+                                verifier_et_ajouter_pseudo(joueur1.get_pseudo()) 
+                                id_compte = det_id_compte(joueur1.get_pseudo())
+                                joueur1.set_cagnotte(recup_donnees(id_compte)[0])
+                                ajouter_connexion(id_compte)
                                 if joueur1.get_pseudo().lower() == 'nils':
                                     joueur1.set_cagnotte(1)
                                 self.text = ''
@@ -154,7 +163,7 @@ class Jeu():
                         elif self.code_cb_actif:
                             # Gérer la saisie du code de carte bleue
                             if event.key == pygame.K_RETURN:
-                                if len(self.txt_nbr_cb) == 19 and len(self.txt_codee_cb) == 4:
+                                if len(self.txt_nbr_cb) == 19 and len(self.txt_codee_cb) == 3:
                                     self.txt_nbr_cb = ''
                                     self.txt_codee_cb = ''
                                     joueur1.set_cagnotte(2000)
@@ -170,6 +179,16 @@ class Jeu():
                 if ecran_black.ecran.get_actif():
                     pygame.mouse.set_visible(True)
                     ecran_black.affiche(blackjack)
+
+                if boutique.ecran.get_actif():
+                    boutique.affiche()
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
+                            boutique.ecran.set_actif(False),ecran2.ecran.set_actif(True)
+                        elif 135 <= event.pos[0] <= 195 and 135 <= event.pos[1] <= 195:
+                            boutique.ecran.set_actif(False),vodka.ecran.set_actif(True)
+                            pygame.mixer.music.unload()
+
                 # Supprimer le pile ou face au changement d'ecran
                 if not ecran2.ecran.get_actif():
                     pileouface.set_actif(False)
@@ -222,5 +241,8 @@ class Jeu():
                 elif self.curseurabel:
                     pygame.mouse.set_visible(False)
                     fenetre.blit(abel, (pygame.mouse.get_pos()[0]-25, pygame.mouse.get_pos()[1]-30))
+                if vodka.ecran.get_actif():
+                    vodka.affiche(0.3)
+            mettre_a_jour_solde(joueur1.get_cagnotte(),det_id_compte(joueur1.get_pseudo()))
             clock.tick(60)
             pygame.display.flip()

@@ -35,6 +35,9 @@ bouton_stop_bj2 = pygame.image.load('images/BoutonStop2.png').convert_alpha()
 maskot = pygame.image.load('images/maskot.png').convert_alpha()
 fondbj = pygame.image.load('images/fondbj.png').convert_alpha()
 abel = pygame.image.load('images/abel.png').convert_alpha()
-
+boutique1 = pygame.image.load('images/boutique1.png').convert_alpha()
+boutique2 = pygame.image.load('images/boutique2.png').convert_alpha()
+vodka1 = pygame.image.load('images/vodka1.png').convert_alpha()
+vodka2 = pygame.image.load('images/Vodka2.png').convert_alpha()
 
 pygame.display.set_icon(icone)
