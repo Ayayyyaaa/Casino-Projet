@@ -19,6 +19,12 @@ def creer_table():
             FOREIGN KEY (id_compte) REFERENCES compte (id_compte)
         )
     """)
+    cursor.execute("""CREATE TABLE IF NOT EXISTS "cd_bancaires" (
+    "code_cb"	TEXT,
+    "numero_cb"	TEXT,
+    "id_compte"	INTEGER,
+    FOREIGN KEY("id_compte") REFERENCES "compte"("id_compte"))""")
+
     conn.commit()
     conn.close()
 

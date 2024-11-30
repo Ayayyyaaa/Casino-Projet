@@ -189,8 +189,8 @@ class Jeu():
                             if event.key == pygame.K_RETURN:
                                 if len(self.txt_nbr_cb) == 19 and len(self.txt_codee_cb) == 3:
                                     code_correct = True
-                                    compteur = 0
                                     for nb in self.txt_nbr_cb:
+                                        compteur = 0
                                         for nbr in self.txt_nbr_cb:
                                             if nb == nbr:
                                                 compteur += 1
