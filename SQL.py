@@ -46,6 +46,9 @@ def det_id_compte(pseudo):
     cursor.execute("SELECT id_compte FROM compte WHERE pseudo = ?", (pseudo,))
     id_compte = cursor.fetchone()
     conn.close()
+    if id_compte is None:
+        print(f"Aucun compte trouvé pour le pseudo '{pseudo}'.")
+        return None
     return id_compte[0]
 
 def mettre_a_jour_solde(solde, id_compte):

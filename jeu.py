@@ -8,7 +8,7 @@ from Ecrans import ecran1,ecran2,ecran_mort,ecran_victoire,ecran_black,boutique,
 from Machine_a_sous import ecran_machine_a_sous
 from PileouFace import *
 from Roulette_Russe import pistolet
-from Jeu_combat import JeuCombat
+from Jeu_combat_new import *
 from blackjack import *
 from SQL import *
 import time
@@ -28,7 +28,9 @@ class Jeu():
         self.txt_nbr_cb = ""  
         self.txt_codee_cb = ""  
         self.victoire = False
-        self.combat = JeuCombat()
+        self.nh = Night_Hero()
+        self.bh = Hell_Boss()
+        self.combat = JeuCombat(self.nh,self.bh)
         self.maskotte = False
         self.curseurabel = False
     def running(self):
@@ -42,7 +44,7 @@ class Jeu():
                 # Fermer la fenêtre
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        if not vodka.ecran.get_actif():
+                        if not vodka.ecran.get_actif() and not rr.ecran.get_actif():
                             self.run = False
                     # Clic de souris
                     elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -243,6 +245,8 @@ class Jeu():
                     fenetre.blit(abel, (pygame.mouse.get_pos()[0]-25, pygame.mouse.get_pos()[1]-30))
                 if vodka.ecran.get_actif():
                     vodka.affiche(0.3)
+                if rr.ecran.get_actif():
+                    rr.affiche(0.31)
             mettre_a_jour_solde(joueur1.get_cagnotte(),det_id_compte(joueur1.get_pseudo()))
             clock.tick(60)
             pygame.display.flip()

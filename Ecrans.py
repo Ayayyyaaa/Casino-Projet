@@ -5,6 +5,7 @@ from img import *
 from Roulette_Russe import pistolet
 from PileouFace import pileouface
 from sons import *
+from SQL import *
 
 pygame.mixer.init()
 
@@ -47,8 +48,17 @@ class Ecran1:
                 pygame.mixer.music.play(-1)
                 self.ancien_pseudo = joueur1.get_pseudo()
                 self.fin_combat = True
-        else:
+        elif joueur1.get_pseudo().lower() in ['rick','rickroll','rick roll', 'rickastley', 'rick astley']:
             if not pygame.mixer.music.get_busy() or self.ancien_pseudo != joueur1.get_pseudo():
+                rr.ecran.set_actif(True),ecran1.ecran.set_actif(False)
+                pygame.mixer.music.unload()
+                pygame.mixer.music.load(rickr)
+                pygame.mixer.music.set_volume(0.1)
+                pygame.mixer.music.play(-1)
+                self.ancien_pseudo = joueur1.get_pseudo()
+                self.fin_combat = True
+        else:
+            if not pygame.mixer.music.get_busy() or self.ancien_pseudo != joueur1.get_pseudo() and joueur1.get_pseudo() not in ['rick','rickroll','rick roll', 'rickastley', 'rick astley']:
                 pygame.mixer.music.unload()
                 pygame.mixer.music.load(musique_de_fond)
                 pygame.mixer.music.set_volume(0.3)  # Volume pour la musique de fond générale
@@ -72,6 +82,10 @@ class Ecran2:
             self.fond = pygame.image.load('images/coeurfredou.png').convert()
         elif joueur1.get_pseudo().lower() == 'mr.maurice' or joueur1.get_pseudo().lower() == 'mr maurice' or joueur1.get_pseudo().lower() == 'maurice':
             joueur1.set_pseudo('Le meilleur')  #Mettez nous des tickets et un 20/20 svp
+            verifier_et_ajouter_pseudo(joueur1.get_pseudo()) 
+            id_compte = det_id_compte(joueur1.get_pseudo())
+            joueur1.set_cagnotte(recup_donnees(id_compte)[0])
+            ajouter_connexion(id_compte)
         elif joueur1.get_pseudo() == 'Le meilleur':
             self.fond = pygame.image.load('images/Metteznous20sur20svp.jpg').convert()
         elif joueur1.get_pseudo().lower() == 'abel':
@@ -194,11 +208,26 @@ class EcranVodka:
         if int(self.num_frame) == len(self.frames)-1:
             # On remet tout à 0
             self.num_frame = 0
-        fenetre.blit(pygame.image.load(self.frame),(-60,0))
+        fenetre.blit(pygame.image.load(self.frame),(-80,0))
         if not pygame.mixer.music.get_busy():
             pygame.mixer.music.load(self.musique_de_fond)
             pygame.mixer.music.set_volume(0.3)  # Volume pour la musique de fond générale
             pygame.mixer.music.play(-1)
+
+class EcranRR:
+    def __init__(self):
+        self.ecran = Ecran()
+        self.frames = [f'RR/rickroll ({i}).png' for i in range(1,148)]
+        self.frame = 'RR/rickroll (1).png'
+        self.num_frame = 0
+    def affiche(self,speed):
+        self.num_frame += speed
+        self.frame = self.frames[int(self.num_frame)]
+        # Si toutes les images ont été jouées :
+        if int(self.num_frame) == len(self.frames)-1:
+            # On remet tout à 0
+            self.num_frame = 0
+        fenetre.blit(pygame.image.load(self.frame),(0,0))
 
 ecran1 = Ecran1()
 ecran2 = Ecran2()
@@ -207,3 +236,4 @@ vodka = EcranVodka()
 ecran_mort = EcranMort()
 ecran_victoire = EcranVictoire()
 ecran_black = EcranBlack()
+rr = EcranRR()

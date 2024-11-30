@@ -3,7 +3,7 @@ import pygame
 
 
 class Joueur:
-    def __init__(self, pseudo='Babibel', cagnotte=2000, roulette_active=False):
+    def __init__(self, pseudo='Babibel', cagnotte=1000000, roulette_active=False):
         self.pseudo = pseudo
         self.cagnotte = cagnotte
         self.roulette_active = roulette_active

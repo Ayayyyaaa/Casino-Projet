@@ -132,13 +132,13 @@ class Hero:
     
 class JeuCombat:
     def __init__(self):
-        self.fond = pygame.image.load("images/Arène.png")
-        self.dgt10 = pygame.image.load("images/-10.png")
-        self.dgt20 = pygame.image.load("images/-20.png")
-        self.dgt5 = pygame.image.load("images/-5.png")
-        self.block = pygame.image.load("images/Block.png")
-        self.boss = Boss(mort_boss[0])
-        self.hero = Hero(marche_hero_droite[0])
+        self.fond = pygame.image.load("images/Arène.png") #
+        self.dgt10 = pygame.image.load("images/-10.png")#
+        self.dgt20 = pygame.image.load("images/-20.png")#
+        self.dgt5 = pygame.image.load("images/-5.png")#
+        self.block = pygame.image.load("images/Block.png")#
+        self.boss = Boss(mort_boss[0])#
+        self.hero = Hero(marche_hero_droite[0])#
         self.boss_sprite_marche = 0
         self.boss_sprite_attaque1 = 0
         self.boss_sprite_attaque2 = 0
@@ -154,14 +154,14 @@ class JeuCombat:
         self.hero_sprite_mort = 0
         self.hero_sprite_block = 0
         self.reussi = False
-        self.run = False
+        self.run = False#
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.cd_dgt5 = 0
         self.cd_block_img = 0
-        self.vie_hero = pygame.image.load("images/compteur.png")
-        self.vie_boss = pygame.image.load("images/compteur.png")
-        self.police = pygame.font.Font('8-bitanco.ttf', 15)
+        self.vie_hero = pygame.image.load("images/compteur.png")#
+        self.vie_boss = pygame.image.load("images/compteur.png")#
+        self.police = pygame.font.Font('8-bitanco.ttf', 15)#
         self.dmg = False
 
     def actif(self, etat):
