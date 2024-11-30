@@ -156,7 +156,7 @@ class Night_Hero:
                 if self.hero.get_pos_x()-140 < j2.boss.get_pos_x() < self.hero.get_pos_x() + 100:
                     # Le boss perd 5 Pv
                     aie_boss.play()
-                    j2.boss.modif_pv(-50)
+                    j2.boss.modif_pv(-5)
                     print(f"Attaque Épée Héros : Pv boss : {j2.boss.get_pv()}")
                     # Affichage des dégâts subis
                     self.cd_dgt5 = time.time()

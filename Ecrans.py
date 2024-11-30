@@ -82,9 +82,9 @@ class Ecran2:
             self.fond = pygame.image.load('images/coeurfredou.png').convert()
         elif joueur1.get_pseudo().lower() == 'mr.maurice' or joueur1.get_pseudo().lower() == 'mr maurice' or joueur1.get_pseudo().lower() == 'maurice':
             joueur1.set_pseudo('Le meilleur')  #Mettez nous des tickets et un 20/20 svp
-            verifier_et_ajouter_pseudo(joueur1.get_pseudo()) 
-            id_compte = det_id_compte(joueur1.get_pseudo())
-            joueur1.set_cagnotte(recup_donnees(id_compte)[0])
+            verifier_et_ajouter_pseudo(joueur1.get_pseudo(),joueur1.get_mdp()) 
+            id_compte = det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp())
+            joueur1.set_cagnotte(recup_donnees(id_compte))
             ajouter_connexion(id_compte)
         elif joueur1.get_pseudo() == 'Le meilleur':
             self.fond = pygame.image.load('images/Metteznous20sur20svp.jpg').convert()

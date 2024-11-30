@@ -3,10 +3,13 @@ import pygame
 
 
 class Joueur:
-    def __init__(self, pseudo='Babibel', cagnotte=1000000, roulette_active=False):
+    def __init__(self, pseudo='Babibel', cagnotte=2000, roulette_active=False):
         self.pseudo = pseudo
         self.cagnotte = cagnotte
         self.roulette_active = roulette_active
+        self.mdp = None
+        self.code_cb = None
+        self.num_cb = None
 
     def get_pseudo(self):
         return self.pseudo
@@ -16,7 +19,16 @@ class Joueur:
 
     def get_roulette_active(self):
         return self.roulette_active
-
+    
+    def get_mdp(self):
+        return self.mdp
+    
+    def get_code_cb(self):
+        return self.code_cb
+    
+    def get_num_cb(self):
+        return self.num_cb
+    
     def set_pseudo(self, pseudo):
         self.pseudo = pseudo
 
@@ -32,6 +44,15 @@ class Joueur:
 
     def set_roulette_active(self, actif):
         self.roulette_active = actif
+
+    def set_mdp(self, mdp):
+        self.mdp = mdp
+
+    def set_code_cb(self, code):
+        self.code_cb = code
+
+    def set_num_cb(self, num):
+        self.num_cb = num
 
 
 class Coin:

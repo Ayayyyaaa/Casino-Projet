@@ -1,5 +1,4 @@
 import pygame
-import sys
 from fonctions import dessiner_zone_texte
 from img import *
 from objets_et_variables import *
@@ -18,13 +17,16 @@ pygame.init()
 class Jeu():
     def __init__(self):
         self.run = True
-        self.champ_joueur = pygame.Rect(130, 250, 140, 32)
+        self.champ_joueur = pygame.Rect(135, 210, 140, 32)
         self.code_cb = pygame.Rect(130, 325, 140, 32)
         self.nb_cb = pygame.Rect(100, 275, 200, 32)
+        self.champ_mdp = pygame.Rect(135, 250, 140, 32)
         self.nom_actif = False 
         self.nb_cb_actif = False  
         self.code_cb_actif = False  
+        self.mdp_actif = False  
         self.text = ""  
+        self.mdp = ""  
         self.txt_nbr_cb = ""  
         self.txt_codee_cb = ""  
         self.victoire = False
@@ -37,14 +39,14 @@ class Jeu():
         choix_fait = False
         son_joue = False
         dernier_son = time.time()
-        id_compte = det_id_compte(joueur1.get_pseudo())
+        id_compte = det_id_compte(joueur1.get_pseudo(),self.mdp)
         ajouter_connexion(id_compte)
         while self.run:
             if not self.combat.get_actif():
                 # Fermer la fenêtre
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        if not vodka.ecran.get_actif() and not rr.ecran.get_actif():
+                        if not vodka.ecran.get_actif() and not rr.ecran.get_actif() and not ecran_mort.ecran.get_actif():
                             self.run = False
                     # Clic de souris
                     elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -52,6 +54,10 @@ class Jeu():
                             self.nom_actif = not self.nom_actif
                         else:
                             self.nom_actif = False
+                        if self.champ_mdp.collidepoint(event.pos):
+                            self.mdp_actif = not self.mdp_actif
+                        else:
+                            self.mdp_actif = False
                         # Champ pour le numéro de carte bleue
                         if self.nb_cb.collidepoint(event.pos):
                             self.nb_cb_actif = not self.nb_cb_actif
@@ -136,21 +142,37 @@ class Jeu():
                         
                     elif event.type == pygame.KEYDOWN:
                         # Gérer la saisie du nom de joueur
-                        if ecran1.ecran.get_actif() and self.nom_actif:
-                            if event.key == pygame.K_RETURN:
-                                click.play()
-                                joueur1.set_pseudo(self.text)
-                                verifier_et_ajouter_pseudo(joueur1.get_pseudo()) 
-                                id_compte = det_id_compte(joueur1.get_pseudo())
-                                joueur1.set_cagnotte(recup_donnees(id_compte)[0])
-                                ajouter_connexion(id_compte)
-                                if joueur1.get_pseudo().lower() == 'nils':
-                                    joueur1.set_cagnotte(1)
-                                self.text = ''
-                            elif event.key == pygame.K_BACKSPACE:
-                                self.text = self.text[:-1]
-                            elif len(self.text) <= 9:
-                                self.text += event.unicode
+                        if ecran1.ecran.get_actif():
+                            if self.nom_actif:  # Gestion de la saisie du pseudo
+                                if event.key == pygame.K_BACKSPACE:
+                                    self.text = self.text[:-1]
+                                elif len(self.text) <= 9:  # Limite de longueur du pseudo
+                                    self.text += event.unicode
+                            elif self.mdp_actif:  # Gestion de la saisie du mot de passe
+                                if event.key == pygame.K_BACKSPACE:
+                                    self.mdp = self.mdp[:-1]
+                                elif event.key == pygame.K_RETURN:  # Validation du formulaire
+                                    # Lecture des valeurs saisies
+                                    pseudo = self.text
+                                    mdp = self.mdp
+
+                                    # Ajouter ou vérifier le compte dans la base de données
+                                    verifier_et_ajouter_pseudo(pseudo, mdp)
+                                    id_compte = det_id_compte(pseudo, mdp)
+
+                                    if id_compte is not None:
+                                        # Récupérer les données du joueur et les afficher
+                                        joueur1.set_pseudo(pseudo)
+                                        joueur1.set_mdp(mdp)
+                                        joueur1.set_cagnotte(recup_donnees(id_compte))
+                                        ajouter_connexion(id_compte)
+                                        print(f"Bienvenue {joueur1.get_pseudo()}! Solde: {int(joueur1.cagnotte)}")
+
+                                    # Réinitialisation des champs
+                                    self.mdp = ''
+                                    self.text = ''
+                                elif len(self.mdp) <= 12:  # Limite de longueur du mot de passe
+                                    self.mdp += event.unicode
                         # Gérer la saisie du numéro de carte bleue
                         if self.nb_cb_actif:
                             if event.key == pygame.K_BACKSPACE:
@@ -166,15 +188,30 @@ class Jeu():
                             # Gérer la saisie du code de carte bleue
                             if event.key == pygame.K_RETURN:
                                 if len(self.txt_nbr_cb) == 19 and len(self.txt_codee_cb) == 3:
-                                    self.txt_nbr_cb = ''
-                                    self.txt_codee_cb = ''
-                                    joueur1.set_cagnotte(2000)
+                                    code_correct = True
+                                    compteur = 0
+                                    for nb in self.txt_nbr_cb:
+                                        for nbr in self.txt_nbr_cb:
+                                            if nb == nbr:
+                                                compteur += 1
+                                        if compteur >= 5:
+                                            code_correct = False
+                                    if code_correct:
+                                        joueur1.set_code_cb(self.txt_codee_cb), joueur1.set_num_cb(self.txt_nbr_cb)
+                                        verifier_et_ajouter_cb(det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()),joueur1.get_code_cb(),joueur1.get_num_cb())
+                                        if verif_cb(det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()),joueur1.get_code_cb(),joueur1.get_num_cb()):
+                                            self.txt_nbr_cb = ''
+                                            self.txt_codee_cb = ''
+                                            joueur1.set_cagnotte(2000)
+                                            ecran2.ecran.set_actif(True)
+                                            ecran_mort.ecran.set_actif(False)
+                                            print(f"Prélèvement effectué ! Rebonsoir, cher joueur.")
+                                        else:
+                                            print(f"Coordonnées bancaires incorrectes ! N'ESSAYEZ PAS DE DUPER LE BABEL CASINO, MORTEL !")
                                     click.play()
-                                    ecran2.ecran.set_actif(True)
-                                    ecran_mort.ecran.set_actif(False)
                             elif event.key == pygame.K_BACKSPACE:
                                 self.txt_codee_cb = self.txt_codee_cb[:-1]
-                            elif len(self.txt_codee_cb) < 4 and event.unicode in "0123456789":
+                            elif len(self.txt_codee_cb) < 3 and event.unicode in "0123456789":
                                 self.txt_codee_cb += event.unicode
 
                 # Afficher l'ecran du Blackjack
@@ -209,7 +246,8 @@ class Jeu():
                 # Affichage de l'écran de début de jeu
                 if ecran1.ecran.get_actif():
                     ecran1.affiche()     
-                    dessiner_zone_texte(fenetre, self.champ_joueur, self.text, self.nom_actif)          
+                    dessiner_zone_texte(fenetre, self.champ_joueur, self.text, self.nom_actif)
+                    dessiner_zone_texte(fenetre, self.champ_mdp, self.mdp, self.mdp_actif)            
                 # Affichage de l'écran principal
                 if ecran2.ecran.get_actif():
                     son_joue = False
@@ -247,6 +285,6 @@ class Jeu():
                     vodka.affiche(0.3)
                 if rr.ecran.get_actif():
                     rr.affiche(0.31)
-            mettre_a_jour_solde(joueur1.get_cagnotte(),det_id_compte(joueur1.get_pseudo()))
+            mettre_a_jour_solde(joueur1.get_cagnotte(),det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()))
             clock.tick(60)
             pygame.display.flip()
