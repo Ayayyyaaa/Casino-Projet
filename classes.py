@@ -3,13 +3,14 @@ import pygame
 
 
 class Joueur:
-    def __init__(self, pseudo='Babibel', cagnotte=2000, roulette_active=False):
+    def __init__(self, pseudo='Babibel'):
         self.pseudo = pseudo
-        self.cagnotte = cagnotte
-        self.roulette_active = roulette_active
+        self.cagnotte = 200000
+        self.roulette_active = False
         self.mdp = None
         self.code_cb = None
         self.num_cb = None
+        self.inventaire = {'Chope de Bière' : 0, 'Bouteille de Whisky' : 0}
 
     def get_pseudo(self):
         return self.pseudo
@@ -53,6 +54,9 @@ class Joueur:
 
     def set_num_cb(self, num):
         self.num_cb = num
+
+    def ajouter_inventaire(self,article):
+        self.inventaire[article] += 1
 
 
 class Coin:

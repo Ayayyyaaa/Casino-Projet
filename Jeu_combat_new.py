@@ -127,16 +127,16 @@ class Hero:
 class Night_Hero:
     def __init__(self):
         self.hero = Hero(100,5)
-        self.images_coup_depee_d = [f'Hero/Attaque/Attaque_Droite/Attaque{i}.png' for i in range(1,13)]
-        self.images_coup_depee_g = [f'Hero/Attaque/Attaque_Gauche/Attaque{i}.png' for i in range(1,13)]
-        self.images_marche_d = [f'Hero/Marche/Droite/Hero_course{i}.png' for i in range(1,7)] 
-        self.images_marche_g = [f'Hero/Marche/Gauche/Hero_course{i}.png' for i in range(1,7)]
-        self.images_degats = [f'Hero/Degats/degats{i}.png' for i in range(1,5)]
-        self.images_parade = [f'Hero/Block/Block ({i}).png' for i in range(1,19)]
-        self.images_mort = [f'Hero/Mort/_afrm{i},70.png' for i in range(1,23)]
-        self.image = 'Hero/Attaque/Attaque_Droite/Attaque1.png'
-        self.dgt5 = pygame.image.load("images/-5.png")
-        self.block = pygame.image.load("images/Block.png")
+        self.images_coup_depee_d = [f'images/Jeu de combat/Hero/Attaque/Attaque_Droite/Attaque{i}.png' for i in range(1,13)]
+        self.images_coup_depee_g = [f'images/Jeu de combat/Hero/Attaque/Attaque_Gauche/Attaque{i}.png' for i in range(1,13)]
+        self.images_marche_d = [f'images/Jeu de combat/Hero/Marche/Droite/Hero_course{i}.png' for i in range(1,7)] 
+        self.images_marche_g = [f'images/Jeu de combat/Hero/Marche/Gauche/Hero_course{i}.png' for i in range(1,7)]
+        self.images_degats = [f'images/Jeu de combat/Hero/Degats/degats{i}.png' for i in range(1,5)]
+        self.images_parade = [f'images/Jeu de combat/Hero/Block/Block ({i}).png' for i in range(1,19)]
+        self.images_mort = [f'images/Jeu de combat/Hero/Mort/_afrm{i},70.png' for i in range(1,23)]
+        self.image = 'images/Jeu de combat/Hero/Attaque/Attaque_Droite/Attaque1.png'
+        self.dgt5 = pygame.image.load("images/Jeu de combat/-5.png")
+        self.block = pygame.image.load("images/Jeu de combat/Block.png")
         self.frame = 0
         self.frame_mort = 0
         self.frame_parade = 0
@@ -244,16 +244,16 @@ class Night_Hero:
 class Hell_Boss:
     def __init__(self):
         self.boss = Boss(120)
-        self.images_coup_poing = [f'Boss/Attaque1/Coup_de_poing{i}.png' for i in range(1,5)]
-        self.images_coup_faux = [f'Boss/Attaque2/Faux{i}.png' for i in range(1,8)]
-        self.images_marche_d = [f'Boss/Marche/Droite/Marche{i}.png' for i in range(1,8)]
-        self.images_marche_g = [f'Boss/Marche/Gauche/Marche{i}.png' for i in range(1,8)]
-        self.images_ulti = [f'Boss/Ulti/Ulti ({i}).png' for i in range(1,7)]
-        self.images_mort = [f'Boss/Mort/Mort{i}.png' for i in range(1,8)]
-        self.images_inaction = [f'Boss/Inaction/Inaction{i}.png' for i in range(1,4)]
-        self.dgt10 = pygame.image.load("images/-10.png")
-        self.dgt20 = pygame.image.load("images/-20.png")
-        self.image = 'Hero/Attaque/Attaque_Droite/Attaque1.png'
+        self.images_coup_poing = [f'images/Jeu de combat/Boss/Attaque1/Coup_de_poing{i}.png' for i in range(1,5)]
+        self.images_coup_faux = [f'images/Jeu de combat/Boss/Attaque2/Faux{i}.png' for i in range(1,8)]
+        self.images_marche_d = [f'images/Jeu de combat/Boss/Marche/Droite/Marche{i}.png' for i in range(1,8)]
+        self.images_marche_g = [f'images/Jeu de combat/Boss/Marche/Gauche/Marche{i}.png' for i in range(1,8)]
+        self.images_ulti = [f'images/Jeu de combat/Boss/Ulti/Ulti ({i}).png' for i in range(1,7)]
+        self.images_mort = [f'images/Jeu de combat/Boss/Mort/Mort{i}.png' for i in range(1,8)]
+        self.images_inaction = [f'images/Jeu de combat/Boss/Inaction/Inaction{i}.png' for i in range(1,4)]
+        self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
+        self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
+        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -429,10 +429,10 @@ class Hell_Boss:
 
 class JeuCombat:
     def __init__(self,j1,j2):
-        self.fond = pygame.image.load("images/Arène.png") 
+        self.fond = pygame.image.load("images/Jeu de combat/Arène.png") 
         self.run = False
-        self.vie_hero = pygame.image.load("images/compteur.png")
-        self.vie_boss = pygame.image.load("images/compteur.png")
+        self.vie_hero = pygame.image.load("images/Jeu de combat/compteur.png")
+        self.vie_boss = pygame.image.load("images/Jeu de combat/compteur.png")
         self.police = pygame.font.Font('8-bitanco.ttf', 15)
         self.dmg = False
         self.j1 = j1

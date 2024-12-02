@@ -50,10 +50,10 @@ class Ecran1:
                 self.fin_combat = True
         elif joueur1.get_pseudo().lower() in ['rick','rickroll','rick roll', 'rickastley', 'rick astley']:
             if not pygame.mixer.music.get_busy() or self.ancien_pseudo != joueur1.get_pseudo():
-                rr.ecran.set_actif(True),ecran1.ecran.set_actif(False)
+                rr.ecran.set_actif(True),connexion.ecran.set_actif(False)
                 pygame.mixer.music.unload()
                 pygame.mixer.music.load(rickr)
-                pygame.mixer.music.set_volume(0.1)
+                pygame.mixer.music.set_volume(1)
                 pygame.mixer.music.play(-1)
                 self.ancien_pseudo = joueur1.get_pseudo()
                 self.fin_combat = True
@@ -70,7 +70,7 @@ class Ecran1:
 class Ecran2:
     def __init__(self):
         self.ecran = Ecran()
-        self.fond = pygame.image.load('images/casino.jpg').convert()
+        self.fond = pygame.image.load('images/Fonds d\'ecran/casino.jpg').convert()
         self.musique = False
     def set_musique(self):
         self.musique = False
@@ -79,7 +79,7 @@ class Ecran2:
         Permet d'afficher l'écran principal et de gérer l'animation des boutons et mettre à jour les animations des jeux.
         '''
         if joueur1.get_pseudo().lower() == 'fredou':
-            self.fond = pygame.image.load('images/coeurfredou.png').convert()
+            self.fond = pygame.image.load('images/Fonds d\'ecran/coeurfredou.png').convert()
         elif joueur1.get_pseudo().lower() == 'mr.maurice' or joueur1.get_pseudo().lower() == 'mr maurice' or joueur1.get_pseudo().lower() == 'maurice':
             joueur1.set_pseudo('Le meilleur')  #Mettez nous des tickets et un 20/20 svp
             verifier_et_ajouter_pseudo(joueur1.get_pseudo(),joueur1.get_mdp()) 
@@ -87,11 +87,11 @@ class Ecran2:
             joueur1.set_cagnotte(recup_donnees(id_compte))
             ajouter_connexion(id_compte)
         elif joueur1.get_pseudo() == 'Le meilleur':
-            self.fond = pygame.image.load('images/Metteznous20sur20svp.jpg').convert()
+            self.fond = pygame.image.load('images/Fonds d\'ecran/Metteznous20sur20svp.jpg').convert()
         elif joueur1.get_pseudo().lower() == 'abel':
-            self.fond = pygame.image.load('images/FondAbel.png').convert()
+            self.fond = pygame.image.load('images/Fonds d\'ecran/FondAbel.png').convert()
         else:
-            self.fond = pygame.image.load('images/casino.jpg').convert()
+            self.fond = pygame.image.load('images/Fonds d\'ecran/casino.jpg').convert()
         fenetre.blit(self.fond, (0, 0))
         coin.activer_rotation()
         # Jouer les animations des icones des jeux
@@ -145,7 +145,7 @@ class Ecran2:
 class EcranMort:
     def __init__(self):
         self.ecran = Ecran()
-        self.fond =  pygame.image.load('images/enfer2.png').convert()
+        self.fond =  pygame.image.load('images/Fonds d\'ecran/enfer2.png').convert()
     def affiche(self):
         '''
         Permet d'afficher l'écran de mort.
@@ -182,7 +182,7 @@ class EcranBlack:
 class EcranBoutique:
     def __init__(self):
         self.ecran = Ecran()
-        self.fond = pygame.image.load('images/casino.jpg').convert()
+        self.fond = pygame.image.load('images/Fonds d\'ecran/Boutique.png').convert_alpha()
     def affiche(self):
         fenetre.blit(self.fond, (0, 0))
         if 340 <= pygame.mouse.get_pos()[0] <= 390 and 25 <= pygame.mouse.get_pos()[1] <= 65:
@@ -190,9 +190,51 @@ class EcranBoutique:
         else:
             fenetre.blit(fleche_retour, (340, 20))
         if 135 <= pygame.mouse.get_pos()[0] <= 195 and 135 <= pygame.mouse.get_pos()[1] <= 195:
-            fenetre.blit(vodka2, (131, 131))
+            fenetre.blit(alcool2, (130, 130))
         else:
-            fenetre.blit(vodka1, (130, 130))
+            fenetre.blit(alcool1, (130, 130))
+
+class EcranAlcool:
+    def __init__(self):
+        self.ecran = Ecran()
+        self.fond = pygame.image.load('images/Fonds d\'ecran/Boutique.png').convert_alpha()
+        self.vodka = False
+        self.biere = False
+        self.whisky = False
+    def affiche(self):
+        fenetre.blit(self.fond, (0, 0))
+        if 340 <= pygame.mouse.get_pos()[0] <= 390 and 25 <= pygame.mouse.get_pos()[1] <= 65:
+            fenetre.blit(fleche_retour2, (341, 21))
+        else:
+            fenetre.blit(fleche_retour, (340, 20))
+        if 105 <= pygame.mouse.get_pos()[0] <= 165 and 165 <= pygame.mouse.get_pos()[1] <= 225:
+            fenetre.blit(biere2, (100, 160))
+            self.biere = True
+        else:
+            fenetre.blit(biere1, (100, 160))
+            self.biere = False
+        if 25 <= pygame.mouse.get_pos()[0] <= 85 and 165 <= pygame.mouse.get_pos()[1] <= 225:
+            fenetre.blit(vodka2, (20, 160))
+            self.vodka = True
+        else:
+            fenetre.blit(vodka1, (20, 160))
+            self.vodka = False
+        if 185 <= pygame.mouse.get_pos()[0] <= 265 and 165 <= pygame.mouse.get_pos()[1] <= 225:
+            fenetre.blit(whisky2, (180, 160))
+            self.whisky = True
+        else:
+            fenetre.blit(whisky1, (180, 160))
+            self.whisky = False
+        self.affiche_effets()
+    def affiche_effets(self):
+        if self.vodka:
+            fenetre.blit(effet_vodka, (pygame.mouse.get_pos()[0]+40, pygame.mouse.get_pos()[1]-30))
+        elif self.biere:
+            fenetre.blit(effet_biere, (pygame.mouse.get_pos()[0]+40, pygame.mouse.get_pos()[1]-30))
+        elif self.whisky:
+            fenetre.blit(effet_whisky, (pygame.mouse.get_pos()[0]-180, pygame.mouse.get_pos()[1]-30))
+
+        
 
 class EcranVodka:
     def __init__(self):
@@ -229,7 +271,7 @@ class EcranRR:
             self.num_frame = 0
         fenetre.blit(pygame.image.load(self.frame),(0,0))
 
-ecran1 = Ecran1()
+connexion = Ecran1()
 ecran2 = Ecran2()
 boutique = EcranBoutique()
 vodka = EcranVodka()
@@ -237,3 +279,4 @@ ecran_mort = EcranMort()
 ecran_victoire = EcranVictoire()
 ecran_black = EcranBlack()
 rr = EcranRR()
+alcool = EcranAlcool()

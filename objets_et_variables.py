@@ -9,6 +9,7 @@ bouton1 = Bouton(100, 50, 150, 300)
 bouton2 = Bouton(160, 25, 0, 0)
 bouton3 = Bouton(160, 25, 0, 25)
 clock = pygame.time.Clock()
+boutique = {'Chope de Bière' : 100000, 'Bouteille de Whisky' : 5000}
 
 coin = Coin(100, -7)
 

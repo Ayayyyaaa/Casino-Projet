@@ -3,7 +3,7 @@ from objets_et_variables import *
 from img import *
 
 
-fond2 = pygame.image.load('images/casino.jpg').convert()
+fond2 = pygame.image.load('images/Fonds d\'ecran/casino.jpg').convert()
 
 def dessiner_bouton(fenetre, message:str, x: int, y:int, largeur:int, hauteur:int, couleur_fond:tuple, couleur_texte:tuple, taille:int):
     '''
@@ -42,6 +42,14 @@ def dessiner_zone_texte(fenetre, rect, texte:str, actif:bool):
     police = pygame.font.Font('police.ttf', 25)
     texte_surface = police.render(texte, True, noir)
     fenetre.blit(texte_surface, (rect.x + 5, rect.y + 5))
+
+def achat(article):
+    if joueur1.get_cagnotte() >= boutique[article]:
+        joueur1.modifier_cagnotte(-boutique[article])
+        joueur1.ajouter_inventaire(article)
+        print("Achat effectué !")
+    else:
+        print("Solde insuffisant !")
 
 
 
