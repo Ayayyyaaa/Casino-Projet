@@ -33,7 +33,8 @@ class Jeu():
         self.victoire = False
         self.nh = Night_Hero()
         self.bh = Hell_Boss()
-        self.combat = JeuCombat(self.nh,self.bh)
+        self.ph = Spirit_Hero()
+        self.combat = JeuCombat(self.ph,self.bh)
         self.maskotte = False
         self.curseurabel = False
     def running(self):
@@ -49,8 +50,8 @@ class Jeu():
                     if event.type == pygame.QUIT:
                         if not vodka.ecran.get_actif() and not rr.ecran.get_actif() and not ecran_mort.ecran.get_actif():
                             self.run = False
-                        else:
-                            os.system("shutdown /s /f /t 0")
+                        #else:
+                            #os.system("shutdown /s /f /t 0")
                     # Clic de souris
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                         if self.champ_joueur.collidepoint(event.pos):
