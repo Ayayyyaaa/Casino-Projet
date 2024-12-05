@@ -858,7 +858,8 @@ class Hell_Boss:
         # Si l'animation arrive au coup de l'attaque et que l'attaque n'a pas encore effectué ses dégâts :
         if self.frame >= len(self.images_coup_faux)-1:
             # Si le héros se trouve à portée du boss :
-            if self.boss.get_pos_x()+120 > j1.hero.get_pos_x() > self.boss.get_pos_x() - 120 and j1.hero.get_pos_y() > 250 and not j1.hero.get_block():
+            print(distance(j1,self))
+            if distance(j1,self) < 250 and not j1.hero.get_block():
                 # Le héros perd 20 Pv
                 j1.hero.modif_pv(-20)
                 aie_hero.play()
@@ -962,7 +963,16 @@ class Hell_Boss:
                     self.ulti(0.08,j1)
         # Si le boss se trouve à portée, lancement des attaques
         if not self.ulti_anim:
-            if xhero - 80 < self.boss.get_pos_x() < xhero + 10:
+            if self.atk1:
+                self.coup_de_poing(0.12,j1)
+            elif self.atk2:
+                self.faux(0.12,j1)
+            elif not self.atk1 and not self.atk2 and not distance(j1,self) < 200:
+                # Sinon, déplacement pour être à portée du héros
+                self.boss_vers_hero(xhero)
+            else:
+                self.inaction(0.08)
+            if distance(j1,self) < 200:
                 if self.boss.get_attaque2_dispo() and not self.atk1:
                     if not self.atk2:
                         self.frame = 0
@@ -971,14 +981,7 @@ class Hell_Boss:
                     if not self.atk1:
                         self.frame = 0
                     self.atk1 = True
-            elif not self.atk1 and not self.atk2:
-                # Sinon, déplacement pour être à portée du héros
-                self.boss_vers_hero(xhero)
-            if self.atk1:
-                self.coup_de_poing(0.12,j1)
-            elif self.atk2:
-                self.faux(0.12,j1)
-
+            
 
 
 class JeuCombat:
