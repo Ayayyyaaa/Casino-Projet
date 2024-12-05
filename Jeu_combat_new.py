@@ -157,6 +157,8 @@ class Hero:
         self.block = block
     def set_combo(self,combo):
         self.combo = combo
+    def set_speed(self,s):
+        self.speed = s
 
 class Night_Hero:
     def __init__(self):
@@ -219,7 +221,7 @@ class Night_Hero:
                 self.hero.set_mort(True)
                 j2.boss.set_victoire(True)
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - self
@@ -350,7 +352,7 @@ class Spirit_Hero:
                 self.hero.set_mort(True)
                 j2.boss.set_victoire(True)
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - self
@@ -398,16 +400,16 @@ class Spirit_Hero:
 
 class Spirit_Warrior:
     def __init__(self):
-        self.hero = Hero(160,490,5,0.12,0.06,3,6,120)
-        self.atk1_d = [f'images/Jeu de combat/Spirit_Hero/Droite/Attaque1/_a_frm{i},100.png' for i in range(1,12)]
-        self.atk2_d = [f'images/Jeu de combat/Spirit_Hero/Droite/Attaque2/_a_frm{i},100.png' for i in range(12,23)]
-        self.atk1_g = [f'images/Jeu de combat/Spirit_Hero/Gauche/Attaque1/_a_frm{i},100.png' for i in range(1,12)]
-        self.atk2_g = [f'images/Jeu de combat/Spirit_Hero/Gauche/Attaque2/_a_frm{i},100.png' for i in range(10,21)]
-        self.images_marche_d = [f'images/Jeu de combat/Spirit_Hero/Droite/Mvmt/_a_frm{i},100.png' for i in range(1,9)] 
-        self.images_marche_g = [f'images/Jeu de combat/Spirit_Hero/Gauche/Mvmt/_a_frm{i},100.png' for i in range(1,9)]
-        self.cp2_d = [f'images/Jeu de combat/Spirit_Hero/Droite/Attaque3/_a_frm{i},100.png' for i in range(21,42)]
-        self.cp2_g = [f'images/Jeu de combat/Spirit_Hero/Gauche/Attaque3/_a_frm{i},100.png' for i in range(21,42)]
-        self.images_mort = [f'images/Jeu de combat/Spirit_Hero/Mort/_a_frm{i},100.png' for i in range(20)] 
+        self.hero = Hero(130,502,0.8,0.12,0.06,4.5,6,120)
+        self.atk1_d = [f'images/Jeu de combat/Spirit_Warrior/Droite/Attaque1/_a_frm{i},100.png' for i in range(1,13)]
+        self.atk2_d = [f'images/Jeu de combat/Spirit_Warrior/Droite/Attaque2/_a_frm{i},100.png' for i in range(15,30)]
+        self.atk1_g = [f'images/Jeu de combat/Spirit_Warrior/Gauche/Attaque1/_a_frm{i},100.png' for i in range(1,13)]
+        self.atk2_g = [f'images/Jeu de combat/Spirit_Warrior/Gauche/Attaque2/_a_frm{i},100.png' for i in range(15,30)]
+        self.images_marche_d = [f'images/Jeu de combat/Spirit_Warrior/Droite/Marche/_a_frm{i},100.png' for i in range(8)] 
+        self.images_marche_g = [f'images/Jeu de combat/Spirit_Warrior/Gauche/Marche/_a_frm{i},100.png' for i in range(8)]
+        self.cp2_d = [f'images/Jeu de combat/Spirit_Warrior/Droite/Attaque3/_a_frm{i},100.png' for i in range(33,47)]
+        self.cp2_g = [f'images/Jeu de combat/Spirit_Warrior/Gauche/Attaque3/_a_frm{i},100.png' for i in range(33,47)]
+        self.images_mort = [f'images/Jeu de combat/Spirit_Warrior/Mort/_a_frm{i},100.png' for i in range(13)] 
         self.image = 'images/Jeu de combat/Hero/Attaque/Attaque_Droite/Attaque1.png'
         self.dgt5 = pygame.image.load("images/Jeu de combat/-5.png")
         self.block = pygame.image.load("images/Jeu de combat/Block.png")
@@ -428,12 +430,11 @@ class Spirit_Warrior:
             if not self.atk2:
                 if self.frame >= len(self.atk1_d)-1:
                     son_epee.play()
-                    print(j2.boss.get_pos_x(),self.hero.get_pos_x())
                     # Si le boss est à portée du héros
                     if distance(self, j2) < self.hero.get_portee():
                         # Le boss perd 5 Pv
                         aie_boss.play()
-                        j2.boss.modif_pv(-randint(5,15))
+                        j2.boss.modif_pv(-6)
                         print(f"Attaque Masse Héros : Pv boss : {j2.boss.get_pv()}")
                         # Affichage des dégâts subis
                         self.cd_dgt5 = time.time()
@@ -455,13 +456,12 @@ class Spirit_Warrior:
                     if self.hero.get_pos_x()-140 < j2.boss.get_pos_x() < self.hero.get_pos_x() + 100:
                         # Le boss perd 5 Pv
                         aie_boss.play()
-                        j2.boss.modif_pv(-randint(10,20))
+                        j2.boss.modif_pv(-15)
                         print(f"Attaque combo : Pv boss : {j2.boss.get_pv()}")
                         # Affichage des dégâts subis
                         self.cd_dgt5 = time.time()
                         j2.boss.set_poison(time.time())
                     self.frame = 0
-                    print(self.hero.get_attaque())
                     self.hero.set_attaque(False)
                     self.hero.set_combo(False)
                     self.atk2 = False
@@ -489,7 +489,7 @@ class Spirit_Warrior:
                 self.hero.set_mort(True)
                 j2.boss.set_victoire(True)
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - self
@@ -519,7 +519,7 @@ class Spirit_Warrior:
                 if self.hero.get_pos_x()-140 < j2.boss.get_pos_x() < self.hero.get_pos_x() + 100:
                     # Le boss perd 5 Pv
                     aie_boss.play()
-                    j2.boss.modif_pv(-randint(15,40))
+                    j2.boss.modif_pv(-20)
                     print(f"Attaque chargée Héros : Pv boss : {j2.boss.get_pv()}")
                     # Affichage des dégâts subis
                     self.cd_dgt5 = time.time()
@@ -536,10 +536,268 @@ class Spirit_Warrior:
     def reset_frame(self):
         self.frame=0
 
+class Lancier:
+    def __init__(self):
+        self.hero = Hero(120,505,3,0.12,0.15,3,6,120)
+        self.atk1_d = [f'images/Jeu de combat/Lancier/Droite/Attaque1/_a_frm{i},100.png' for i in range(10)]
+        self.atk1_g = [f'images/Jeu de combat/Lancier/Gauche/Attaque1/_a_frm{i},100.png' for i in range(10)]
+        self.images_marche_d = [f'images/Jeu de combat/Lancier/Droite/Mvmt/_a_frm{i},100.png' for i in range(0,8)] 
+        self.images_marche_g = [f'images/Jeu de combat/Lancier/Gauche/Mvmt/_a_frm{i},100.png' for i in range(0,8)] 
+        self.cp2_d = [f'images/Jeu de combat/Lancier/Droite/Charge/_a_frm{i},100.png' for i in range(8)]
+        self.cp2_g = [f'images/Jeu de combat/Lancier/Gauche/Charge/_a_frm{i},100.png' for i in range(8)]
+        self.images_mort = [f'images/Jeu de combat/Lancier/Mort/_a_frm{i},100.png' for i in range(14)] 
+        self.image = 'images/Jeu de combat/Hero/Attaque/Attaque_Droite/Attaque1.png'
+        self.dgt5 = pygame.image.load("images/Jeu de combat/-5.png")
+        self.block = pygame.image.load("images/Jeu de combat/Block.png")
+        self.frame = 0
+        self.frame_mort = 0
+        self.frame_parade = 0
+        self.cd_dgt5 = 0
+        self.cd_block_img = 0
+        self.charge = False
+
+    def attaque(self,speed:float,sens,j2):
+        '''Permet de jouer l'animation d'attaque du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        if self.hero.get_pv() > 0:
+            if self.frame >= len(self.atk1_d)-1:
+                son_epee.play()
+                # Si le boss est à portée du héros
+                if distance(self, j2) < self.hero.get_portee():
+                    # Le boss perd 5 Pv
+                    aie_boss.play()
+                    j2.boss.modif_pv(-8)
+                    print(f"Attaque Épée Héros : Pv boss : {j2.boss.get_pv()}")
+                    # Affichage des dégâts subis
+                    self.cd_dgt5 = time.time()
+                self.frame = 0
+                self.hero.set_attaque(False)
+            elif sens == 'Gauche':
+                self.hero.modif_img(self.atk1_g[int(self.frame)])
+            elif sens == 'Droite':
+                self.hero.modif_img(self.atk1_d[int(self.frame)])
+            # Faire progresser les images pour l'animation
+            self.frame += speed
+
+    def mort(self,speed:float,j2):
+        '''Permet de jouer l'animation de mort du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
+        if not self.hero.get_mort():
+            # Faire progresser les images pour l'animation
+            self.frame_mort += speed
+            self.hero.modif_img(self.images_mort[int(self.frame_mort)])
+            # Si toutes les images ont été jouées :
+            if int(self.frame_mort) == len(self.images_mort)-1:
+                # On déclare le boss vainqueur, le combat prend fin
+                self.hero.set_mort(True)
+                j2.boss.set_victoire(True)
+
+    def marche(self,speed:float,sens,j2):
+        '''Permet de jouer l'animation de marche du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        # Si toutes les images ont été jouées :
+        self.frame += speed
+        if int(self.frame) >= len(self.images_marche_d)-1:
+            # On remet tout à 0
+            self.frame = 0
+        # Faire progresser les images pour l'animation
+        if sens == 'Gauche':
+            if not self.charge:
+                self.hero.modif_img(self.images_marche_g[int(self.frame)])
+            else:
+                if distance(self,j2) < 4:
+                    j2.boss.modif_pv(-20)
+                    print(f"Attaque Charge Héros : Pv boss : {j2.boss.get_pv()}")
+                    self.charge = False
+                    self.hero.set_cp2(False)
+                    self.hero.set_speed(4)
+                self.hero.modif_img(self.cp2_g[int(self.frame)])
+        else:
+            if not self.charge:
+                self.hero.modif_img(self.images_marche_d[int(self.frame)])
+            else:
+                if distance(self,j2) < 4:
+                    self.charge = False
+                    self.hero.set_cp2(False)
+                    self.hero.set_speed(4)
+                    j2.boss.modif_pv(-20)
+                    print(f"Attaque Charge Héros : Pv boss : {j2.boss.get_pv()}")
+                self.hero.modif_img(self.cp2_d[int(self.frame)])
+
+    def cp2(self, speed:float, sens, j2):
+        '''Permet de jouer l'animation de parade du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        if self.hero.get_pv() > 0:
+            self.charge = True
+            self.hero.set_speed(6.5)
+            if self.hero.get_cd_cp2() > 3:
+                self.charge = False
+                self.hero.set_cp2(False)
+                self.hero.set_speed(4)
+    
+    def reset_frame(self):
+        self.frame=0
+
+class Assassin:
+    def __init__(self):
+        self.hero = Hero(75,480,2.5,0.2,0.1,2,1.3,120)
+        self.atk1_d = [f'images/Jeu de combat/Assassin/Droite/Attaque1/_a_frm{i},100.png' for i in range(10)]
+        self.atk2_d = [f'images/Jeu de combat/Assassin/Droite/Attaque2/_a_frm{i},100.png' for i in range(11,18)]
+        self.atk1_g = [f'images/Jeu de combat/Assassin/Gauche/Attaque1/_a_frm{i},100.png' for i in range(10)]
+        self.atk2_g = [f'images/Jeu de combat/Assassin/Gauche/Attaque2/_a_frm{i},100.png' for i in range(11,18)]
+        self.images_marche_d = [f'images/Jeu de combat/Assassin/Droite/Marche/_a_frm{i},100.png' for i in range(8)] 
+        self.images_marche_g = [f'images/Jeu de combat/Assassin/Gauche/Marche/_a_frm{i},100.png' for i in range(8)]
+        self.images_course_d = [f'images/Jeu de combat/Assassin/Droite/Course/_a_frm{i},70.png' for i in range(8)] 
+        self.images_course_g = [f'images/Jeu de combat/Assassin/Gauche/Course/_a_frm{i},70.png' for i in range(8)]
+        self.cp2_d = [f'images/Jeu de combat/Assassin/Droite/Saut/_a_frm{i},100.png' for i in range(2,14)]
+        self.cp2_g = [f'images/Jeu de combat/Assassin/Gauche/Saut/_a_frm{i},100.png' for i in range(2,14)]
+        self.images_mort = [f'images/Jeu de combat/Assassin/Mort/_a_frm{i},100.png' for i in range(16)] 
+        self.image = 'images/Jeu de combat/Hero/Attaque/Attaque_Droite/Attaque1.png'
+        self.dgt5 = pygame.image.load("images/Jeu de combat/-5.png")
+        self.block = pygame.image.load("images/Jeu de combat/Block.png")
+        self.frame = 0
+        self.frame_mort = 0
+        self.frame_parade = 0
+        self.cd_dgt5 = 0
+        self.cd_block_img = 0
+        self.atk2 = False
+
+    def attaque(self,speed:float,sens,j2):
+        '''Permet de jouer l'animation d'attaque du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        if self.hero.get_pv() > 0:
+            if not self.atk2:
+                if self.frame >= len(self.atk1_d)-1:
+                    son_epee.play()
+                    print(j2.boss.get_pos_x(),self.hero.get_pos_x())
+                    # Si le boss est à portée du héros
+                    if distance(self, j2) < self.hero.get_portee():
+                        # Le boss perd 5 Pv
+                        aie_boss.play()
+                        j2.boss.modif_pv(-8)
+                        print(f"Attaque Masse Héros : Pv boss : {j2.boss.get_pv()}")
+                        # Affichage des dégâts subis
+                        self.cd_dgt5 = time.time()
+                    if not self.hero.combo:
+                        self.frame = 0
+                        self.hero.set_attaque(False)
+                    else:
+                        self.frame = 0
+                        self.atk2 = True
+                elif sens == 'Gauche':
+                    self.hero.modif_img(self.atk1_g[int(self.frame)])
+                elif sens == 'Droite':
+                    self.hero.modif_img(self.atk1_d[int(self.frame)])
+            elif self.atk2:
+                if self.frame >= len(self.atk2_d)-1:
+                    son_epee.play()
+                    # Si le boss est à portée du héros
+                    if self.hero.get_pos_x()-140 < j2.boss.get_pos_x() < self.hero.get_pos_x() + 100:
+                        # Le boss perd 5 Pv
+                        aie_boss.play()
+                        j2.boss.modif_pv(-10)
+                        print(f"Attaque combo : Pv boss : {j2.boss.get_pv()}")
+                        # Affichage des dégâts subis
+                        self.cd_dgt5 = time.time()
+                    self.frame = 0
+                    print(self.hero.get_attaque())
+                    self.hero.set_attaque(False)
+                    self.hero.set_combo(False)
+                    self.atk2 = False
+                elif sens == 'Gauche':
+                    self.hero.modif_img(self.atk2_g[int(self.frame)])
+                elif sens == 'Droite':
+                    self.hero.modif_img(self.atk2_d[int(self.frame)])
+            # Faire progresser les images pour l'animation
+            self.frame += speed
+
+    def mort(self,speed:float,j2):
+        '''Permet de jouer l'animation de mort du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
+        if not self.hero.get_mort():
+            # Faire progresser les images pour l'animation
+            self.frame_mort += speed
+            self.hero.modif_img(self.images_mort[int(self.frame_mort)])
+            # Si toutes les images ont été jouées :
+            if int(self.frame_mort) == len(self.images_mort)-1:
+                # On déclare le boss vainqueur, le combat prend fin
+                self.hero.set_mort(True)
+                j2.boss.set_victoire(True)
+
+    def marche(self,speed:float,sens,j2):
+        '''Permet de jouer l'animation de marche du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        if not self.hero.get_cp2():
+            # Si toutes les images ont été jouées :
+            self.frame += speed
+            if int(self.frame) >= len(self.images_marche_d)-1:
+                # On remet tout à 0
+                self.frame = 0
+            # Faire progresser les images pour l'animation
+            if sens == 'Gauche':
+                if distance(self,j2) > 300:
+                    self.hero.modif_img(self.images_marche_g[int(self.frame)])
+                    self.hero.set_speed(2.5)
+                else:
+                    self.hero.modif_img(self.images_course_g[int(self.frame)])
+                    self.hero.set_speed(6)
+            else:
+                if distance(self,j2) > 300:
+                    self.hero.modif_img(self.images_marche_d[int(self.frame)])
+                    self.hero.set_speed(2.4)
+                else:
+                    self.hero.modif_img(self.images_course_d[int(self.frame)])
+                    self.hero.set_speed(6)
+
+    def cp2(self, speed:float, sens, j2):
+        '''Permet de jouer l'animation de parade du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        if self.hero.get_pv() > 0:
+            self.hero.set_block(True)
+            if self.frame >= len(self.cp2_d)-1:
+                self.frame = 0
+                self.hero.set_cp2(False)
+                self.hero.set_block(False)
+            if sens == 'Gauche':
+                self.hero.modif_img(self.cp2_g[int(self.frame)])
+            else:
+                self.hero.modif_img(self.cp2_d[int(self.frame)])
+            # Faire progresser les images pour l'animation
+            self.frame += speed
+    
+    def reset_frame(self):
+        self.frame=0
+
 class Hell_Boss:
     def __init__(self):
         self.boss = Boss(120,0,50)
-        self.images_coup_poing = [f'images/Jeu de combat/Boss/Attaque1/Coup_de_poing{i}.png' for i in range(1,5)]
+        self.images_coup_poing = [f'images/Jeu de combat/Boss/Attaque1/Coup_de_poing{i}.png' for i in range(1,6)]
         self.images_coup_faux = [f'images/Jeu de combat/Boss/Attaque2/Faux{i}.png' for i in range(1,8)]
         self.images_marche_d = [f'images/Jeu de combat/Boss/Marche/Droite/Marche{i}.png' for i in range(1,8)]
         self.images_marche_g = [f'images/Jeu de combat/Boss/Marche/Gauche/Marche{i}.png' for i in range(1,8)]
@@ -564,10 +822,8 @@ class Hell_Boss:
         '''
         # L'attaque 1 est en train d'être jouée.
         self.atk1 = True
-        if self.frame > len(self.images_coup_poing):
-            self.frame = 0
         # Si toutes les images ont été jouées :
-        elif int(self.frame) >= len(self.images_coup_poing)-1:
+        if self.frame >= len(self.images_coup_poing)-1:
             # On remet tout à 0
             self.boss_sprite_attaque1 = 0
             self.boss.set_cd_attaque1()
@@ -599,8 +855,6 @@ class Hell_Boss:
         '''
         # L'attaque 2 est en train d'être jouée.
         self.atk2= True
-        if self.frame > len(self.images_coup_faux):
-            self.frame = 0
         # Si l'animation arrive au coup de l'attaque et que l'attaque n'a pas encore effectué ses dégâts :
         if self.frame >= len(self.images_coup_faux)-1:
             # Si le héros se trouve à portée du boss :
@@ -624,6 +878,7 @@ class Hell_Boss:
         # Faire progresser les images pour l'animation
         self.frame += speed
         self.boss.modif_img(self.images_coup_faux[int(self.frame)])
+
     def marche(self,speed:float,sens):
         '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
         Paramètres :
@@ -648,8 +903,8 @@ class Hell_Boss:
         # Animation de l'ulti du boss
         if int(self.frame) >= len(self.images_ulti)-1:
             # Effets de l'ulti du boss : Fait perdre 30 Pv au héros, et le boss regagne 30 Pv.
-            self.boss.modif_pv(20)
-            j1.hero.modif_pv(-20)
+            self.boss.modif_pv(25)
+            j1.hero.modif_pv(-10-j1.hero.get_pv()/4)
             # Image des dégâts subis
             self.cd_dgt20 = time.time()
             self.boss_sprite_ulti = 0
@@ -694,11 +949,11 @@ class Hell_Boss:
             self.marche(0.08,'Droite')
             self.boss.modif_pos_x(1.5)
     def patern_boss(self,xhero,j1):
-        if self.boss.get_pv() <= 25:
+        if self.boss.get_pv() <= 35:
             # Gestion de la guérison du boss à faible PV
             if self.boss.get_cd_ulti() == 0:
                 self.boss.set_cd_ulti(time.time())
-            elif time.time() - self.boss.get_cd_ulti() > 6:
+            elif time.time() - self.boss.get_cd_ulti() > 4:
                 self.ulti_anim = True
                 if self.boss.get_pos_x() < 900:
                     self.marche(0.1,'Droite')
@@ -707,17 +962,24 @@ class Hell_Boss:
                     self.ulti(0.08,j1)
         # Si le boss se trouve à portée, lancement des attaques
         if not self.ulti_anim:
-            if xhero - 80 < self.boss.get_pos_x() < xhero + 100:
-                if self.boss.get_attaque1_dispo() and not self.atk2:
-                    self.coup_de_poing(0.08,j1)
-                elif self.boss.get_attaque2_dispo() and not self.atk1:
-                    self.faux(0.08,j1)
-                else:
-                    # Si aucune attaque n'est disponible, lance une animation d'inaction
-                    self.inaction(0.06)
-            else:
+            if xhero - 80 < self.boss.get_pos_x() < xhero + 10:
+                if self.boss.get_attaque2_dispo() and not self.atk1:
+                    if not self.atk2:
+                        self.frame = 0
+                    self.atk2 = True
+                elif self.boss.get_attaque1_dispo() and not self.atk2:
+                    if not self.atk1:
+                        self.frame = 0
+                    self.atk1 = True
+            elif not self.atk1 and not self.atk2:
                 # Sinon, déplacement pour être à portée du héros
                 self.boss_vers_hero(xhero)
+            if self.atk1:
+                self.coup_de_poing(0.12,j1)
+            elif self.atk2:
+                self.faux(0.12,j1)
+
+
 
 class JeuCombat:
     def __init__(self,j1,j2):
@@ -760,7 +1022,6 @@ class JeuCombat:
         self.j1.hero.modif_img(self.j1.images_marche_d[0])
         self.j1.hero.set_victoire(False)
         self.j2.boss.set_victoire(False)
-        print(self.j1.hero.get_pv())
         while not self.j1.hero.get_victoire() and not self.j2.boss.get_victoire() and self.run:
             self.fenetre.blit(self.fond, (0,0))
             for event in pygame.event.get():
@@ -802,16 +1063,14 @@ class JeuCombat:
                 if keys[pygame.K_LEFT]:
                     if self.j1.hero.get_pos_x() > 0:
                         self.j1.hero.modif_pos_x(-self.j1.hero.get_speed())
-                    self.j1.marche(self.j1.hero.get_speed_anim()[1],'Gauche')
+                    self.j1.marche(self.j1.hero.get_speed_anim()[1],'Gauche',self.j2)
                 if keys[pygame.K_RIGHT]:
                     if self.j1.hero.get_pos_x() < 1000:
                         self.j1.hero.modif_pos_x(self.j1.hero.get_speed())
-                    self.j1.marche(self.j1.hero.get_speed_anim()[1],'Droite')
-            print(self.j2.boss.get_poison(),self.j2.boss.get_poison() != False)
+                    self.j1.marche(self.j1.hero.get_speed_anim()[1],'Droite',self.j2)
             if self.j2.boss.get_poison() != False:
                 self.j2.boss.modif_pv(-0.04)
-                print("aled")
-                if time.time() - self.j2.boss.get_poison() > 3:
+                if time.time() - self.j2.boss.get_poison() > 4:
                     self.j2.boss.set_poison(False)
 
             if self.j2.boss.get_cd_attaque1() > 2.5:
