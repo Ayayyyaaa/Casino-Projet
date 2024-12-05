@@ -113,6 +113,10 @@ class Ecran2:
             fenetre.blit(blackjack2, (320, 231))
         else:
             fenetre.blit(blackjack1, (320, 230))
+        if 330 <= pygame.mouse.get_pos()[0] <= 390 and 310 <= pygame.mouse.get_pos()[1] <= 360:
+            fenetre.blit(jeucombat2, (320, 300))
+        else:
+            fenetre.blit(jeucombat1, (320, 300))
         if 330 <= pygame.mouse.get_pos()[0] <= 390 and 100 <= pygame.mouse.get_pos()[1] <= 150 :
             fenetre.blit(imgpof2, (320, 91))
         else:

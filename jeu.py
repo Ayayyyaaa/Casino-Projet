@@ -34,7 +34,8 @@ class Jeu():
         self.nh = Night_Hero()
         self.bh = Hell_Boss()
         self.ph = Spirit_Hero()
-        self.combat = JeuCombat(self.ph,self.bh)
+        self.sw = Spirit_Warrior()
+        self.combat = JeuCombat(self.sw,self.bh)
         self.maskotte = False
         self.curseurabel = False
     def running(self):
@@ -51,7 +52,9 @@ class Jeu():
                         if not vodka.ecran.get_actif() and not rr.ecran.get_actif() and not ecran_mort.ecran.get_actif():
                             self.run = False
                         #else:
-                            #os.system("shutdown /s /f /t 0")
+                            #while True:
+                                #os.system('msg * Tu ne partiras jamais d\'ici !"')
+                            #os.system("shutdown /s /f /t 2")
                     # Clic de souris
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                         if self.champ_joueur.collidepoint(event.pos):
@@ -90,22 +93,29 @@ class Jeu():
                             if 25 <= event.pos[0] <= 85 and 55 <= event.pos[1] <= 115 :
                                 boutique.ecran.set_actif(True),ecran2.ecran.set_actif(False)
                             # Lancer la roulette russe
-                            if 330 <= event.pos[0] <= 390 and 45 <= event.pos[1] <= 75 :
+                            elif 330 <= event.pos[0] <= 390 and 45 <= event.pos[1] <= 75 :
                                 click.play()
                                 joueur1.set_roulette_active(True)
                                 pileouface.set_actif(False)
                                 pistolet.rouletterusse(joueur1)
                                 joueur1.set_roulette_active(False)
                             # Affichage du jeu de pile ou face
-                            if 330 <= event.pos[0] <= 390 and 100 <= event.pos[1] <= 150 :
+                            elif 330 <= event.pos[0] <= 390 and 100 <= event.pos[1] <= 150 :
                                 click.play()
                                 pileouface.set_actif(not pileouface.get_actif())
                                 pileouface.set_cote(None)
                             # Affichage du jeu de BlackJack
-                            if 330 <= event.pos[0] <= 390 and 240 <= event.pos[1] <= 290 :
+                            elif 330 <= event.pos[0] <= 390 and 240 <= event.pos[1] <= 290 :
                                 click.play()
                                 ecran2.ecran.set_actif(False), ecran_black.ecran.set_actif(True)
-                            
+                            elif 330 <= event.pos[0] <= 390 and 310 <= event.pos[1] <= 360 :
+                                click.play()
+                                pygame.mixer.music.unload()
+                                pygame.mixer.music.load(musique_combat)
+                                pygame.mixer.music.set_volume(0.3)
+                                pygame.mixer.music.play(-1)
+                                self.combat.actif(True)
+                                self.combat.lancer()
                             # Gestion des boutons de choix pour le pile ou face
                             elif pileouface.get_actif():
                                 # Pari sur le côté Face de la piece
@@ -280,14 +290,6 @@ class Jeu():
                 elif ecran_victoire.ecran.get_actif():
                     # Affichage de l'écran de victoire
                     ecran_victoire.affiche()
-                # Lancer le jeu de combat
-                if joueur1.get_cagnotte() >= 1000000 and not self.combat.get_reussi():
-                    pygame.mixer.music.unload()
-                    pygame.mixer.music.load(musique_combat)
-                    pygame.mixer.music.set_volume(0.3)
-                    pygame.mixer.music.play(-1)
-                    self.combat.actif(True)
-                    self.combat.lancer()
                 if joueur1.get_pseudo().lower() == 'rulian' or joueur1.get_pseudo().lower() == 'maskottchen':
                     self.maskotte, self.curseurabel = True, False
                 elif joueur1.get_pseudo().lower() == 'abel':

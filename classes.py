@@ -5,7 +5,7 @@ import pygame
 class Joueur:
     def __init__(self, pseudo='Babibel'):
         self.pseudo = pseudo
-        self.cagnotte = 200000
+        self.cagnotte = 2000
         self.roulette_active = False
         self.mdp = None
         self.code_cb = None
