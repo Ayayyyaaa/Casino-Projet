@@ -35,7 +35,8 @@ class Jeu():
         self.bh = Hell_Boss()
         self.ph = Spirit_Hero()
         self.sw = Spirit_Warrior()
-        self.combat = JeuCombat(self.sw,self.bh)
+        self.l = Lancier()
+        self.combat = JeuCombat(self.l,self.bh)
         self.maskotte = False
         self.curseurabel = False
     def running(self):
