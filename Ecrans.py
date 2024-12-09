@@ -187,6 +187,9 @@ class EcranBoutique:
     def __init__(self):
         self.ecran = Ecran()
         self.fond = pygame.image.load('images/Fonds d\'ecran/Boutique.png').convert_alpha()
+        self.btn_heros = [f'images/Btn_heros/_a_frm{i},70.png' for i in range(13)]
+        self.btn = pygame.image.load('images/Btn_heros/_a_frm0,70.png').convert_alpha()
+        self.frame = 0
     def affiche(self):
         fenetre.blit(self.fond, (0, 0))
         if 340 <= pygame.mouse.get_pos()[0] <= 390 and 25 <= pygame.mouse.get_pos()[1] <= 65:
@@ -197,6 +200,16 @@ class EcranBoutique:
             fenetre.blit(alcool2, (130, 130))
         else:
             fenetre.blit(alcool1, (130, 130))
+        if 220 <= pygame.mouse.get_pos()[0] <= 280 and 135 <= pygame.mouse.get_pos()[1] <= 195:
+            self.anim(0.1)
+        else:
+            fenetre.blit(self.btn, (215, 130))
+            self.frame = 0
+    def anim(self,speed):
+        self.frame += speed
+        if self.frame >= len(self.btn_heros)-1:
+            self.frame = 0
+        fenetre.blit(pygame.image.load(self.btn_heros[int(self.frame)]).convert_alpha(), (215, 130))
 
 class EcranAlcool:
     def __init__(self):
@@ -230,6 +243,7 @@ class EcranAlcool:
             fenetre.blit(whisky1, (180, 160))
             self.whisky = False
         self.affiche_effets()
+
     def affiche_effets(self):
         if self.vodka:
             fenetre.blit(effet_vodka, (pygame.mouse.get_pos()[0]+40, pygame.mouse.get_pos()[1]-30))
@@ -238,7 +252,56 @@ class EcranAlcool:
         elif self.whisky:
             fenetre.blit(effet_whisky, (pygame.mouse.get_pos()[0]-180, pygame.mouse.get_pos()[1]-30))
 
+class EcranJeuCombat:
+    def __init__(self):
+        self.ecran = Ecran()
+        self.fond = pygame.image.load('images/Fonds d\'ecran/Boutique.png').convert_alpha()
+    def affiche(self):
+        fenetre.blit(self.fond, (0, 0))
+        if 340 <= pygame.mouse.get_pos()[0] <= 390 and 25 <= pygame.mouse.get_pos()[1] <= 65:
+            fenetre.blit(fleche_retour2, (341, 21))
+        else:
+            fenetre.blit(fleche_retour, (340, 20))
+        fenetre.blit(icone_assassin, (100, 160))
+        fenetre.blit(icone_maehv, (20, 160))
+        fenetre.blit(icone_zendo, (180, 160))
+        fenetre.blit(icone_zukong, (260, 160))
+        fenetre.blit(icone_hero, (100, 240))
+        fenetre.blit(icone_spirithero, (20, 240))
+        fenetre.blit(icone_sw, (180, 240))
+        fenetre.blit(icone_lancier, (260, 240))
+        fenetre.blit(icone_hsuku, (20, 320))
+
+class EcranSelection:
+    def __init__(self, liste, y, x= 50):
+        self.police = pygame.font.Font('8-bitanco.ttf', 15)
+        self.ecran = Ecran()
+        self.fond = pygame.image.load('images/Fonds d\'ecran/Boutique.png').convert_alpha()
+        self.anim = liste
+        self.frame = 0
+        self.bouton = pygame.image.load("images/Jeu de combat/compteur2.png")
+        self.bouton2 = pygame.image.load("images/Jeu de combat/compteur3.png")
+        self.valider = self.police.render(("Val ider"), True, noir)
+        self.y = y
+        self.x = x
+    def affiche(self,speed):
+        fenetre.blit(self.fond, (0, 0))
+        if self.frame >= len(self.anim)-1:
+            self.frame = 0
+        if 340 <= pygame.mouse.get_pos()[0] <= 390 and 25 <= pygame.mouse.get_pos()[1] <= 65:
+            fenetre.blit(fleche_retour2, (341, 21))
+        else:
+            fenetre.blit(fleche_retour, (340, 20))
+        if 145 <= pygame.mouse.get_pos()[0] <= 245 and 330 <= pygame.mouse.get_pos()[1] <= 375:
+            fenetre.blit(self.bouton2, (140, 330))
+            fenetre.blit(self.valider, (165, 345))
+        else:
+            fenetre.blit(self.bouton, (140, 330))
+            fenetre.blit(self.valider, (165, 345))
+        fenetre.blit(pygame.image.load(self.anim[int(self.frame)]).convert_alpha(), (self.x, self.y))
+        self.frame += speed
         
+
 
 class EcranVodka:
     def __init__(self):
@@ -284,3 +347,13 @@ ecran_victoire = EcranVictoire()
 ecran_black = EcranBlack()
 rr = EcranRR()
 alcool = EcranAlcool()
+hero = EcranJeuCombat()
+assassin = EcranSelection([f'images/Jeu de combat/Assassin/Droite/Attaque1/_a_frm{i},100.png' for i in range(10)] + [f'images/Jeu de combat/Assassin/Droite/Attaque2/_a_frm{i},100.png' for i in range(11,18)] + [f'images/Jeu de combat/Assassin/Droite/Marche/_a_frm{i},100.png' for i in range(8)] + [f'images/Jeu de combat/Assassin/Droite/Course/_a_frm{i},70.png' for i in range(8)] + [f'images/Jeu de combat/Assassin/Droite/Saut/_a_frm{i},100.png' for i in range(2,14)] + [f'images/Jeu de combat/Assassin/Mort/_a_frm{i},100.png' for i in range(16)], 50)
+maevh = EcranSelection([f'images/Jeu de combat/Maehv/Droite/Inaction/_a_{i},80.png' for i in range(14)],0)
+zendo = EcranSelection([f'images/Jeu de combat/Zendo/Droite/Inaction/_a_frm{i},60.png' for i in range(14)],0)
+zukong = EcranSelection([f'images/Jeu de combat/Zukong/Droite/Inaction/_a_frm{i},80.png' for i in range(14)],50,75)
+heroo = EcranSelection([f'images/Jeu de combat/Hero/Block/Block ({i}).png' for i in range(1,19)],100,100)
+spirithero = EcranSelection([f'images/Jeu de combat/Spirit_Hero/Inaction/_a_frm{i},100.png' for i in range(10)],50)
+sw = EcranSelection([f'images/Jeu de combat/Spirit_Warrior/Inaction/_a_frm{i},100.png' for i in range(8)],50)
+lancier = EcranSelection([f'images/Jeu de combat/Lancier/Inaction/_a_frm{i},100.png' for i in range(8)],50)
+hsuku = EcranSelection([f'images/Jeu de combat/Hsuku/Droite/Inaction/_a_{i},80.png' for i in range(28)],50)

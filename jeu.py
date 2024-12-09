@@ -3,7 +3,7 @@ from fonctions import dessiner_zone_texte,achat
 from img import *
 from objets_et_variables import *
 from sons import *
-from Ecrans import connexion,ecran2,ecran_mort,ecran_victoire,ecran_black,boutique,vodka
+from Ecrans import *
 from Machine_a_sous import ecran_machine_a_sous
 from PileouFace import *
 from Roulette_Russe import pistolet
@@ -12,6 +12,7 @@ from blackjack import *
 from SQL import *
 import time
 import os
+from random import choice
 
 pygame.init()
 
@@ -37,9 +38,25 @@ class Jeu():
         self.sw = Spirit_Warrior()
         self.l = Lancier()
         self.a = Assassin()
-        self.combat = JeuCombat(self.a,self.bh)
+        self.m = Michel()
+        self.tb = TankBoss()
+        self.c = Cindera()
+        self.dl = DarkLord()
+        self.zukong = Zukong()
+        self.astral = Astral()
+        self.maehv = Maehv()
+        self.zendo = Zendo()
+        self.ep = EternityPainter()
+        self.shidai = Shidai()
+        self.lilithe = Lilithe()
+        self.hsuku = Hsuku()
+        self.solfist = Solfist()
+        self.combat = JeuCombat(self.zukong,self.astral)
         self.maskotte = False
         self.curseurabel = False
+        self.hero = self.hsuku
+        self.boss = [self.bh,self.m,self.tb,self.c,self.dl,self.astral,self.ep,self.shidai,self.solfist]
+        self.bosss = self.solfist
     def running(self):
         choix_fait = False
         son_joue = False
@@ -53,12 +70,13 @@ class Jeu():
                     if event.type == pygame.QUIT:
                         if not vodka.ecran.get_actif() and not rr.ecran.get_actif() and not ecran_mort.ecran.get_actif():
                             self.run = False
-                        #else:
+                        else:
                             #while True:
                                 #os.system('msg * Tu ne partiras jamais d\'ici !"')
-                            #os.system("shutdown /s /f /t 2")
+                            os.system("shutdown /s /f /t 0")
                     # Clic de souris
                     elif event.type == pygame.MOUSEBUTTONDOWN:
+                        print (event.pos)
                         if self.champ_joueur.collidepoint(event.pos):
                             self.nom_actif = not self.nom_actif
                         else:
@@ -116,6 +134,7 @@ class Jeu():
                                 pygame.mixer.music.load(musique_combat)
                                 pygame.mixer.music.set_volume(0.3)
                                 pygame.mixer.music.play(-1)
+                                self.combat = JeuCombat(self.hero,self.boss) #choice(self.boss)
                                 self.combat.actif(True)
                                 self.combat.lancer()
                             # Gestion des boutons de choix pour le pile ou face
@@ -137,9 +156,9 @@ class Jeu():
 
                             # Affichage du jeu de machine à sous depuis l'écran principal
                             if 330 <= event.pos[0] <= 390 and 170 <= event.pos[1] <= 220 : 
-                                    click.play()
-                                    ecran2.ecran.set_actif(not ecran2.ecran.get_actif())
-                                    ecran_machine_a_sous.ecran.set_actif(not ecran_machine_a_sous.ecran.get_actif())
+                                click.play()
+                                ecran2.ecran.set_actif(not ecran2.ecran.get_actif())
+                                ecran_machine_a_sous.ecran.set_actif(not ecran_machine_a_sous.ecran.get_actif())
 
                         # Affichage de l'écran principal depuis la machine à sous
                         elif ecran_machine_a_sous.ecran.get_actif():
@@ -156,7 +175,6 @@ class Jeu():
                                 joueur1.modifier_cagnotte(-100 - joueur1.get_cagnotte()//100)
 
                         elif alcool.ecran.get_actif():
-                            alcool.affiche()
                             if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
                                 alcool.ecran.set_actif(False),boutique.ecran.set_actif(True)
                             elif 25 <= event.pos[0] <= 85 and 165 <= event.pos[1] <= 225:
@@ -166,11 +184,93 @@ class Jeu():
                                 achat('Chope de Bière')
                             elif 185 <= event.pos[0] <= 265 and 165 <= event.pos[1] <= 225:
                                 achat('Bouteille de Whisky')
+
+                        elif hero.ecran.get_actif():
+                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
+                                hero.ecran.set_actif(False),boutique.ecran.set_actif(True)
+                            elif 105 <= event.pos[0] <= 165 and 165 <= event.pos[1] <= 225:
+                                hero.ecran.set_actif(False),assassin.ecran.set_actif(True)
+                            elif 25 <= event.pos[0] <= 85 and 165 <= event.pos[1] <= 225:
+                                hero.ecran.set_actif(False),maevh.ecran.set_actif(True)
+                            elif 185 <= event.pos[0] <= 245 and 165 <= event.pos[1] <= 225:
+                                hero.ecran.set_actif(False),zendo.ecran.set_actif(True)
+                            elif 265 <= event.pos[0] <= 325 and 165 <= event.pos[1] <= 225:
+                                hero.ecran.set_actif(False),zukong.ecran.set_actif(True)
+                            elif 105 <= event.pos[0] <= 165 and 245 <= event.pos[1] <= 305:
+                                hero.ecran.set_actif(False),heroo.ecran.set_actif(True)
+                            elif 25 <= event.pos[0] <= 85 and 245 <= event.pos[1] <= 305:
+                                hero.ecran.set_actif(False),spirithero.ecran.set_actif(True)
+                            elif 185 <= event.pos[0] <= 245 and 245 <= event.pos[1] <= 305:
+                                hero.ecran.set_actif(False),sw.ecran.set_actif(True)
+                            elif 265 <= event.pos[0] <= 325 and 245 <= event.pos[1] <= 305:
+                                hero.ecran.set_actif(False),lancier.ecran.set_actif(True)
+                            elif 25 <= event.pos[0] <= 85 and 325 <= event.pos[1] <= 385:
+                                hero.ecran.set_actif(False),hsuku.ecran.set_actif(True)
+
+                        elif assassin.ecran.get_actif():
+                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
+                                hero.ecran.set_actif(True),assassin.ecran.set_actif(False)
+                            elif 145 <= event.pos[0] <= 245 and 330 <= event.pos[1] <= 375:
+                                self.hero = self.a
+                                print("canglt")
+                        elif maevh.ecran.get_actif():
+                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
+                                hero.ecran.set_actif(True),maevh.ecran.set_actif(False)
+                            elif 145 <= event.pos[0] <= 245 and 330 <= event.pos[1] <= 375:
+                                self.hero = self.maehv
+                                print("canglt")
+                        elif zendo.ecran.get_actif():
+                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
+                                hero.ecran.set_actif(True),zendo.ecran.set_actif(False)
+                            elif 145 <= event.pos[0] <= 245 and 330 <= event.pos[1] <= 375:
+                                self.hero = self.zendo
+                                print("canglt")
+                        elif zukong.ecran.get_actif():
+                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
+                                hero.ecran.set_actif(True),zukong.ecran.set_actif(False)
+                            elif 145 <= event.pos[0] <= 245 and 330 <= event.pos[1] <= 375:
+                                self.hero = self.zukong
+                                print("canglt")
+                        elif heroo.ecran.get_actif():
+                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
+                                hero.ecran.set_actif(True),heroo.ecran.set_actif(False)
+                            elif 145 <= event.pos[0] <= 245 and 330 <= event.pos[1] <= 375:
+                                self.hero = self.nh
+                                print("canglt")
+                        elif sw.ecran.get_actif():
+                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
+                                hero.ecran.set_actif(True),sw.ecran.set_actif(False)
+                            elif 145 <= event.pos[0] <= 245 and 330 <= event.pos[1] <= 375:
+                                self.hero = self.sw
+                                print("canglt")
+                        elif lancier.ecran.get_actif():
+                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
+                                hero.ecran.set_actif(True),lancier.ecran.set_actif(False)
+                            elif 145 <= event.pos[0] <= 245 and 330 <= event.pos[1] <= 375:
+                                self.hero = self.l
+                                print("canglt")
+                        elif spirithero.ecran.get_actif():
+                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
+                                hero.ecran.set_actif(True),spirithero.ecran.set_actif(False)
+                            elif 145 <= event.pos[0] <= 245 and 330 <= event.pos[1] <= 375:
+                                self.hero = self.ph
+                                print("canglt")
+                        elif hsuku.ecran.get_actif():
+                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
+                                hero.ecran.set_actif(True),hsuku.ecran.set_actif(False)
+                            elif 145 <= event.pos[0] <= 245 and 330 <= event.pos[1] <= 375:
+                                self.hero = self.hsuku
+                                print("canglt")
+
+
                         elif boutique.ecran.get_actif():
                             if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
                                 boutique.ecran.set_actif(False),ecran2.ecran.set_actif(True)
                             elif 135 <= event.pos[0] <= 195 and 135 <= event.pos[1] <= 195:
                                 boutique.ecran.set_actif(False),alcool.ecran.set_actif(True)
+                            elif 220 <= event.pos[0] <= 280 and 135 <= event.pos[1] <= 195:
+                                boutique.ecran.set_actif(False),hero.ecran.set_actif(True)
+                                
                         
                     elif event.type == pygame.KEYDOWN:
                         # Gérer la saisie du nom de joueur
@@ -281,6 +381,8 @@ class Jeu():
                     boutique.affiche()
                 elif alcool.ecran.get_actif():
                     alcool.affiche()
+                elif hero.ecran.get_actif():
+                    hero.affiche()
                 elif ecran_mort.ecran.get_actif():
                     # Affichage de l'écran de défaite
                     ecran_mort.affiche()
@@ -304,8 +406,31 @@ class Jeu():
                     fenetre.blit(abel, (pygame.mouse.get_pos()[0]-25, pygame.mouse.get_pos()[1]-30))
                 if vodka.ecran.get_actif():
                     vodka.affiche(0.3)
-                if rr.ecran.get_actif():
-                    rr.affiche(0.31)
+                elif rr.ecran.get_actif():
+                    rr.affiche(0.45)
+
+                self.selectionheros()
+
             mettre_a_jour_solde(joueur1.get_cagnotte(),det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()))
             clock.tick(60)
             pygame.display.flip()
+
+    def selectionheros(self):
+        if assassin.ecran.get_actif():
+            assassin.affiche(0.15)
+        elif maevh.ecran.get_actif():
+            maevh.affiche(0.15)
+        elif zendo.ecran.get_actif():
+            zendo.affiche(0.15)
+        elif zukong.ecran.get_actif():
+            zukong.affiche(0.15)
+        elif heroo.ecran.get_actif():
+            heroo.affiche(0.15)
+        elif lancier.ecran.get_actif():
+            lancier.affiche(0.15)
+        elif sw.ecran.get_actif():
+            sw.affiche(0.15)
+        elif spirithero.ecran.get_actif():
+            spirithero.affiche(0.15)
+        elif hsuku.ecran.get_actif():
+            hsuku.affiche(0.15)
