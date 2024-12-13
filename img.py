@@ -59,5 +59,8 @@ icone_sw = pygame.image.load('images/icone_sw.png').convert_alpha()
 icone_lancier = pygame.image.load('images/icone_lancier.png').convert_alpha()
 icone_spirithero = pygame.image.load('images/icone_spirithero.png').convert_alpha()
 icone_hsuku = pygame.image.load('images/icone_hsuku.png').convert_alpha()
+icone_whistler = pygame.image.load('images/icones_whistler.png').convert_alpha()
+icone_sanguinar = pygame.image.load('images/icone_sanguinar.png').convert_alpha()
+icone_tethermancer = pygame.image.load('images/icone_tether.png').convert_alpha()
 
 pygame.display.set_icon(icone)

@@ -271,6 +271,9 @@ class EcranJeuCombat:
         fenetre.blit(icone_sw, (180, 240))
         fenetre.blit(icone_lancier, (260, 240))
         fenetre.blit(icone_hsuku, (20, 320))
+        fenetre.blit(icone_sanguinar, (100, 320))
+        fenetre.blit(icone_whistler, (180, 320))
+        fenetre.blit(icone_tethermancer, (260, 320))
 
 class EcranSelection:
     def __init__(self, liste, y, x= 50):
@@ -357,3 +360,6 @@ spirithero = EcranSelection([f'images/Jeu de combat/Spirit_Hero/Inaction/_a_frm{
 sw = EcranSelection([f'images/Jeu de combat/Spirit_Warrior/Inaction/_a_frm{i},100.png' for i in range(8)],50)
 lancier = EcranSelection([f'images/Jeu de combat/Lancier/Inaction/_a_frm{i},100.png' for i in range(8)],50)
 hsuku = EcranSelection([f'images/Jeu de combat/Hsuku/Droite/Inaction/_a_{i},80.png' for i in range(28)],50)
+sanguinar = EcranSelection([f'images/Jeu de combat/Sanguinar/Droite/Inaction/_a_{i},80.png' for i in range(14)],50)
+whistler = EcranSelection([f'images/Jeu de combat/Whistler/Droite/Inaction/_a_{i},100.png' for i in range(18)],50)
+tethermancer = EcranSelection([f'images/Jeu de combat/Tethermancer/Droite/Inaction/_a_{i},100.png' for i in range(17)],50)
