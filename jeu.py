@@ -60,12 +60,15 @@ class Jeu():
         self.sanguinar = Sanguinar()
         self.noshrak = NoshRak()
         self.tethermancer = Tethermancer()
+        self.aether = Aether()
+        self.twilight = Twilight()
+        self.ciphyron = Ciphyron()
         self.combat = JeuCombat(self.zukong,self.astral)
         self.maskotte = False
         self.curseurabel = False
-        self.hero = self.pureblade
+        self.hero = self.twilight
         self.boss = [self.bh,self.m,self.tb,self.c,self.dl,self.astral,self.ep,self.shidai,self.solfist,self.embla,self.elyx,self.sun,self.skurge,self.noshrak]
-        self.bosss = self.noshrak
+        self.bosss = self.ciphyron
     def running(self):
         choix_fait = False
         son_joue = False

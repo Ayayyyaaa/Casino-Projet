@@ -36,7 +36,7 @@ class Blackjack:
         self.img_joker = pygame.image.load("cartes/joker.png")
         self.img = [[f"cartes/{couleur}/carte-{i}.png" for i in range(2, 11)] for couleur in ['Carreau', 'Coeur', 'Pique', 'Trefle']] 
         self.dos_de_carte = pygame.image.load("cartes/dos_de_carte.png")
-        self.solde = pygame.image.load("images/compteur2.png")
+        self.solde = pygame.image.load("images/Jeu de combat/compteur2.png")
         self.police = pygame.font.Font('8-bitanco.ttf', 15)
         self.retour = False # Booléen qui determine si la souris est sur la fleche
         self.img_carte = pygame.image.load("images/None.png")
