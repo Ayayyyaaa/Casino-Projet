@@ -63,12 +63,13 @@ class Jeu():
         self.aether = Aether()
         self.twilight = Twilight()
         self.ciphyron = Ciphyron()
+        self.purgatos = Purgatos()
         self.combat = JeuCombat(self.zukong,self.astral)
         self.maskotte = False
         self.curseurabel = False
-        self.hero = self.twilight
+        self.hero = self.sanguinar
         self.boss = [self.bh,self.m,self.tb,self.c,self.dl,self.astral,self.ep,self.shidai,self.solfist,self.embla,self.elyx,self.sun,self.skurge,self.noshrak]
-        self.bosss = self.ciphyron
+        self.bosss = self.embla
     def running(self):
         choix_fait = False
         son_joue = False
@@ -146,7 +147,7 @@ class Jeu():
                                 pygame.mixer.music.load(musique_combat)
                                 pygame.mixer.music.set_volume(0.3)
                                 pygame.mixer.music.play(-1)
-                                self.combat = JeuCombat(self.hero,self.bosss) #choice(self.boss)
+                                self.combat = JeuCombat(self.hero,choice(self.boss)) #choice(self.boss)
                                 self.combat.actif(True)
                                 self.combat.lancer()
                             # Gestion des boutons de choix pour le pile ou face
