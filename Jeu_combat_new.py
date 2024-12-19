@@ -8,7 +8,7 @@ from random import randint,choice
 def distance(j1,j2):
     return j1.hero.get_pos_x()-j2.boss.get_pos_x()
 class Boss:
-    def __init__(self,pv,largeur,portee,y,speed,speedanim,cd1,cd2,cd3,fond):
+    def __init__(self,pv,largeur,portee,y,speed,speedanim,cd1,cd2,cd3,element,fond):
         self.image = self.image = pygame.image.load('images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png')
         self.pv = pv
         self.pos_x = 1000
@@ -33,6 +33,7 @@ class Boss:
         self.cd2 = cd2
         self.cd3 = cd3
         self.block = False
+        self.type = element
         self.fond = fond
     def get_pv(self):
         return self.pv
@@ -74,6 +75,8 @@ class Boss:
         return self.block
     def get_fond(self):
         return self.fond
+    def get_type(self):
+        return self.type
     def modif_pv(self, nb):
         self.pv += nb
     def modif_pos_x(self, nb):
@@ -81,7 +84,7 @@ class Boss:
     def modif_pos_y(self, nb):
         self.pos_y += nb
     def modif_img(self, img):
-        self.image = pygame.image.load(img)
+        self.image = img
     def set_cd_img(self):
         self.cd_img = time.time()
     def set_cd_attaque1(self):
@@ -108,7 +111,7 @@ class Boss:
         self.block = block
 
 class Hero:
-    def __init__(self,pv,y,speed,spanim1,marche,cd1,cd2,portee):
+    def __init__(self,pv,y,speed,spanim1,marche,cd1,cd2,portee,element):
         self.image = None
         self.pv = pv
         self.pv_base = pv
@@ -131,6 +134,7 @@ class Hero:
         self.portee = portee
         self.poison = False
         self.stun = False
+        self.type = element
     def get_pv(self):
         return self.pv
     def get_pv_base(self):
@@ -169,6 +173,8 @@ class Hero:
         return self.poison
     def get_stun(self):
         return self.stun
+    def get_type(self):
+        return self.type
     def set_mort(self,mort):
         self.mort = mort
     def modif_pv(self, nb):
@@ -204,7 +210,7 @@ class Hero:
 
 class Night_Hero:
     def __init__(self):
-        self.hero = Hero(100,540,4,0.25,0.2,1.2,5,80)
+        self.hero = Hero(100,540,4,0.25,0.2,1.2,5,80,'Nuit')
         self.images_coup_depee_d = [f'images/Jeu de combat/Hero/Attaque/Attaque_Droite/Attaque{i}.png' for i in range(1,13)]
         self.images_coup_depee_g = [f'images/Jeu de combat/Hero/Attaque/Attaque_Gauche/Attaque{i}.png' for i in range(1,13)]
         self.images_marche_d = [f'images/Jeu de combat/Hero/Marche/Droite/Hero_course{i}.png' for i in range(1,7)] 
@@ -223,7 +229,7 @@ class Night_Hero:
     def inaction(self,sens):
         return None
 
-    def attaque(self,speed:float,sens,j2):
+    def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - self
@@ -236,7 +242,7 @@ class Night_Hero:
                 if self.hero.get_pos_x()-140 < j2.boss.get_pos_x() < self.hero.get_pos_x() + 100 and not j2.boss.get_block():
                     # Le boss perd 5 Pv
                     aie_boss.play()
-                    j2.boss.modif_pv(-5)
+                    j2.boss.modif_pv(-5*multis)
                     print(f"Attaque Épée Héros : Pv boss : {j2.boss.get_pv()}")
                     # Affichage des dégâts subis
                     self.cd_dgt5 = time.time()
@@ -284,7 +290,7 @@ class Night_Hero:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
         
 
-    def cp2(self, speed:float, sens, j2):
+    def cp2(self, speed:float, sens, j2,multis):
         '''Permet de jouer l'animation de parade du héros.
         Paramètres :
             - self
@@ -308,7 +314,7 @@ class Night_Hero:
 
 class Spirit_Hero:
     def __init__(self):
-        self.hero = Hero(160,490,5,0.12,0.06,3,6,150)
+        self.hero = Hero(160,490,5,0.12,0.06,3,6,150,'Esprit')
         self.atk1_d = [f'images/Jeu de combat/Spirit_Hero/Droite/Attaque1/_a_frm{i},100.png' for i in range(1,12)]
         self.atk2_d = [f'images/Jeu de combat/Spirit_Hero/Droite/Attaque2/_a_frm{i},100.png' for i in range(12,23)]
         self.atk1_g = [f'images/Jeu de combat/Spirit_Hero/Gauche/Attaque1/_a_frm{i},100.png' for i in range(1,12)]
@@ -331,7 +337,7 @@ class Spirit_Hero:
     def inaction(self,sens):
         return None
 
-    def attaque(self,speed:float,sens,j2):
+    def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - self
@@ -346,7 +352,7 @@ class Spirit_Hero:
                     if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
                         # Le boss perd 5 Pv
                         aie_boss.play()
-                        j2.boss.modif_pv(-randint(5,15))
+                        j2.boss.modif_pv(-randint(5,15)*multis)
                         print(f"Attaque Masse Héros : Pv boss : {j2.boss.get_pv()}")
                         # Affichage des dégâts subis
                         self.cd_dgt5 = time.time()
@@ -367,7 +373,7 @@ class Spirit_Hero:
                     if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
                         # Le boss perd 5 Pv
                         aie_boss.play()
-                        j2.boss.modif_pv(-randint(10,20))
+                        j2.boss.modif_pv(-randint(10,20)*multis)
                         print(f"Attaque combo : Pv boss : {j2.boss.get_pv()}")
                         # Affichage des dégâts subis
                         self.cd_dgt5 = time.time()
@@ -417,7 +423,7 @@ class Spirit_Hero:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2):
+    def cp2(self, speed:float, sens, j2,multis):
         '''Permet de jouer l'animation de parade du héros.
         Paramètres :
             - self
@@ -430,7 +436,7 @@ class Spirit_Hero:
                 if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
                     # Le boss perd 5 Pv
                     aie_boss.play()
-                    j2.boss.modif_pv(-randint(15,40))
+                    j2.boss.modif_pv(-randint(15,40)*multis)
                     print(f"Attaque chargée Héros : Pv boss : {j2.boss.get_pv()}")
                     # Affichage des dégâts subis
                     self.cd_dgt5 = time.time()
@@ -448,7 +454,7 @@ class Spirit_Hero:
 
 class Spirit_Warrior:
     def __init__(self):
-        self.hero = Hero(200,502,0.8,0.12,0.06,4.5,6,170)
+        self.hero = Hero(200,502,0.8,0.12,0.06,4.5,6,170,'Esprit')
         self.atk1_d = [f'images/Jeu de combat/Spirit_Warrior/Droite/Attaque1/_a_frm{i},100.png' for i in range(1,13)]
         self.atk2_d = [f'images/Jeu de combat/Spirit_Warrior/Droite/Attaque2/_a_frm{i},100.png' for i in range(15,30)]
         self.atk1_g = [f'images/Jeu de combat/Spirit_Warrior/Gauche/Attaque1/_a_frm{i},100.png' for i in range(1,13)]
@@ -471,7 +477,7 @@ class Spirit_Warrior:
     def inaction(self,sens):
         return None
 
-    def attaque(self,speed:float,sens,j2):
+    def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - self
@@ -485,7 +491,7 @@ class Spirit_Warrior:
                     if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
                         # Le boss perd 5 Pv
                         aie_boss.play()
-                        j2.boss.modif_pv(-6)
+                        j2.boss.modif_pv(-6*multis)
                         print(f"Attaque Masse Héros : Pv boss : {j2.boss.get_pv()}")
                         # Affichage des dégâts subis
                         self.cd_dgt5 = time.time()
@@ -507,7 +513,7 @@ class Spirit_Warrior:
                     if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
                         # Le boss perd 5 Pv
                         aie_boss.play()
-                        j2.boss.modif_pv(-15)
+                        j2.boss.modif_pv(-15*multis)
                         print(f"Attaque combo : Pv boss : {j2.boss.get_pv()}")
                         # Affichage des dégâts subis
                         self.cd_dgt5 = time.time()
@@ -557,7 +563,7 @@ class Spirit_Warrior:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2):
+    def cp2(self, speed:float, sens, j2,multis):
         '''Permet de jouer l'animation de parade du héros.
         Paramètres :
             - self
@@ -570,7 +576,7 @@ class Spirit_Warrior:
                 if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
                     # Le boss perd 5 Pv
                     aie_boss.play()
-                    j2.boss.modif_pv(-20)
+                    j2.boss.modif_pv(-20*multis)
                     print(f"Attaque chargée Héros : Pv boss : {j2.boss.get_pv()}")
                     # Affichage des dégâts subis
                     self.cd_dgt5 = time.time()
@@ -589,7 +595,7 @@ class Spirit_Warrior:
 
 class Lancier:
     def __init__(self):
-        self.hero = Hero(120,505,3,0.12,0.15,3,6,120)
+        self.hero = Hero(120,505,3,0.12,0.15,3,6,120,'Esprit')
         self.atk1_d = [f'images/Jeu de combat/Lancier/Droite/Attaque1/_a_frm{i},100.png' for i in range(10)]
         self.atk1_g = [f'images/Jeu de combat/Lancier/Gauche/Attaque1/_a_frm{i},100.png' for i in range(10)]
         self.images_marche_d = [f'images/Jeu de combat/Lancier/Droite/Mvmt/_a_frm{i},100.png' for i in range(0,8)] 
@@ -610,7 +616,7 @@ class Lancier:
     def inaction(self,sens):
         return None
 
-    def attaque(self,speed:float,sens,j2):
+    def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - self
@@ -623,7 +629,7 @@ class Lancier:
                 if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
                     # Le boss perd 5 Pv
                     aie_boss.play()
-                    j2.boss.modif_pv(-8)
+                    j2.boss.modif_pv(-8*multis)
                     print(f"Attaque Épée Héros : Pv boss : {j2.boss.get_pv()}")
                     # Affichage des dégâts subis
                     self.cd_dgt5 = time.time()
@@ -690,7 +696,7 @@ class Lancier:
                         print(f"Attaque Charge Héros : Pv boss : {j2.boss.get_pv()}")
                 self.hero.modif_img(self.cp2_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2):
+    def cp2(self, speed:float, sens, j2,multis):
         '''Permet de jouer l'animation de parade du héros.
         Paramètres :
             - self
@@ -709,7 +715,7 @@ class Lancier:
 
 class Assassin:
     def __init__(self):
-        self.hero = Hero(75,480,2.5,0.2,0.1,2,1.3,120)
+        self.hero = Hero(75,480,2.5,0.2,0.1,2,1.3,120,'Neutre')
         self.atk1_d = [f'images/Jeu de combat/Assassin/Droite/Attaque1/_a_frm{i},100.png' for i in range(10)]
         self.atk2_d = [f'images/Jeu de combat/Assassin/Droite/Attaque2/_a_frm{i},100.png' for i in range(11,18)]
         self.atk1_g = [f'images/Jeu de combat/Assassin/Gauche/Attaque1/_a_frm{i},100.png' for i in range(10)]
@@ -731,7 +737,7 @@ class Assassin:
         self.cd_block_img = 0
         self.atk2 = False
 
-    def attaque(self,speed:float,sens,j2):
+    def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - self
@@ -746,7 +752,7 @@ class Assassin:
                     if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
                         # Le boss perd 5 Pv
                         aie_boss.play()
-                        j2.boss.modif_pv(-8)
+                        j2.boss.modif_pv(-8*multis)
                         print(f"Attaque Masse Héros : Pv boss : {j2.boss.get_pv()}")
                         # Affichage des dégâts subis
                         self.cd_dgt5 = time.time()
@@ -767,7 +773,7 @@ class Assassin:
                     if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
                         # Le boss perd 5 Pv
                         aie_boss.play()
-                        j2.boss.modif_pv(-10)
+                        j2.boss.modif_pv(-10*multis)
                         print(f"Attaque combo : Pv boss : {j2.boss.get_pv()}")
                         # Affichage des dégâts subis
                         self.cd_dgt5 = time.time()
@@ -828,7 +834,7 @@ class Assassin:
                     self.hero.modif_img(self.images_course_d[int(self.frame)])
                     self.hero.set_speed(6)
 
-    def cp2(self, speed:float, sens, j2):
+    def cp2(self, speed:float, sens, j2,multis):
         '''Permet de jouer l'animation de parade du héros.
         Paramètres :
             - self
@@ -855,7 +861,7 @@ class Assassin:
 
 class Zukong:
     def __init__(self):
-        self.hero = Hero(160,495,3.2,0.18,0.14,4.5,3,170)
+        self.hero = Hero(160,495,3.2,0.18,0.14,4.5,3,170,'Neutre')
         self.atk1_d = [f'images/Jeu de combat/Zukong/Droite/Attaque1/_a_frm{i},60.png' for i in range(19)]
         self.atk1_g = [f'images/Jeu de combat/Zukong/Gauche/Attaque1/_a_frm{i},60.png' for i in range(19)]
         self.images_marche_d = [f'images/Jeu de combat/Zukong/Droite/Marche/_a_frm{i},60.png' for i in range(8)] 
@@ -875,7 +881,7 @@ class Zukong:
         self.cd_block_img = 0
         self.atk2 = False
 
-    def attaque(self,speed:float,sens,j2):
+    def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - self
@@ -885,7 +891,7 @@ class Zukong:
             if abs(distance(self, j2)) < self.hero.get_portee() and 5 <= self.frame <= 11 and not j2.boss.get_block():
                 # Le boss perd 5 Pv
                 aie_boss.play()
-                j2.boss.modif_pv(-0.25)
+                j2.boss.modif_pv(-0.25*multis)
                 print(f"Attaque Masse Héros : Pv boss : {j2.boss.get_pv()}")
                 # Affichage des dégâts subis
                 self.cd_dgt5 = time.time()
@@ -934,7 +940,7 @@ class Zukong:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2):
+    def cp2(self, speed:float, sens, j2,multis):
         '''Permet de jouer l'animation de parade du héros.
         Paramètres :
             - self
@@ -947,7 +953,7 @@ class Zukong:
                 if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
                     # Le boss perd 5 Pv
                     aie_boss.play()
-                    j2.boss.modif_pv(-8)
+                    j2.boss.modif_pv(-8*multis)
                     print(f"Attaque chargée Héros : Pv boss : {j2.boss.get_pv()}")
                     # Affichage des dégâts subis
                     self.cd_dgt5 = time.time()
@@ -975,7 +981,7 @@ class Zukong:
 
 class Maehv:
     def __init__(self):
-        self.hero = Hero(125,440,3.2,0.18,0.14,5,1,190)
+        self.hero = Hero(125,440,3.2,0.18,0.14,5,1,190,'Feu')
         self.atk1_d = [f'images/Jeu de combat/Maehv/Droite/Attaque1/_a_frm{i},60.png' for i in range(33)]
         self.atk1_g = [f'images/Jeu de combat/Maehv/Gauche/Attaque1/_a_frm{i},60.png' for i in range(33)]
         self.images_marche_d = [f'images/Jeu de combat/Maehv/Droite/Marche/_a_{i},60.png' for i in range(10)] 
@@ -999,7 +1005,7 @@ class Maehv:
         self.dgt3 = False
         self.bonus = 0
 
-    def attaque(self,speed:float,sens,j2):
+    def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - self
@@ -1009,17 +1015,17 @@ class Maehv:
             if abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 4 and not j2.boss.get_block():
                 if not self.dgt1:
                     aie_boss.play()
-                    j2.boss.modif_pv(-6-self.bonus/3)
+                    j2.boss.modif_pv((-6-self.bonus/3)*multis)
                     self.dgt1 = True
             elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 8 and not j2.boss.get_block():
                 if not self.dgt2:
                     aie_boss.play()
-                    j2.boss.modif_pv(-10-self.bonus/3)
+                    j2.boss.modif_pv((-10-self.bonus/3)*multis)
                     self.dgt2 = True
             elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 23 and not j2.boss.get_block():
                 if not self.dgt3:
                     aie_boss.play()
-                    j2.boss.modif_pv(-15-self.bonus/3)
+                    j2.boss.modif_pv((-15-self.bonus/3)*multis)
                     self.dgt3 = True    
             if self.frame >= len(self.atk1_d)-1:
                 self.frame = 0
@@ -1068,7 +1074,7 @@ class Maehv:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2):
+    def cp2(self, speed:float, sens, j2,multis):
         '''Permet de jouer l'animation de parade du héros.
         Paramètres :
             - self
@@ -1105,7 +1111,7 @@ class Maehv:
 
 class Zendo:
     def __init__(self):
-        self.hero = Hero(120,440,4,0.18,0.14,4.5,3,185)
+        self.hero = Hero(120,440,5,0.18,0.14,4.5,3,185,'Air')
         self.atk1_d = [f'images/Jeu de combat/Zendo/Droite/Attaque/_a_{i},60.png' for i in range(38)]
         self.atk1_g = [f'images/Jeu de combat/Zendo/Gauche/Attaque/_a_{i},60.png' for i in range(38)]
         self.images_marche_d = [f'images/Jeu de combat/Zendo/Droite/Marche/_a_{i},60.png' for i in range(6)] 
@@ -1128,7 +1134,7 @@ class Zendo:
         self.dgt3 = False
         self.dgt4 = False
 
-    def attaque(self,speed:float,sens,j2):
+    def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - self
@@ -1138,22 +1144,22 @@ class Zendo:
             if abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 12 and not j2.boss.get_block():
                 if not self.dgt1:
                     aie_boss.play()
-                    j2.boss.modif_pv(-4)
+                    j2.boss.modif_pv(-6*multis)
                     self.dgt1 = True
             elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 18 and not j2.boss.get_block():
                 if not self.dgt2:
                     aie_boss.play()
-                    j2.boss.modif_pv(-6)
+                    j2.boss.modif_pv(-8*multis)
                     self.dgt2 = True
             elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 24 and not j2.boss.get_block():
                 if not self.dgt3:
                     aie_boss.play()
-                    j2.boss.modif_pv(-8)
+                    j2.boss.modif_pv(-10*multis)
                     self.dgt3 = True    
             elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 30 and not j2.boss.get_block():
                 if not self.dgt4:
                     aie_boss.play()
-                    j2.boss.modif_pv(-14)
+                    j2.boss.modif_pv(-16*multis)
                     self.dgt4 = True    
             if self.frame >= len(self.atk1_d)-1:
                 self.frame = 0
@@ -1202,7 +1208,7 @@ class Zendo:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2):
+    def cp2(self, speed:float, sens, j2,multis):
         '''Permet de jouer l'animation de parade du héros.
         Paramètres :
             - self
@@ -1226,7 +1232,7 @@ class Zendo:
 
 class Pureblade:
     def __init__(self):
-        self.hero = Hero(100,440,4,0.18,0.14,5.5,1000,185)
+        self.hero = Hero(100,440,4,0.18,0.14,5.5,1000,185,'Feu')
         self.atk1_d = [f'images/Jeu de combat/Pureblade/Droite/Attaque1/_a_{i},60.png' for i in range(34)]
         self.atk1_g = [f'images/Jeu de combat/Pureblade/Gauche/Attaque1/_a_{i},60.png' for i in range(34)]
         self.images_marche_d = [f'images/Jeu de combat/Pureblade/Droite/Marche/_a_{i},60.png' for i in range(8)] 
@@ -1249,7 +1255,7 @@ class Pureblade:
         self.dgt3 = False
         self.dgt4 = False
 
-    def attaque(self,speed:float,sens,j2):
+    def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - self
@@ -1258,11 +1264,11 @@ class Pureblade:
         if self.hero.get_pv() > 0:
             if 5 <= int(self.frame) <= 13 and not j2.boss.get_block():
                 aie_boss.play()
-                j2.boss.modif_pv(-0.55)
+                j2.boss.modif_pv(-0.55*multis)
             elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 23 and not j2.boss.get_block():
                 if not self.dgt2:
                     aie_boss.play()
-                    j2.boss.modif_pv(-20)
+                    j2.boss.modif_pv(-20*multis)
                     j2.boss.set_poison(time.time())
                     self.dgt2 = True
             if self.frame >= len(self.atk1_d)-1:
@@ -1309,7 +1315,7 @@ class Pureblade:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2):
+    def cp2(self, speed:float, sens, j2,multis):
         '''Permet de jouer l'animation de parade du héros.
         Paramètres :
             - self
@@ -1333,7 +1339,7 @@ class Pureblade:
 
 class Hsuku:
     def __init__(self):
-        self.hero = Hero(100,450,5,0.18,0.14,3.5,3,170)
+        self.hero = Hero(100,450,5,0.18,0.14,3.5,3,170,'Neutre')
         self.atk1_d = [f'images/Jeu de combat/Hsuku/Droite/Attaque1/_a_{i},70.png' for i in range(24)]
         self.atk1_g = [f'images/Jeu de combat/Hsuku/Gauche/Attaque1/_a_{i},70.png' for i in range(24)]
         self.images_marche_d = [f'images/Jeu de combat/Hsuku/Droite/Marche/_a_{i},70.png' for i in range(8)] 
@@ -1356,7 +1362,7 @@ class Hsuku:
         self.dgt3 = False
         self.dgt4 = False
 
-    def attaque(self,speed:float,sens,j2):
+    def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - self
@@ -1366,22 +1372,22 @@ class Hsuku:
             if abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 2 and not j2.boss.get_block():
                 if not self.dgt1:
                     aie_boss.play()
-                    j2.boss.modif_pv(-6)
+                    j2.boss.modif_pv(-6*multis)
                     self.dgt1 = True
             elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 5 and not j2.boss.get_block():
                 if not self.dgt2:
                     aie_boss.play()
-                    j2.boss.modif_pv(-6)
+                    j2.boss.modif_pv(-6*multis)
                     self.dgt2 = True
             elif int(self.frame) == 12 and not j2.boss.get_block(): 
                 if not self.dgt3:
                     aie_boss.play()
-                    j2.boss.modif_pv(-8)
+                    j2.boss.modif_pv(-8*multis)
                     self.dgt3 = True    
             elif int(self.frame) == 18 and not j2.boss.get_block():
                 if not self.dgt4:
                     aie_boss.play()
-                    j2.boss.modif_pv(-8)
+                    j2.boss.modif_pv(-8*multis)
                     self.dgt4 = True    
             if self.frame >= len(self.atk1_d)-1:
                 self.frame = 0
@@ -1430,7 +1436,7 @@ class Hsuku:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2):
+    def cp2(self, speed:float, sens, j2,multis):
         '''Permet de jouer l'animation de parade du héros.
         Paramètres :
             - self
@@ -1454,7 +1460,7 @@ class Hsuku:
 
 class Sanguinar:
     def __init__(self):
-        self.hero = Hero(100,450,5,0.18,0.14,5,3,170)
+        self.hero = Hero(100,450,5,0.18,0.14,5,3,170,'Neutre')
         self.atk1_d = [f'images/Jeu de combat/Sanguinar/Droite/Attaque1/_a_{i},60.png' for i in range(33)]
         self.atk1_g = [f'images/Jeu de combat/Sanguinar/Gauche/Attaque1/_a_{i},60.png' for i in range(33)]
         self.images_marche_d = [f'images/Jeu de combat/Sanguinar/Droite/Marche/_a_{i},60.png' for i in range(8)] 
@@ -1477,7 +1483,7 @@ class Sanguinar:
         self.dgt3 = False
         self.dgt4 = False
 
-    def attaque(self,speed:float,sens,j2):
+    def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - self
@@ -1490,16 +1496,16 @@ class Sanguinar:
             elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 16:
                 if not j2.boss.get_block() and not self.dgt1:
                     aie_boss.play()
-                    j2.boss.modif_pv(-6)
+                    j2.boss.modif_pv(-6*multis)
                     self.dgt1 = True
                 self.hero.set_block(True)
             elif 20 <= int(self.frame) <= 24 and not j2.boss.get_block(): 
                 aie_boss.play()
-                j2.boss.modif_pv(-0.38)
+                j2.boss.modif_pv(-0.38*multis)
             elif int(self.frame) == 26 and not j2.boss.get_block():
                 if not self.dgt2:
                     aie_boss.play()
-                    j2.boss.modif_pv(-20)
+                    j2.boss.modif_pv(-20*multis)
                     self.dgt2 = True    
             if self.frame >= len(self.atk1_d)-1:
                 self.frame = 0
@@ -1547,7 +1553,7 @@ class Sanguinar:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2):
+    def cp2(self, speed:float, sens, j2,multis):
         '''Permet de jouer l'animation de parade du héros.
         Paramètres :
             - self
@@ -1571,7 +1577,7 @@ class Sanguinar:
 
 class Whistler:
     def __init__(self):
-        self.hero = Hero(80,450,6,0.18,0.2,2.5,3,0)
+        self.hero = Hero(80,450,6,0.18,0.2,2.5,3,0,'Feu')
         self.atk1_d = [f'images/Jeu de combat/Whistler/Droite/Attaque1/_a_{i},100.png' for i in range(31)]
         self.atk1_g = [f'images/Jeu de combat/Whistler/Gauche/Attaque1/_a_{i},100.png' for i in range(31)]
         self.images_marche_d = [f'images/Jeu de combat/Whistler/Droite/Marche/_a_{i},100.png' for i in range(8)] 
@@ -1594,7 +1600,7 @@ class Whistler:
         self.dgt3 = False
         self.dgt4 = False
 
-    def attaque(self,speed:float,sens,j2):
+    def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - self
@@ -1607,7 +1613,7 @@ class Whistler:
                     if dgt == 60:
                         print("Coup critique !")
                     aie_boss.play()
-                    j2.boss.modif_pv(-dgt)
+                    j2.boss.modif_pv(-dgt*multis)
                     self.dgt4 = True    
             if self.frame >= len(self.atk1_d)-1:
                 self.frame = 0
@@ -1653,7 +1659,7 @@ class Whistler:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2):
+    def cp2(self, speed:float, sens, j2,multis):
         '''Permet de jouer l'animation de parade du héros.
         Paramètres :
             - self
@@ -1677,7 +1683,7 @@ class Whistler:
 
 class Tethermancer:
     def __init__(self):
-        self.hero = Hero(130,410,3.5,0.18,0.14,3.5,3,170)
+        self.hero = Hero(130,410,3.5,0.18,0.14,3.5,3,170,'Feu')
         self.atk1_d = [f'images/Jeu de combat/Tethermancer/Droite/Attaque1/_a_{i},100.png' for i in range(27)]
         self.atk1_g = [f'images/Jeu de combat/Tethermancer/Gauche/Attaque1/_a_{i},100.png' for i in range(27)]
         self.images_marche_d = [f'images/Jeu de combat/Tethermancer/Droite/Marche/_a_{i},100.png' for i in range(8)] 
@@ -1700,7 +1706,7 @@ class Tethermancer:
         self.dgt3 = False
         self.dgt4 = False
 
-    def attaque(self,speed:float,sens,j2):
+    def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - self
@@ -1712,7 +1718,7 @@ class Tethermancer:
             elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 14:
                 if not j2.boss.get_block() and not self.dgt1:
                     aie_boss.play()
-                    j2.boss.modif_pv(-22)
+                    j2.boss.modif_pv(-22*multis)
                     self.dgt1 = True
                 self.hero.set_block(True)
             if self.frame >= len(self.atk1_d)-1:
@@ -1760,7 +1766,7 @@ class Tethermancer:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2):
+    def cp2(self, speed:float, sens, j2,multis):
         '''Permet de jouer l'animation de parade du héros.
         Paramètres :
             - self
@@ -1784,7 +1790,7 @@ class Tethermancer:
 
 class Aether:
     def __init__(self):
-        self.hero = Hero(125,455,3.2,0.18,0.14,5,1,190)
+        self.hero = Hero(125,455,3.2,0.18,0.14,5,1,190,'Air')
         self.atk1_d = [f'images/Jeu de combat/Aether/Droite/Attaque1/_a_{i},100.png' for i in range(26)]
         self.atk1_g = [f'images/Jeu de combat/Aether/Gauche/Attaque1/_a_{i},100.png' for i in range(33)]
         self.images_marche_d = [f'images/Jeu de combat/Aether/Droite/Marche/_a_{i},100.png' for i in range(6)] 
@@ -1806,7 +1812,7 @@ class Aether:
         self.dgt3 = False
         self.bonus = 0
 
-    def attaque(self,speed:float,sens,j2):
+    def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - self
@@ -1816,7 +1822,7 @@ class Aether:
             if abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 12 and not j2.boss.get_block():
                 if not self.dgt1:
                     aie_boss.play()
-                    j2.boss.modif_pv(-6-self.bonus)
+                    j2.boss.modif_pv((-6-self.bonus)*multis)
                     print(self.bonus)
                     self.dgt1 = True
             if self.frame >= len(self.atk1_d)-1:
@@ -1865,7 +1871,7 @@ class Aether:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2):
+    def cp2(self, speed:float, sens, j2,multis):
         '''Permet de jouer l'animation de parade du héros.
         Paramètres :
             - self
@@ -1891,7 +1897,7 @@ class Aether:
 
 class Twilight:
     def __init__(self):
-        self.hero = Hero(100,450,8.5,0.15,0.25,5,3,170)
+        self.hero = Hero(100,450,8.5,0.15,0.25,5,3,170,'Feu')
         self.atk1_d = [f'images/Jeu de combat/Twilight/Droite/Attaque1/_a_{i},60.png' for i in range(22)]
         self.atk1_g = [f'images/Jeu de combat/Twilight/Gauche/Attaque1/_a_{i},60.png' for i in range(22)]
         self.images_marche_d = [f'images/Jeu de combat/Twilight/Droite/Marche/_a_{i},60.png' for i in range(8)] 
@@ -1914,7 +1920,7 @@ class Twilight:
         self.dgt3 = False
         self.dgt4 = False
 
-    def attaque(self,speed:float,sens,j2):
+    def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - self
@@ -1923,7 +1929,7 @@ class Twilight:
         if self.hero.get_pv() > 0:
             if abs(distance(self, j2)) < self.hero.get_portee() and 9 <= int(self.frame) <= 16 and not j2.boss.get_block():
                 aie_boss.play()
-                j2.boss.modif_pv(-0.60)
+                j2.boss.modif_pv(-0.60*multis)
                 j2.boss.set_poison(time.time())
             if self.frame >= len(self.atk1_d)-1:
                 self.frame = 0
@@ -1968,7 +1974,7 @@ class Twilight:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2):
+    def cp2(self, speed:float, sens, j2,multis):
         '''Permet de jouer l'animation de parade du héros.
         Paramètres :
             - self
@@ -1992,13 +1998,13 @@ class Twilight:
 
 class Hell_Boss:
     def __init__(self):
-        self.boss = Boss(140,0,50,470,1.2,0.1,2.5,4.5,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)])
-        self.images_coup_poing = [f'images/Jeu de combat/Boss/Attaque1/Coup_de_poing{i}.png' for i in range(1,6)]
-        self.images_coup_faux = [f'images/Jeu de combat/Boss/Attaque2/Faux{i}.png' for i in range(1,8)]
-        self.images_marche_d = [f'images/Jeu de combat/Boss/Marche/Droite/Marche{i}.png' for i in range(1,8)]
-        self.images_marche_g = [f'images/Jeu de combat/Boss/Marche/Gauche/Marche{i}.png' for i in range(1,8)]
-        self.images_ulti = [f'images/Jeu de combat/Boss/Ulti/Ulti ({i}).png' for i in range(1,7)]
-        self.images_mort = [f'images/Jeu de combat/Boss/Mort/Mort{i}.png' for i in range(1,8)]
+        self.boss = Boss(140,0,50,470,1.2,0.1,2.5,4.5,0,'Nature',[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)])
+        self.images_coup_poing = [pygame.image.load(f'images/Jeu de combat/Boss/Attaque1/Coup_de_poing{i}.png') for i in range(1,6)]
+        self.images_coup_faux = [pygame.image.load(f'images/Jeu de combat/Boss/Attaque2/Faux{i}.png') for i in range(1,8)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Boss/Marche/Droite/Marche{i}.png') for i in range(1,8)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Boss/Marche/Gauche/Marche{i}.png') for i in range(1,8)]
+        self.images_ulti = [pygame.image.load(f'images/Jeu de combat/Boss/Ulti/Ulti ({i}).png') for i in range(1,7)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/Boss/Mort/Mort{i}.png') for i in range(1,8)]
         self.images_inaction = [f'images/Jeu de combat/Boss/Inaction/Inaction{i}.png' for i in range(1,4)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
@@ -2054,7 +2060,6 @@ class Hell_Boss:
         # Si l'animation arrive au coup de l'attaque et que l'attaque n'a pas encore effectué ses dégâts :
         if self.frame >= len(self.images_coup_faux)-1:
             # Si le héros se trouve à portée du boss :
-            print(distance(j1,self))
             if -230 < distance(j1,self) < 50 and not j1.hero.get_block():
                 # Le héros perd 20 Pv
                 j1.hero.modif_pv(-20)
@@ -2111,7 +2116,7 @@ class Hell_Boss:
             print(f"Attaque Ultime ! : Pv boss : {self.boss.get_pv()}")
         self.frame += speed
         self.boss.modif_img(self.images_ulti[int(self.frame)])
-    def inaction(self,speed:float):
+    def inaction(self,speed:float,sens):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
             - self
@@ -2171,7 +2176,7 @@ class Hell_Boss:
                 # Sinon, déplacement pour être à portée du héros
                 self.boss_vers_hero(j1)
             else:
-                self.inaction(0.08)
+                self.inaction(0.08,'bla')
             if -180 < distance(j1,self) < 50:
                 if self.boss.get_attaque2_dispo() and not self.atk1:
                     if not self.atk2:
@@ -2184,12 +2189,12 @@ class Hell_Boss:
             
 class Michel:
     def __init__(self):
-        self.boss = Boss(100,0,50,360,3,0.15,4,0,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Chute/_a_frm{i},100.png') for i in range(4)])
-        self.images_attaque1 = [f'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm{i},70.png' for i in range(44,69)]
-        self.images_marche_d = [f'images/Jeu de combat/LancierBoss/Droite/Marche/_a_frm{i},70.png' for i in range(16)]
-        self.images_marche_g = [f'images/Jeu de combat/LancierBoss/Gauche/Marche/_a_frm{i},70.png' for i in range(16)]
-        self.images_mort = [f'images/Jeu de combat/LancierBoss/Mort/_a_frm{i},70.png' for i in range(83,100)]
-        self.images_inaction = [f'images/Jeu de combat/LancierBoss/Gauche/Inaction/_a_frm{i},70.png' for i in range(16,28)]
+        self.boss = Boss(100,0,50,360,3,0.15,4,0,0,'Neutre',[pygame.image.load(f'images/Jeu de combat/Fonds/Chute/_a_frm{i},100.png') for i in range(4)])
+        self.images_attaque1 = [pygame.image.load(f'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm{i},70.png') for i in range(44,69)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/LancierBoss/Droite/Marche/_a_frm{i},70.png') for i in range(16)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/LancierBoss/Gauche/Marche/_a_frm{i},70.png') for i in range(16)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/LancierBoss/Mort/_a_frm{i},70.png') for i in range(83,100)]
+        self.images_inaction = [pygame.image.load(f'images/Jeu de combat/LancierBoss/Gauche/Inaction/_a_frm{i},70.png') for i in range(16,28)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -2310,13 +2315,13 @@ class Michel:
                 
 class TankBoss:
     def __init__(self):
-        self.boss = Boss(180,0,50,375,4,0.16,4,10,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)])
-        self.images_attaque1 = [f'images/Jeu de combat/ThunderBoss/Gauche/Attaque1/_a_Calque {i}.png' for i in range(9,23)]
-        self.images_attaque2 = [f'images/Jeu de combat/ThunderBoss/Gauche/Attaque2/_a_Calque {i}.png' for i in range(34,53)]
-        self.images_marche_d = [f'images/Jeu de combat/ThunderBoss/Droite/Marche/_a_Calque {i}.png' for i in range(1,9)]
-        self.images_marche_g = [f'images/Jeu de combat/ThunderBoss/Gauche/Marche/_a_Calque {i}.png' for i in range(1,9)]
-        self.images_mort = [f'images/Jeu de combat/ThunderBoss/Mort/_a_Calque {i}.png' for i in range(4,16)]
-        self.images_inaction = [f'images/Jeu de combat/ThunderBoss/Gauche/Inaction/_a_Calque {i}.png' for i in range(24,35)]
+        self.boss = Boss(180,0,50,375,4,0.16,4,10,0,'Foudre',[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)])
+        self.images_attaque1 = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Gauche/Attaque1/_a_Calque {i}.png') for i in range(9,23)]
+        self.images_attaque2 = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Gauche/Attaque2/_a_Calque {i}.png') for i in range(34,53)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Droite/Marche/_a_Calque {i}.png') for i in range(1,9)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Gauche/Marche/_a_Calque {i}.png') for i in range(1,9)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Mort/_a_Calque {i}.png') for i in range(4,16)]
+        self.images_inaction = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Gauche/Inaction/_a_Calque {i}.png') for i in range(24,35)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -2368,8 +2373,6 @@ class TankBoss:
         self.atk2= True
         # Si l'animation arrive au coup de l'attaque et que l'attaque n'a pas encore effectué ses dégâts :
         if self.frame >= len(self.images_attaque2)-1:
-            # Si le héros se trouve à portée du boss :
-            print(distance(j1,self))
             if -180 < distance(j1,self) < 50 and not j1.hero.get_block():
                 # Le héros perd 20 Pv
                 j1.hero.modif_pv(-60)
@@ -2411,7 +2414,7 @@ class TankBoss:
             - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
         '''
-        if int(self.frame) >= len(self.images_inaction_d)-1:
+        if int(self.frame) >= len(self.images_inaction)-1:
             self.frame = 0
         self.frame += speed
         if sens == 'Gauche':
@@ -2472,12 +2475,12 @@ class TankBoss:
 
 class Cindera:
     def __init__(self):
-        self.boss = Boss(160,0,50,400,4,0.15,4.5,0,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)])
-        self.images_attaque1 = [f'images/Jeu de combat/Cindera/Gauche/Attaque1/_a_{i},100.png' for i in range(40)]
-        self.images_marche_d = [f'images/Jeu de combat/Cindera/Droite/Marche/_a_frm{i},0.png' for i in range(8)]
-        self.images_marche_g = [f'images/Jeu de combat/Cindera/Gauche/Marche/_a_frm{i},0.png' for i in range(8)]
-        self.images_mort = [f'images/Jeu de combat/Cindera/Mort/_a_frm{i},0.png' for i in range(26)]
-        self.images_inaction = [f'images/Jeu de combat/Cindera/Gauche/Inaction/_a_frm{i},0.png' for i in range(12)]
+        self.boss = Boss(160,0,50,400,4,0.15,4.5,0,0,'Feu',[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)])
+        self.images_attaque1 = [pygame.image.load(f'images/Jeu de combat/Cindera/Gauche/Attaque1/_a_{i},100.png') for i in range(40)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Cindera/Droite/Marche/_a_frm{i},0.png') for i in range(8)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Cindera/Gauche/Marche/_a_frm{i},0.png') for i in range(8)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/Cindera/Mort/_a_frm{i},0.png') for i in range(26)]
+        self.images_inaction = [pygame.image.load(f'images/Jeu de combat/Cindera/Gauche/Inaction/_a_frm{i},0.png') for i in range(12)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -2496,7 +2499,6 @@ class Cindera:
         '''
         # L'attaque 1 est en train d'être jouée.
         self.atk1 = True
-        print(j1.hero.get_speed())
         # Si toutes les images ont été jouées :
         if self.frame >= len(self.images_attaque1)-1:
             if abs(distance(j1,self)) < 180 and not j1.hero.get_block():
@@ -2555,9 +2557,9 @@ class Cindera:
             self.frame = 0
         self.frame += speed
         if sens == 'Gauche':
-            self.boss.modif_img(self.images_inaction_g[int(self.frame)])
+            self.boss.modif_img(self.images_inaction[int(self.frame)])
         else:
-            self.boss.modif_img(self.images_inaction_d[int(self.frame)])
+            self.boss.modif_img(self.images_inaction[int(self.frame)])
 
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
@@ -2605,14 +2607,14 @@ class Cindera:
 
 class DarkLord:
     def __init__(self):
-        self.boss = Boss(160,0,50,450,4,0.16,2.8,10,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Pluie/_a_frm{i},120.png') for i in range(8)])
-        self.images_attaque1_d = [f'images/Jeu de combat/DarkLord/Droite/Attaque1/_a_frm{i},0.png' for i in range(23)]
-        self.images_attaque1_g = [f'images/Jeu de combat/DarkLord/Gauche/Attaque1/_a_frm{i},0.png' for i in range(23)]
-        self.images_marche_d = [f'images/Jeu de combat/DarkLord/Droite/Marche/_a_frm{i},0.png' for i in range(8)]
-        self.images_marche_g = [f'images/Jeu de combat/DarkLord/Gauche/Marche/_a_frm{i},0.png' for i in range(8)]
-        self.images_mort = [f'images/Jeu de combat/DarkLord/Mort/_a_frm{i},0.png' for i in range(20)]
-        self.images_inaction_d = [f'images/Jeu de combat/DarkLord/Droite/Inaction/_a_frm{i},0.png' for i in range(16)]
-        self.images_inaction_g = [f'images/Jeu de combat/DarkLord/Gauche/Inaction/_a_frm{i},0.png' for i in range(16)]
+        self.boss = Boss(160,0,50,450,4,0.16,2.8,10,0,'Nuit',[pygame.image.load(f'images/Jeu de combat/Fonds/Pluie/_a_frm{i},120.png') for i in range(8)])
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/DarkLord/Droite/Attaque1/_a_frm{i},0.png') for i in range(23)]
+        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/DarkLord/Gauche/Attaque1/_a_frm{i},0.png') for i in range(23)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/DarkLord/Droite/Marche/_a_frm{i},0.png') for i in range(8)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/DarkLord/Gauche/Marche/_a_frm{i},0.png') for i in range(8)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/DarkLord/Mort/_a_frm{i},0.png') for i in range(20)]
+        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/DarkLord/Droite/Inaction/_a_frm{i},0.png') for i in range(16)]
+        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/DarkLord/Gauche/Inaction/_a_frm{i},0.png') for i in range(16)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -2739,14 +2741,14 @@ class DarkLord:
 
 class Astral:
     def __init__(self):
-        self.boss = Boss(160,0,50,440,4,0.16,3.2,10,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Eglise/_a_frm{i},150.png') for i in range(8)])
-        self.images_attaque1_d = [f'images/Jeu de combat/Astral/Droite/Attaque1/_a_{i},100.png' for i in range(29)]
-        self.images_attaque1_g = [f'images/Jeu de combat/Astral/Gauche/Attaque1/_a_{i},100.png' for i in range(29)]
-        self.images_marche_d = [f'images/Jeu de combat/Astral/Droite/Marche/_a_{i},100.png' for i in range(8)]
-        self.images_marche_g = [f'images/Jeu de combat/Astral/Gauche/Marche/_a_{i},100.png' for i in range(8)]
-        self.images_mort = [f'images/Jeu de combat/Astral/Mort/_a_frm{i},100.png' for i in range(12)]
-        self.images_inaction_d = [f'images/Jeu de combat/Astral/Droite/Inaction/_a_frm{i},100.png' for i in range(12)]
-        self.images_inaction_g = [f'images/Jeu de combat/Astral/Gauche/Inaction/_a_frm{i},100.png' for i in range(12)]
+        self.boss = Boss(160,0,50,440,4,0.16,3.2,10,0,'Esprit',[pygame.image.load(f'images/Jeu de combat/Fonds/Eglise/_a_frm{i},150.png') for i in range(8)])
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Astral/Droite/Attaque1/_a_{i},100.png') for i in range(29)]
+        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Astral/Gauche/Attaque1/_a_{i},100.png') for i in range(29)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Astral/Droite/Marche/_a_{i},100.png') for i in range(8)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Astral/Gauche/Marche/_a_{i},100.png') for i in range(8)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/Astral/Mort/_a_frm{i},100.png') for i in range(12)]
+        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/Astral/Droite/Inaction/_a_frm{i},100.png') for i in range(12)]
+        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Astral/Gauche/Inaction/_a_frm{i},100.png') for i in range(12)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -2874,14 +2876,14 @@ class Astral:
 
 class EternityPainter:
     def __init__(self):
-        self.boss = Boss(150,0,160,495,4,0.16,3.2,10,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Chute/_a_frm{i},100.png') for i in range(4)])
-        self.images_attaque1_d = [f'images/Jeu de combat/Ep/Droite/Attaque1/_a_frm{i},60.png' for i in range(23)]
-        self.images_attaque1_g = [f'images/Jeu de combat/Ep/Gauche/Attaque1/_a_frm{i},60.png' for i in range(23)]
-        self.images_marche_d = [f'images/Jeu de combat/Ep/Droite/Marche/_a_frm{i},60.png' for i in range(8)]
-        self.images_marche_g = [f'images/Jeu de combat/Ep/Gauche/Marche/_a_frm{i},60.png' for i in range(8)]
-        self.images_mort = [f'images/Jeu de combat/Ep/Mort/_a_frm{i},60.png' for i in range(11)]
-        self.images_inaction_d = [f'images/Jeu de combat/Ep/Droite/Inaction/_a_frm{i},80.png' for i in range(12)]
-        self.images_inaction_g = [f'images/Jeu de combat/Ep/Gauche/Inaction/_a_frm{i},80.png' for i in range(12)]
+        self.boss = Boss(150,0,160,495,4,0.16,3.2,10,0,'Esprit',[pygame.image.load(f'images/Jeu de combat/Fonds/Chute/_a_frm{i},100.png') for i in range(4)])
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Ep/Droite/Attaque1/_a_frm{i},60.png') for i in range(23)]
+        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Ep/Gauche/Attaque1/_a_frm{i},60.png') for i in range(23)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Ep/Droite/Marche/_a_frm{i},60.png') for i in range(8)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Ep/Gauche/Marche/_a_frm{i},60.png') for i in range(8)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/Ep/Mort/_a_frm{i},60.png') for i in range(11)]
+        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/Ep/Droite/Inaction/_a_frm{i},80.png') for i in range(12)]
+        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Ep/Gauche/Inaction/_a_frm{i},80.png') for i in range(12)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -3021,16 +3023,16 @@ class EternityPainter:
 
 class Shidai:
     def __init__(self):
-        self.boss = Boss(180,0,160,445,4,0.16,2.8,4,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Dojo/_a_frm{i},100.png') for i in range(48)])
-        self.images_attaque1_d = [f'images/Jeu de combat/Shidai/Droite/Attaque1/_a_{i},60.png' for i in range(20)]
-        self.images_attaque1_g = [f'images/Jeu de combat/Shidai/Gauche/Attaque1/_a_{i},60.png' for i in range(20)]
-        self.cp2_d = [f'images/Jeu de combat/Shidai/Droite/Attaque2/_a_{i},60.png' for i in range(6)]
-        self.cp2_g = [f'images/Jeu de combat/Shidai/Gauche/Attaque2/_a_{i},60.png' for i in range(6)]
-        self.images_marche_d = [f'images/Jeu de combat/Shidai/Droite/Marche/_a_frm{i},60.png' for i in range(8)]
-        self.images_marche_g = [f'images/Jeu de combat/Shidai/Gauche/Marche/_a_frm{i},60.png' for i in range(8)]
-        self.images_mort = [f'images/Jeu de combat/Shidai/Mort/_a_{i},60.png' for i in range(18)]
-        self.images_inaction_d = [f'images/Jeu de combat/Shidai/Droite/Inaction/_a_{i},80.png' for i in range(14)]
-        self.images_inaction_g = [f'images/Jeu de combat/Shidai/Gauche/Inaction/_a_{i},80.png' for i in range(14)]
+        self.boss = Boss(180,0,160,445,4,0.16,2.8,4,0,'Air',[pygame.image.load(f'images/Jeu de combat/Fonds/Dojo/_a_frm{i},100.png') for i in range(48)])
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Shidai/Droite/Attaque1/_a_{i},60.png') for i in range(20)]
+        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Shidai/Gauche/Attaque1/_a_{i},60.png') for i in range(20)]
+        self.cp2_d = [pygame.image.load(f'images/Jeu de combat/Shidai/Droite/Attaque2/_a_{i},60.png') for i in range(6)]
+        self.cp2_g = [pygame.image.load(f'images/Jeu de combat/Shidai/Gauche/Attaque2/_a_{i},60.png') for i in range(6)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Shidai/Droite/Marche/_a_frm{i},60.png') for i in range(8)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Shidai/Gauche/Marche/_a_frm{i},60.png') for i in range(8)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/Shidai/Mort/_a_{i},60.png') for i in range(18)]
+        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/Shidai/Droite/Inaction/_a_{i},80.png') for i in range(14)]
+        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Shidai/Gauche/Inaction/_a_{i},80.png') for i in range(14)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -3207,18 +3209,18 @@ class Shidai:
 
 class Lilithe:
     def __init__(self):
-        self.boss = Boss(180,0,180,455,4,0.16,5,7,2.5,[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)])
-        self.images_attaque1_d = [f'images/Jeu de combat/Lilithe/Droite/Attaque1/_a_{i},100.png' for i in range(12)]
-        self.images_attaque1_g = [f'images/Jeu de combat/Lilithe/Gauche/Attaque1/_a_{i},100.png' for i in range(12)]
-        self.images_attaque2_d = [f'images/Jeu de combat/Lilithe/Droite/Attaque2/_a_{i},70.png' for i in range(25)]
-        self.images_attaque2_g = [f'images/Jeu de combat/Lilithe/Gauche/Attaque2/_a_{i},70.png' for i in range(25)]
-        self.cp2_d = [f'images/Jeu de combat/Lilithe/Droite/Attaque3/_a_{i},70.png' for i in range(14)]
-        self.cp2_g = [f'images/Jeu de combat/Lilithe/Gauche/Attaque3/_a_{i},70.png' for i in range(14)]
-        self.images_marche_d = [f'images/Jeu de combat/Lilithe/Droite/Marche/_a_frm{i},70.png' for i in range(8)]
-        self.images_marche_g = [f'images/Jeu de combat/Lilithe/Gauche/Marche/_a_frm{i},70.png' for i in range(8)]
-        self.images_mort = [f'images/Jeu de combat/Lilithe/Mort/_a_{i},70.png' for i in range(20)]
-        self.images_inaction_d = [f'images/Jeu de combat/Lilithe/Droite/Inaction/_a_{i},80.png' for i in range(20)]
-        self.images_inaction_g = [f'images/Jeu de combat/Lilithe/Gauche/Inaction/_a_{i},80.png' for i in range(20)]
+        self.boss = Boss(180,0,180,455,4,0.16,5,7,2.5,'Feu',[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)])
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Lilithe/Droite/Attaque1/_a_{i},100.png') for i in range(12)]
+        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Lilithe/Gauche/Attaque1/_a_{i},100.png') for i in range(12)]
+        self.images_attaque2_d = [pygame.image.load(f'images/Jeu de combat/Lilithe/Droite/Attaque2/_a_{i},70.png') for i in range(25)]
+        self.images_attaque2_g = [pygame.image.load(f'images/Jeu de combat/Lilithe/Gauche/Attaque2/_a_{i},70.png') for i in range(25)]
+        self.cp2_d = [pygame.image.load(f'images/Jeu de combat/Lilithe/Droite/Attaque3/_a_{i},70.png') for i in range(14)]
+        self.cp2_g = [pygame.image.load(f'images/Jeu de combat/Lilithe/Gauche/Attaque3/_a_{i},70.png') for i in range(14)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Lilithe/Droite/Marche/_a_frm{i},70.png') for i in range(8)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Lilithe/Gauche/Marche/_a_frm{i},70.png') for i in range(8)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/Lilithe/Mort/_a_{i},70.png') for i in range(20)]
+        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/Lilithe/Droite/Inaction/_a_{i},80.png') for i in range(20)]
+        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Lilithe/Gauche/Inaction/_a_{i},80.png') for i in range(20)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -3433,14 +3435,14 @@ class Lilithe:
 
 class Solfist:
     def __init__(self):
-        self.boss = Boss(180,0,160,450,4,0.16,5,10,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)])
-        self.images_attaque1_d = [f'images/Jeu de combat/Solfist/Droite/Attaque1/_a_{i},100.png' for i in range(41)]
-        self.images_attaque1_g = [f'images/Jeu de combat/Solfist/Gauche/Attaque1/_a_{i},100.png' for i in range(41)]
-        self.images_marche_d = [f'images/Jeu de combat/Solfist/Droite/Marche/_a_{i},100.png' for i in range(8)]
-        self.images_marche_g = [f'images/Jeu de combat/Solfist/Gauche/Marche/_a_{i},100.png' for i in range(8)]
-        self.images_mort = [f'images/Jeu de combat/Solfist/Mort/_a_{i},100.png' for i in range(25)]
-        self.images_inaction_d = [f'images/Jeu de combat/Solfist/Droite/Inaction/_a_{i},100.png' for i in range(12)]
-        self.images_inaction_g = [f'images/Jeu de combat/Solfist/Gauche/Inaction/_a_{i},100.png' for i in range(12)]
+        self.boss = Boss(230,0,160,450,4,0.16,4.5,10,0,'Feu',[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)])
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Solfist/Droite/Attaque1/_a_{i},100.png') for i in range(41)]
+        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Solfist/Gauche/Attaque1/_a_{i},100.png') for i in range(41)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Solfist/Droite/Marche/_a_{i},100.png') for i in range(8)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Solfist/Gauche/Marche/_a_{i},100.png') for i in range(8)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/Solfist/Mort/_a_{i},100.png') for i in range(25)]
+        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/Solfist/Droite/Inaction/_a_{i},100.png') for i in range(12)]
+        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Solfist/Gauche/Inaction/_a_{i},100.png') for i in range(12)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -3465,17 +3467,15 @@ class Solfist:
             self.sens = s
         self.atk1 = True
         if not j1.hero.get_block():
-            # Si toutes les images ont été jouées :
-            print(distance(j1, self), self.sens)
             if 7 <= int(self.frame) <= 18:
                 if self.sens == 'Gauche' and -self.boss.get_portee() < distance(j1, self) < 0 or self.sens == 'Droite' and 0 < distance(j1, self) < self.boss.get_portee():
                     aie_hero.play()
-                    j1.hero.modif_pv(-0.3)
+                    j1.hero.modif_pv(-0.4)
             elif int(self.frame) == 30:
                 if self.sens == 'Gauche' and -self.boss.get_portee() < distance(j1, self) < 0 or self.sens == 'Droite' and 0 < distance(j1, self) < self.boss.get_portee():
                     if not self.dgt2:
                         aie_hero.play()
-                        j1.hero.modif_pv(-30)
+                        j1.hero.modif_pv(-45)
                         self.dgt2 = True  
         if self.frame >= len(self.images_attaque1_d)-1:
             self.boss.set_cd_attaque1()
@@ -3574,14 +3574,14 @@ class Solfist:
 
 class Elyx:
     def __init__(self):
-        self.boss = Boss(220,0,160,470,3.5,0.16,5,10,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)])
-        self.images_attaque1_d = [f'images/Jeu de combat/Elyx/Droite/Attaque1/_a_{i},100.png' for i in range(12)]
-        self.images_attaque1_g = [f'images/Jeu de combat/Elyx/Gauche/Attaque1/_a_{i},100.png' for i in range(12)]
-        self.images_marche_d = [f'images/Jeu de combat/Elyx/Droite/Marche/_a_{i},100.png' for i in range(8)]
-        self.images_marche_g = [f'images/Jeu de combat/Elyx/Gauche/Marche/_a_{i},100.png' for i in range(8)]
-        self.images_mort = [f'images/Jeu de combat/Elyx/Mort/_a_{i},100.png' for i in range(11)]
-        self.images_inaction_d = [f'images/Jeu de combat/Elyx/Droite/Inaction/_a_{i},100.png' for i in range(11)]
-        self.images_inaction_g = [f'images/Jeu de combat/Elyx/Gauche/Inaction/_a_{i},100.png' for i in range(11)]
+        self.boss = Boss(220,0,160,470,3.5,0.16,5,10,0,'Neutre',[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)])
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Elyx/Droite/Attaque1/_a_{i},100.png') for i in range(12)]
+        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Elyx/Gauche/Attaque1/_a_{i},100.png') for i in range(12)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Elyx/Droite/Marche/_a_{i},100.png') for i in range(8)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Elyx/Gauche/Marche/_a_{i},100.png') for i in range(8)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/Elyx/Mort/_a_{i},100.png') for i in range(11)]
+        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/Elyx/Droite/Inaction/_a_{i},100.png') for i in range(11)]
+        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Elyx/Gauche/Inaction/_a_{i},100.png') for i in range(11)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -3721,14 +3721,14 @@ class Elyx:
 
 class Embla:
     def __init__(self):
-        self.boss = Boss(150,0,180,440,4,0.16,2.8,4,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Temple/_a_frm{i},100.png') for i in range(8)])
-        self.images_attaque1_d = [f'images/Jeu de combat/Embla/Droite/Attaque1/_a_{i},60.png' for i in range(38)]
-        self.images_attaque1_g = [f'images/Jeu de combat/Embla/Gauche/Attaque1/_a_{i},60.png' for i in range(38)]
-        self.images_marche_d = [f'images/Jeu de combat/Embla/Droite/Marche/_a_{i},60.png' for i in range(10)]
-        self.images_marche_g = [f'images/Jeu de combat/Embla/Gauche/Marche/_a_{i},60.png' for i in range(10)]
-        self.images_mort = [f'images/Jeu de combat/Embla/Mort/_a_frm{i},60.png' for i in range(12)]
-        self.images_inaction_d = [f'images/Jeu de combat/Embla/Droite/Inaction/_a_{i},80.png' for i in range(18)]
-        self.images_inaction_g = [f'images/Jeu de combat/Embla/Gauche/Inaction/_a_{i},80.png' for i in range(18)]
+        self.boss = Boss(150,0,180,440,4,0.16,2.8,4,0,'Glace',[pygame.image.load(f'images/Jeu de combat/Fonds/Temple/_a_frm{i},100.png') for i in range(8)])
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Embla/Droite/Attaque1/_a_{i},60.png') for i in range(38)]
+        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Embla/Gauche/Attaque1/_a_{i},60.png') for i in range(38)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Embla/Droite/Marche/_a_{i},60.png') for i in range(10)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Embla/Gauche/Marche/_a_{i},60.png') for i in range(10)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/Embla/Mort/_a_frm{i},60.png') for i in range(12)]
+        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/Embla/Droite/Inaction/_a_{i},80.png') for i in range(18)]
+        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Embla/Gauche/Inaction/_a_{i},80.png') for i in range(18)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -3869,14 +3869,14 @@ class Embla:
 
 class Sun:
     def __init__(self):
-        self.boss = Boss(180,0,160,450,4,0.16,5,10,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)])
-        self.images_attaque1_d = [f'images/Jeu de combat/Sun/Droite/Attaque1/_a_{i},100.png' for i in range(33)]
-        self.images_attaque1_g = [f'images/Jeu de combat/Sun/Gauche/Attaque1/_a_{i},100.png' for i in range(33)]
-        self.images_marche_d = [f'images/Jeu de combat/Sun/Droite/Marche/_a_{i},100.png' for i in range(5)]
-        self.images_marche_g = [f'images/Jeu de combat/Sun/Gauche/Marche/_a_{i},100.png' for i in range(5)]
-        self.images_mort = [f'images/Jeu de combat/Sun/Mort/_a_{i},100.png' for i in range(17)]
-        self.images_inaction_d = [f'images/Jeu de combat/Sun/Droite/Inaction/_a_{i},100.png' for i in range(26)]
-        self.images_inaction_g = [f'images/Jeu de combat/Sun/Gauche/Inaction/_a_{i},100.png' for i in range(26)]
+        self.boss = Boss(180,0,160,450,4,0.16,5,10,0,'Feu',[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)])
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Sun/Droite/Attaque1/_a_{i},100.png') for i in range(33)]
+        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Sun/Gauche/Attaque1/_a_{i},100.png') for i in range(33)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Sun/Droite/Marche/_a_{i},100.png') for i in range(5)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Sun/Gauche/Marche/_a_{i},100.png') for i in range(5)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/Sun/Mort/_a_{i},100.png') for i in range(17)]
+        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/Sun/Droite/Inaction/_a_{i},100.png') for i in range(26)]
+        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Sun/Gauche/Inaction/_a_{i},100.png') for i in range(26)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -4011,14 +4011,14 @@ class Sun:
 
 class Skurge:
     def __init__(self):
-        self.boss = Boss(140,0,160,510,5,0.16,6.5,10,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Chute/_a_frm{i},100.png') for i in range(4)])
-        self.images_attaque1_d = [f'images/Jeu de combat/Skurge/Droite/Attaque1/_a_{i},100.png' for i in range(14)]
-        self.images_attaque1_g = [f'images/Jeu de combat/Skurge/Gauche/Attaque1/_a_{i},100.png' for i in range(14)]
-        self.images_marche_d = [f'images/Jeu de combat/Skurge/Droite/Marche/_a_{i},100.png' for i in range(8)]
-        self.images_marche_g = [f'images/Jeu de combat/Skurge/Gauche/Marche/_a_{i},100.png' for i in range(8)]
-        self.images_mort = [f'images/Jeu de combat/Skurge/Mort/_a_{i},100.png' for i in range(9)]
-        self.images_inaction_d = [f'images/Jeu de combat/Skurge/Droite/Inaction/_a_{i},100.png' for i in range(11)]
-        self.images_inaction_g = [f'images/Jeu de combat/Skurge/Gauche/Inaction/_a_{i},100.png' for i in range(11)]
+        self.boss = Boss(140,0,160,510,5,0.16,6.5,10,0,'Nature',[pygame.image.load(f'images/Jeu de combat/Fonds/Chute/_a_frm{i},100.png') for i in range(4)])
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Skurge/Droite/Attaque1/_a_{i},100.png') for i in range(14)]
+        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Skurge/Gauche/Attaque1/_a_{i},100.png') for i in range(14)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Skurge/Droite/Marche/_a_{i},100.png') for i in range(8)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Skurge/Gauche/Marche/_a_{i},100.png') for i in range(8)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/Skurge/Mort/_a_{i},100.png') for i in range(9)]
+        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/Skurge/Droite/Inaction/_a_{i},100.png') for i in range(11)]
+        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Skurge/Gauche/Inaction/_a_{i},100.png') for i in range(11)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = pygame.image.load('images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png')
@@ -4162,14 +4162,14 @@ class Skurge:
 
 class NoshRak:
     def __init__(self):
-        self.boss = Boss(150,0,180,470,4,0.16,2.8,4,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Desert/_a_frm{i},80.png') for i in range(8)])
-        self.images_attaque1_d = [f'images/Jeu de combat/Nosh-Rak/Droite/Attaque1/_a_{i},60.png' for i in range(35)]
-        self.images_attaque1_g = [f'images/Jeu de combat/Nosh-Rak/Gauche/Attaque1/_a_{i},60.png' for i in range(35)]
-        self.images_marche_d = [f'images/Jeu de combat/Nosh-Rak/Droite/Marche/_a_{i},60.png' for i in range(8)]
-        self.images_marche_g = [f'images/Jeu de combat/Nosh-Rak/Gauche/Marche/_a_{i},60.png' for i in range(8)]
-        self.images_mort = [f'images/Jeu de combat/Nosh-Rak/Mort/_a_{i},60.png' for i in range(24)]
-        self.images_inaction_d = [f'images/Jeu de combat/Nosh-Rak/Droite/Inaction/_a_{i},80.png' for i in range(20)]
-        self.images_inaction_g = [f'images/Jeu de combat/Nosh-Rak/Gauche/Inaction/_a_{i},80.png' for i in range(20)]
+        self.boss = Boss(150,0,180,470,4,0.16,2.8,4,0,'Foudre',[pygame.image.load(f'images/Jeu de combat/Fonds/Desert/_a_frm{i},80.png') for i in range(8)])
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Nosh-Rak/Droite/Attaque1/_a_{i},60.png') for i in range(35)]
+        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Nosh-Rak/Gauche/Attaque1/_a_{i},60.png') for i in range(35)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Nosh-Rak/Droite/Marche/_a_{i},60.png') for i in range(8)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Nosh-Rak/Gauche/Marche/_a_{i},60.png') for i in range(8)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/Nosh-Rak/Mort/_a_{i},60.png') for i in range(24)]
+        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/Nosh-Rak/Droite/Inaction/_a_{i},80.png') for i in range(20)]
+        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Nosh-Rak/Gauche/Inaction/_a_{i},80.png') for i in range(20)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -4313,14 +4313,14 @@ class NoshRak:
 
 class Purgatos:
     def __init__(self):
-        self.boss = Boss(150,0,180,420,4,0.16,2.0,0,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Eglise/_a_frm{i},150.png') for i in range(8)])
-        self.images_attaque1_d = [f'images/Jeu de combat/Purgatos/Droite/Attaque1/_a_{i},100.png' for i in range(23)]
-        self.images_attaque1_g = [f'images/Jeu de combat/Purgatos/Gauche/Attaque1/_a_{i},100.png' for i in range(23)]
-        self.images_marche_d = [f'images/Jeu de combat/Purgatos/Droite/Marche/_a_{i},100.png' for i in range(8)]
-        self.images_marche_g = [f'images/Jeu de combat/Purgatos/Gauche/Marche/_a_{i},100.png' for i in range(8)]
-        self.images_mort = [f'images/Jeu de combat/Purgatos/Mort/_a_{i},100.png' for i in range(17)]
-        self.images_inaction_d = [f'images/Jeu de combat/Purgatos/Droite/Inaction/_a_{i},100.png' for i in range(14)]
-        self.images_inaction_g = [f'images/Jeu de combat/Purgatos/Gauche/Inaction/_a_{i},100.png' for i in range(14)]
+        self.boss = Boss(150,0,180,420,4,0.16,2.0,0,0,'Esprit',[pygame.image.load(f'images/Jeu de combat/Fonds/Eglise/_a_frm{i},150.png') for i in range(8)])
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Purgatos/Droite/Attaque1/_a_{i},100.png') for i in range(23)]
+        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Purgatos/Gauche/Attaque1/_a_{i},100.png') for i in range(23)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Purgatos/Droite/Marche/_a_{i},100.png') for i in range(8)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Purgatos/Gauche/Marche/_a_{i},100.png') for i in range(8)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/Purgatos/Mort/_a_{i},100.png') for i in range(17)]
+        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/Purgatos/Droite/Inaction/_a_{i},100.png') for i in range(14)]
+        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Purgatos/Gauche/Inaction/_a_{i},100.png') for i in range(14)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -4452,14 +4452,14 @@ class Purgatos:
 
 class Ciphyron:
     def __init__(self):
-        self.boss = Boss(150,0,180,420,4,0.16,2.0,0,0,[pygame.image.load(f'images/Jeu de combat/Fonds/Desert/_a_frm{i},80.png') for i in range(8)])
-        self.images_attaque1_d = [f'images/Jeu de combat/Ciphyron/Droite/Attaque1/_a_{i},60.png' for i in range(22)]
-        self.images_attaque1_g = [f'images/Jeu de combat/Ciphyron/Gauche/Attaque1/_a_{i},60.png' for i in range(22)]
-        self.images_marche_d = [f'images/Jeu de combat/Ciphyron/Droite/Marche/_a_{i},60.png' for i in range(8)]
-        self.images_marche_g = [f'images/Jeu de combat/Ciphyron/Gauche/Marche/_a_{i},60.png' for i in range(8)]
-        self.images_mort = [f'images/Jeu de combat/Ciphyron/Mort/_a_{i},60.png' for i in range(17)]
-        self.images_inaction_d = [f'images/Jeu de combat/Ciphyron/Droite/Inaction/_a_{i},80.png' for i in range(16)]
-        self.images_inaction_g = [f'images/Jeu de combat/Ciphyron/Gauche/Inaction/_a_{i},80.png' for i in range(16)]
+        self.boss = Boss(150,0,180,420,4,0.16,2.0,0,0,'Foudre',[pygame.image.load(f'images/Jeu de combat/Fonds/Desert/_a_frm{i},80.png') for i in range(8)])
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Ciphyron/Droite/Attaque1/_a_{i},60.png') for i in range(22)]
+        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Ciphyron/Gauche/Attaque1/_a_{i},60.png') for i in range(22)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Ciphyron/Droite/Marche/_a_{i},60.png') for i in range(8)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Ciphyron/Gauche/Marche/_a_{i},60.png') for i in range(8)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/Ciphyron/Mort/_a_{i},60.png') for i in range(17)]
+        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/Ciphyron/Droite/Inaction/_a_{i},80.png') for i in range(16)]
+        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Ciphyron/Gauche/Inaction/_a_{i},80.png') for i in range(16)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -4608,6 +4608,164 @@ class Ciphyron:
                     self.frame = 0
                 self.atk1 = True
 
+class Golem:
+    def __init__(self):
+        self.boss = Boss(350,0,180,357,2.8,0.16,6.8,4,0,'Foudre',[pygame.image.load(f'images/Jeu de combat/Fonds/Temple/_a_frm{i},100.png') for i in range(8)])
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Golem/Droite/Attaque1/_a_{i},70.png') for i in range(28)]
+        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Golem/Gauche/Attaque1/_a_{i},70.png') for i in range(28)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Golem/Droite/Marche/_a_{i},70.png') for i in range(12)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Golem/Gauche/Marche/_a_{i},70.png') for i in range(12)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/Golem/Mort/_a_{i},70.png') for i in range(20)]
+        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/Golem/Droite/Inaction/_a_{i},80.png') for i in range(16)]
+        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Golem/Gauche/Inaction/_a_{i},80.png') for i in range(16)]
+        self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
+        self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
+        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.cd_dgt10 = 0
+        self.cd_dgt20 = 0
+        self.frame = 0
+        self.frame_mort = 0
+        self.atk1 = False
+        self.atk2 = False
+        self.sens = 'Droite'
+        self.dgt1 = False
+        self.dgt2 = False
+        self.dgt3 = False
+        self.pv_actuels = self.boss.get_pv()
+    def attaque1(self,speed:float,j1,s):
+        '''Permet de jouer l'attaque au poing du Boss.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
+        '''
+        # L'attaque 1 est en train d'être jouée.
+        if self.frame < 1:
+            self.sens = s
+            # Réinitialiser le dictionnaire des dégâts par frame au début de l'attaque
+            self.frames_degats = {}
+            
+        self.atk1 = True
+        frame_actuelle = int(self.frame)
+        
+        if not j1.hero.get_block():
+            # Si le joueur est à portée et que cette frame n'a pas encore infligé de dégâts
+            if abs(distance(j1, self)) < self.boss.get_portee() and frame_actuelle not in self.frames_degats:
+                # Infliger des dégâts différents selon la frame
+                degats = 0  # Dégâts de base
+                if frame_actuelle == 10:
+                    degats = 20
+                    aie_hero.play()
+                elif frame_actuelle == 12:
+                    degats = 25
+                    aie_hero.play()
+                if 13 < frame_actuelle < 22:  # Frames spéciales avec plus de dégâts
+                    degats = randint(1,8)
+                
+                j1.hero.modif_pv(-degats)
+                # Marquer cette frame comme ayant infligé des dégâts
+                self.frames_degats[frame_actuelle] = True
+                print(f"Dégâts infligés à la frame {frame_actuelle}: -{degats} PV")
+        
+        if self.frame >= len(self.images_attaque1_d)-1:
+            self.boss.set_cd_attaque1()
+            self.boss.set_attaque1_dispo(False)
+            self.atk1 = False
+            # Réinitialiser le dictionnaire des dégâts
+            self.frames_degats = {}
+            
+        # Si le héros a bloqué l'attaque :
+        if j1.hero.get_block():
+            # Image du block
+            j1.cd_block_img = time.time()
+            print("Bloqué !")
+            
+        # Faire progresser les images pour l'animation
+        self.frame += speed        
+        if self.sens == 'Gauche':
+            self.boss.modif_img(self.images_attaque1_g[int(self.frame)])
+        else:
+            self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
+
+    def marche(self,speed:float,sens):
+        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        if int(self.frame) >= len(self.images_marche_d)-1:
+            self.frame = 0
+        self.frame += speed
+        if sens == 'Gauche':
+            self.boss.modif_img(self.images_marche_g[int(self.frame)])
+        else:
+            self.boss.modif_img(self.images_marche_d[int(self.frame)])
+
+    def inaction(self,speed:float,sens='Gauche'):
+        '''Permet de jouer l'animation d'inaction du Boss.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        if int(self.frame) >= len(self.images_inaction_d)-1:
+            self.frame = 0
+        self.frame += speed
+        if sens == 'Gauche':
+            self.boss.modif_img(self.images_inaction_g[int(self.frame)])
+        else:
+            self.boss.modif_img(self.images_inaction_d[int(self.frame)])
+
+    def mort(self,speed:float,j1):
+        '''Permet de jouer l'animation de mort du Boss.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
+        if not self.boss.get_mort():
+            # Si toutes les images ont été jouées :
+            if int(self.frame_mort) >= len(self.images_mort)-1:
+                self.boss.set_mort(True)
+                # On déclare le héros vainqueur, le combat prend fin
+                j1.hero.set_victoire(True)
+                self.frame_mort = 0
+                self.frame = 0
+                self.atk1 = False
+            else:
+                # Faire progresser les images pour l'animation
+                self.frame_mort += speed
+                self.boss.modif_img(self.images_mort[int(self.frame_mort)])
+
+    def boss_vers_hero(self,j1):
+        if distance(j1,self) < 0:
+            self.marche(self.boss.get_speed_anim(),'Gauche')
+            self.boss.modif_pos_x(-self.boss.get_speed())
+        elif distance(j1,self) > 0:
+            self.marche(self.boss.get_speed_anim(),'Droite')
+            self.boss.modif_pos_x(self.boss.get_speed())
+
+    def patern_boss(self,xhero,j1):
+        # Si le boss se trouve à portée, lancement des attaques
+        if self.atk1:
+            if distance(j1,self) < 0:
+                self.attaque1(0.18,j1,'Gauche')
+            else:
+                self.attaque1(0.18,j1,'Droite')
+        elif not self.atk1 and not -140 < distance(j1,self) < 140:
+            # Sinon, déplacement pour être à portée du héros
+            self.boss_vers_hero(j1)
+        else:
+            if distance(j1,self) < 0:
+                self.inaction(0.14,'Gauche')
+            else:
+                self.inaction(0.14,'Droite')
+        if -140 < distance(j1,self) < 140:
+            if self.boss.get_attaque1_dispo():
+                if not self.atk1:
+                    self.frame = 0
+                self.atk1 = True
+
 
 class JeuCombat:
     def __init__(self,j1,j2):
@@ -4640,6 +4798,67 @@ class JeuCombat:
             fenetre.blit(self.j1.block, (self.j1.hero.get_pos_x()+30, self.j1.hero.get_pos_y() - 20))
         if time.time() - self.j1.cd_dgt5 < 1:
             fenetre.blit(self.j1.dgt5, (self.j2.boss.get_pos_x()+120, self.j2.boss.get_pos_y() - 80))
+    def multis(self, j1, j2):
+        # Définition de la matrice des multiplicateurs avec un dictionnaire de dictionnaires
+        multis_elements = {
+            'Feu': {
+                'Feu': 0,
+                'Glace': 1.75,
+                'Eau': 1.45,
+                'Nature': 1.25,
+                'Esprit': 1.1,
+                'Air': 0.9,
+                'Nuit': 0.75,
+                'Foudre' : 1.4
+            },
+            'Esprit': {
+                'Feu': 1.1,
+                'Glace': 0.9,
+                'Eau': 1.1,
+                'Nature': 1.25,
+                'Air': 0.8,
+                'Esprit': 0.4,
+                'Nuit': 1.45,
+                'Foudre' : 0.95
+            },
+            'Air': {
+                'Feu': 1.2,
+                'Glace': 1.1,
+                'Eau': 1.15,
+                'Nature': 0.9,
+                'Air': 0.6,
+                'Esprit': 1.45,
+                'Nuit': 1.05,
+                'Foudre' : 0.95
+            },
+            'Nuit': {
+                'Feu': 1.65,
+                'Glace': 1.05,
+                'Eau': 1.1,
+                'Nature': 0.9,
+                'Air': 1.2,
+                'Esprit': 0.75,
+                'Nuit': 0.5,
+                'Foudre' : 0.85
+            },
+            'Foudre': {
+                'Feu': 1.4,
+                'Glace': 1.12,
+                'Eau': 1.2,
+                'Nature': 0.9,
+                'Air': 0.7,
+                'Esprit': 1.14,
+                'Nuit': 1.05,
+                'Foudre' : 1
+            }
+        }
+        
+        el1 = j1.hero.get_type()
+        el2 = j2.boss.get_type()
+        
+        # Retourne le multiplicateur du dictionnaire, avec 1 comme valeur par défaut si la combinaison n'existe pas
+        return multis_elements.get(el1, {}).get(el2, 1.0)
+
     def lancer(self):
         # Boucle principale du jeu
         self.largeur, self.hauteur = 1200, 700
@@ -4659,6 +4878,7 @@ class JeuCombat:
                 # On remet tout à 0
                 self.frame = 0
             fenetre.blit(self.fond[int(self.frame)],(0,0))
+            multis = self.multis(self.j1,self.j2)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.run = False
@@ -4687,11 +4907,6 @@ class JeuCombat:
             if self.j1.hero.get_pv() <= 0:
                 self.j1.mort(0.1,self.j2)
 
-            if self.j1.hero.get_attaque():
-                if self.j2.boss.get_pos_x() > self.j1.hero.get_pos_x():
-                    self.j1.attaque(self.j1.hero.get_speed_anim()[0],'Droite',self.j2)
-                else:
-                    self.j1.attaque(self.j1.hero.get_speed_anim()[0],'Gauche',self.j2)
             keys = pygame.key.get_pressed()
             if not self.j1.hero.get_stun():
                 if not self.j1.hero.get_attaque() and not self.j1.hero.get_pv() <= 0:
@@ -4705,7 +4920,7 @@ class JeuCombat:
                         self.j1.marche(self.j1.hero.get_speed_anim()[1],'Droite',self.j2)
 
             if self.j2.boss.get_poison() != False:
-                self.j2.boss.modif_pv(-0.02)
+                self.j2.boss.modif_pv(-0.02*multis)
                 if time.time() - self.j2.boss.get_poison() > 5:
                     self.j2.boss.set_poison(False)
             if self.j1.hero.get_poison() != False:
@@ -4720,12 +4935,19 @@ class JeuCombat:
             if self.j2.boss.get_cd_attaque3() > self.j2.boss.get_cd()[2]:
                 self.j2.boss.set_attaque3_dispo(True)
 
-            if self.j1.hero.get_cp2():
+
+            if self.j1.hero.get_attaque():
                 if self.j2.boss.get_pos_x() > self.j1.hero.get_pos_x():
-                    self.j1.cp2(self.j1.hero.get_speed_anim()[0],'Droite',self.j2)
+                    self.j1.attaque(self.j1.hero.get_speed_anim()[0],'Droite',self.j2,multis)
                 else:
-                    self.j1.cp2(self.j1.hero.get_speed_anim()[0],'Gauche',self.j2)
-            if not self.j1.hero.get_attaque() and not self.j1.hero.get_cp2() and self.j1.hero.get_pv() > 0 and not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT] or self.j1.hero.get_stun() and self.j1.hero.get_pv() > 0:
+                    self.j1.attaque(self.j1.hero.get_speed_anim()[0],'Gauche',self.j2,multis)
+
+            elif self.j1.hero.get_cp2():
+                if self.j2.boss.get_pos_x() > self.j1.hero.get_pos_x():
+                    self.j1.cp2(self.j1.hero.get_speed_anim()[0],'Droite',self.j2,multis)
+                else:
+                    self.j1.cp2(self.j1.hero.get_speed_anim()[0],'Gauche',self.j2,multis)
+            elif not self.j1.hero.get_attaque() and not self.j1.hero.get_cp2() and self.j1.hero.get_pv() > 0 and not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT] or self.j1.hero.get_stun() and self.j1.hero.get_pv() > 0:
                 self.j1.inaction(self.j2)
             
             self.affichage_degats()
