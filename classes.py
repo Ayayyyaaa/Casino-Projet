@@ -5,12 +5,13 @@ import pygame
 class Joueur:
     def __init__(self, pseudo='Babibel'):
         self.pseudo = pseudo
-        self.cagnotte = 2000
+        self.cagnotte = 2000000
         self.roulette_active = False
         self.mdp = None
         self.code_cb = None
         self.num_cb = None
         self.inventaire = {'Chope de Bière' : 0, 'Bouteille de Whisky' : 0}
+        self.heros = ['Night Hero']
 
     def get_pseudo(self):
         return self.pseudo
@@ -29,6 +30,9 @@ class Joueur:
     
     def get_num_cb(self):
         return self.num_cb
+    
+    def get_heros(self):
+        return self.heros
     
     def set_pseudo(self, pseudo):
         self.pseudo = pseudo
@@ -57,6 +61,9 @@ class Joueur:
 
     def ajouter_inventaire(self,article):
         self.inventaire[article] += 1
+
+    def ajouter_heros(self,heros):
+        self.heros.append(heros)
 
 
 class Coin:

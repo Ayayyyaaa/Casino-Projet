@@ -62,5 +62,8 @@ icone_hsuku = pygame.image.load('images/icone_hsuku.png').convert_alpha()
 icone_whistler = pygame.image.load('images/icones_whistler.png').convert_alpha()
 icone_sanguinar = pygame.image.load('images/icone_sanguinar.png').convert_alpha()
 icone_tethermancer = pygame.image.load('images/icone_tether.png').convert_alpha()
+icone_twilight = pygame.image.load('images/icone_twilight.png').convert_alpha()
+icone_pureblade = pygame.image.load('images/icone_pureblade.png').convert_alpha()
+icone_aether = pygame.image.load('images/icone_aether.png').convert_alpha()
 
 pygame.display.set_icon(icone)
