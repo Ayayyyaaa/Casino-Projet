@@ -67,10 +67,11 @@ class Jeu():
         self.purgatos = Purgatos()
         self.golem = Golem()
         self.soji = Soji()
+        self.yggdra = Yggdra()
         self.combat = JeuCombat(self.zukong,self.astral)
         self.maskotte = False
         self.curseurabel = False
-        self.hero = self.aether
+        self.hero = self.yggdra
         self.boss = [self.bh,self.m,self.tb,self.c,self.dl,self.astral,self.ep,self.shidai,self.solfist,self.embla,self.lilithe,self.elyx,self.sun,self.skurge,self.noshrak,self.golem,self.purgatos,self.ciphyron,self.golem,self.soji]
         self.bosss = self.soji
         self.correspondance = {nighthero:self.nighthero,
@@ -233,7 +234,7 @@ class Jeu():
                                 elif 265 <= event.pos[0] <= 325:
                                     lancier.ecran.set_actif(True)
                             elif 245 <= event.pos[1] <= 305:
-                                hero2.ecran.set_actif(False)
+                                hero.ecran.set_actif(False)
                                 if 105 <= event.pos[0] <= 165:
                                     zukong.ecran.set_actif(True)
                                 elif 25 <= event.pos[0] <= 85:
@@ -243,9 +244,9 @@ class Jeu():
                                 elif 265 <= event.pos[0] <= 325:
                                     maehv.ecran.set_actif(True)
                                 else:
-                                    hero2.ecran.set_actif(True)
+                                    hero.ecran.set_actif(True)
                             elif 325 <= event.pos[1] <= 385:
-                                hero2.ecran.set_actif(False)
+                                hero.ecran.set_actif(False)
                                 if 25 <= event.pos[0] <= 85:
                                     hsuku.ecran.set_actif(True)
                                 elif 105 <= event.pos[0] <= 165:
@@ -255,7 +256,7 @@ class Jeu():
                                 elif 265 <= event.pos[0] <= 325:
                                     tethermancer.ecran.set_actif(True)
                                 else:
-                                    hero2.ecran.set_actif(True)
+                                    hero.ecran.set_actif(True)
 
                         elif hero2.ecran.get_actif():
                             if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
@@ -303,12 +304,17 @@ class Jeu():
 
                         for perso in [assassin,maehv,zendo,zukong,nighthero,lancier,spiritwarior,spirithero,hsuku,whistler,sanguinar,tethermancer,pureblade,aether,twilight]:
                             if perso.ecran.get_actif():
+                                print(perso.get_heros())
                                 if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
                                     hero.ecran.set_actif(True),perso.ecran.set_actif(False)
+                                elif 340 <= event.pos[0] <= 390 and 200 <= event.pos[1] <= 250:
+                                    perso.setinfos(not perso.getinfos())
                                 elif 145 <= event.pos[0] <= 245 and 330 <= event.pos[1] <= 375:
+                                    print(joueur1.get_heros())
                                     if perso.get_heros()[0] in joueur1.get_heros():
                                         self.hero = self.correspondance[perso]
                                         hero.ecran.set_actif(True),perso.ecran.set_actif(False)
+                                        print(perso.get_heros()[0],hero.ecran.get_actif(),perso.ecran.get_actif())
                                     else:
                                         if joueur1.get_cagnotte() > perso.get_heros()[1]:
                                             joueur1.ajouter_heros(perso.get_heros()[0])

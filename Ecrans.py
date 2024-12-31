@@ -307,10 +307,10 @@ class EcranHeros2:
         fenetre.blit(icone_tethermancer, (260, 320))
 
 class EcranSelection:
-    def __init__(self, liste, hero, y, x= 50):
+    def __init__(self, c, liste, hero, y, x = 50):
         self.police = pygame.font.Font('8-bitanco.ttf', 15)
         self.ecran = Ecran()
-        self.fond = pygame.image.load('images/Fonds d\'ecran/Boutique.png').convert_alpha()
+        self.fond = pygame.image.load('images/arene.png').convert_alpha()
         self.anim = liste
         self.frame = 0
         self.bouton = pygame.image.load("images/Jeu de combat/compteur2.png")
@@ -320,22 +320,35 @@ class EcranSelection:
         self.prix = self.police.render((str(self.hero[1])), True, noir)
         self.y = y
         self.x = x
+        self.infos = False
+        self.caracteristiques = c
+    def getinfos(self):
+        return self.infos
+    def setinfos(self,actif):
+        self.infos = actif
     def affiche(self,speed):
         fenetre.blit(self.fond, (0, 0))
+        fenetre.blit(pygame.image.load(self.anim[int(self.frame)]).convert_alpha(), (self.x, self.y))
+        self.frame += speed
         if self.frame >= len(self.anim)-1:
             self.frame = 0
         if 340 <= pygame.mouse.get_pos()[0] <= 390 and 25 <= pygame.mouse.get_pos()[1] <= 65:
             fenetre.blit(fleche_retour2, (341, 21))
         else:
             fenetre.blit(fleche_retour, (340, 20))
-        if self.hero[0] in joueur1.get_heros():
+        if 340 <= pygame.mouse.get_pos()[0] <= 390 and 200 <= pygame.mouse.get_pos()[1] <= 250:
+            fenetre.blit(info2, (340, 200))
+        else:
+            fenetre.blit(info1, (340, 200))
+        if self.infos:
+            fenetre.blit(self.caracteristiques, (30, 50))
+        elif self.hero[0] in joueur1.get_heros():
             fenetre.blit(self.bouton, (140, 330))
             fenetre.blit(self.valider, (165, 345))
         else:
             fenetre.blit(self.bouton, (140, 330))
             fenetre.blit(self.prix, (165, 345))
-        fenetre.blit(pygame.image.load(self.anim[int(self.frame)]).convert_alpha(), (self.x, self.y))
-        self.frame += speed
+        
     def get_heros(self):
         return self.hero
         
@@ -387,18 +400,18 @@ rr = EcranRR()
 alcool = EcranAlcool()
 hero = EcranHeros1()
 hero2 = EcranHeros2()
-assassin = EcranSelection([f'images/Jeu de combat/Assassin/Droite/Attaque1/_a_frm{i},100.png' for i in range(10)] + [f'images/Jeu de combat/Assassin/Droite/Attaque2/_a_frm{i},100.png' for i in range(11,18)] + [f'images/Jeu de combat/Assassin/Droite/Marche/_a_frm{i},100.png' for i in range(8)] + [f'images/Jeu de combat/Assassin/Droite/Course/_a_frm{i},70.png' for i in range(8)] + [f'images/Jeu de combat/Assassin/Droite/Saut/_a_frm{i},100.png' for i in range(2,14)] + [f'images/Jeu de combat/Assassin/Mort/_a_frm{i},100.png' for i in range(16)],('Assassin',60000), 50)
-maehv = EcranSelection([f'images/Jeu de combat/Maehv/Droite/Inaction/_a_{i},80.png' for i in range(14)],('Maehv',450000),0)
-zendo = EcranSelection([f'images/Jeu de combat/Zendo/Droite/Inaction/_a_frm{i},60.png' for i in range(14)],('Zendo',125000),0)
-zukong = EcranSelection([f'images/Jeu de combat/Zukong/Droite/Inaction/_a_frm{i},80.png' for i in range(14)],('Zukong',100000),50,75)
-nighthero = EcranSelection([f'images/Jeu de combat/Hero/Block/Block ({i}).png' for i in range(1,19)],('Night Hero',0),100,100)
-spirithero = EcranSelection([f'images/Jeu de combat/Spirit_Hero/Inaction/_a_frm{i},100.png' for i in range(10)],('Spirit Hero',45000),50)
-spiritwarior = EcranSelection([f'images/Jeu de combat/Spirit_Warrior/Inaction/_a_frm{i},100.png' for i in range(8)],('Spirit Warior',30000),50)
-lancier = EcranSelection([f'images/Jeu de combat/Lancier/Inaction/_a_frm{i},100.png' for i in range(8)],('Lancier',45000),50)
-hsuku = EcranSelection([f'images/Jeu de combat/Hsuku/Droite/Inaction/_a_{i},80.png' for i in range(28)],('Hsuku',250000),50)
-sanguinar = EcranSelection([f'images/Jeu de combat/Sanguinar/Droite/Inaction/_a_{i},80.png' for i in range(14)],('Sanguinar',60000),50)
-whistler = EcranSelection([f'images/Jeu de combat/Whistler/Droite/Inaction/_a_{i},100.png' for i in range(18)],('Whistler',60000),50,125)
-tethermancer = EcranSelection([f'images/Jeu de combat/Tethermancer/Droite/Inaction/_a_{i},100.png' for i in range(17)],('Tethermancer',60000),50)
-aether = EcranSelection([f'images/Jeu de combat/Aether/Droite/Inaction/_a_{i},100.png' for i in range(12)],('Aether',60000),50)
-pureblade = EcranSelection([f'images/Jeu de combat/Pureblade/Droite/Inaction/_a_frm{i},80.png' for i in range(10)],('Pureblade',60000),50)
-twilight = EcranSelection([f'images/Jeu de combat/Twilight/Droite/Inaction/_a_{i},80.png' for i in range(14)],('Twilight',60000),50)
+assassin = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/NightHero.png').convert_alpha(), [f'images/Jeu de combat/Assassin/Droite/Attaque1/_a_frm{i},100.png' for i in range(10)] + [f'images/Jeu de combat/Assassin/Droite/Attaque2/_a_frm{i},100.png' for i in range(11,18)] + [f'images/Jeu de combat/Assassin/Droite/Marche/_a_frm{i},100.png' for i in range(8)] + [f'images/Jeu de combat/Assassin/Droite/Course/_a_frm{i},70.png' for i in range(8)] + [f'images/Jeu de combat/Assassin/Droite/Saut/_a_frm{i},100.png' for i in range(2,14)] + [f'images/Jeu de combat/Assassin/Mort/_a_frm{i},100.png' for i in range(16)],('Assassin',60000), 50)
+maehv = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Maehv.png').convert_alpha(),[f'images/Jeu de combat/Maehv/Droite/Inaction/_a_{i},80.png' for i in range(14)],('Maehv',450000),5)
+zendo = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Zendo.png').convert_alpha(),[f'images/Jeu de combat/Zendo/Droite/Inaction/_a_frm{i},60.png' for i in range(14)],('Zendo',125000),5)
+zukong = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/NightHero.png').convert_alpha(),[f'images/Jeu de combat/Zukong/Droite/Inaction/_a_frm{i},80.png' for i in range(14)],('Zukong',100000),56,75)
+nighthero = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/NightHero.png').convert_alpha(),[f'images/Jeu de combat/Hero/Block/Block ({i}).png' for i in range(1,19)],('Night Hero',0),100,100)
+spirithero = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/NightHero.png').convert_alpha(),[f'images/Jeu de combat/Spirit_Hero/Inaction/_a_frm{i},100.png' for i in range(10)],('Spirit Hero',45000),50)
+spiritwarior = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/SpiritWarrior.png').convert_alpha(),[f'images/Jeu de combat/Spirit_Warrior/Inaction/_a_frm{i},100.png' for i in range(8)],('Spirit Warior',30000),80,65)
+lancier = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/NightHero.png').convert_alpha(),[f'images/Jeu de combat/Lancier/Inaction/_a_frm{i},100.png' for i in range(8)],('Lancier',45000),70)
+hsuku = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Hsuku.png').convert_alpha(),[f'images/Jeu de combat/Hsuku/Droite/Inaction/_a_{i},80.png' for i in range(28)],('Hsuku',250000),10)
+sanguinar = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/NightHero.png').convert_alpha(),[f'images/Jeu de combat/Sanguinar/Droite/Inaction/_a_{i},80.png' for i in range(14)],('Sanguinar',60000),10)
+whistler = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Whistler.png').convert_alpha(),[f'images/Jeu de combat/Whistler/Droite/Inaction/_a_{i},100.png' for i in range(18)],('Whistler',60000),80,95)
+tethermancer = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Whistler.png').convert_alpha(),[f'images/Jeu de combat/Tethermancer/Droite/Inaction/_a_{i},100.png' for i in range(17)],('Tethermancer',60000),20)
+aether = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/NightHero.png').convert_alpha(),[f'images/Jeu de combat/Aether/Droite/Inaction/_a_{i},100.png' for i in range(12)],('Aether',60000),97,93)
+pureblade = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Pureblade.png').convert_alpha(),[f'images/Jeu de combat/Pureblade/Droite/Inaction/_a_frm{i},80.png' for i in range(10)],('Pureblade',60000),10)
+twilight = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Twilight.png').convert_alpha(),[f'images/Jeu de combat/Twilight/Droite/Inaction/_a_{i},80.png' for i in range(14)],('Twilight',60000),20)

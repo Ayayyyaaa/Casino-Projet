@@ -65,5 +65,7 @@ icone_tethermancer = pygame.image.load('images/icone_tether.png').convert_alpha(
 icone_twilight = pygame.image.load('images/icone_twilight.png').convert_alpha()
 icone_pureblade = pygame.image.load('images/icone_pureblade.png').convert_alpha()
 icone_aether = pygame.image.load('images/icone_aether.png').convert_alpha()
+info1 = pygame.image.load('images/Jeu de Combat/Infos/Info.png').convert_alpha()
+info2 = pygame.image.load('images/Jeu de Combat/Infos/Info2.png').convert_alpha()
 
 pygame.display.set_icon(icone)
