@@ -67,5 +67,11 @@ icone_pureblade = pygame.image.load('images/icone_pureblade.png').convert_alpha(
 icone_aether = pygame.image.load('images/icone_aether.png').convert_alpha()
 info1 = pygame.image.load('images/Jeu de Combat/Infos/Info.png').convert_alpha()
 info2 = pygame.image.load('images/Jeu de Combat/Infos/Info2.png').convert_alpha()
+chute = [pygame.image.load(f'images/Jeu de combat/Fonds/Chute/_a_frm{i},100.png') for i in range(4)]
+eglise = [pygame.image.load(f'images/Jeu de combat/Fonds/Eglise/_a_frm{i},150.png') for i in range(8)]
+pluie = [pygame.image.load(f'images/Jeu de combat/Fonds/Pluie/_a_frm{i},120.png') for i in range(8)]
+lave = [pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)]
+temple = [pygame.image.load(f'images/Jeu de combat/Fonds/Temple/_a_frm{i},100.png') for i in range(8)]
+desert = [pygame.image.load(f'images/Jeu de combat/Fonds/Desert/_a_frm{i},80.png') for i in range(8)]
 
 pygame.display.set_icon(icone)

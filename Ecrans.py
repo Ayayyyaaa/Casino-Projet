@@ -6,6 +6,7 @@ from Roulette_Russe import pistolet
 from PileouFace import pileouface
 from sons import *
 from SQL import *
+import time
 
 pygame.mixer.init()
 
@@ -28,10 +29,13 @@ class Ecran1:
         if self.ecran.get_actif():
             fenetre.blit(fond, (0, 0))
             self.choisir_musique()
-            if bouton1.get_x() <= pygame.mouse.get_pos()[0] <= bouton1.get_x() + bouton1.get_largeur() and bouton1.get_y() <= pygame.mouse.get_pos()[1] <= bouton1.get_y() + bouton1.get_hauteur():
-                fenetre.blit(entrer2, (105, 230))
-            else:
-                fenetre.blit(entrer, (105, 230))
+            btn_entrer.draw(fenetre,pygame.mouse.get_pos())
+            if btn_entrer.collision(clic.get_clic()):
+                click.play()
+                if joueur1.get_pseudo() != '':
+                    connexion.ecran.set_actif(False)
+                    ecran2.ecran.set_actif(True)
+                    clic.set_clic((0,0))
     def choisir_musique(self):
         '''Permet de chosir la musique de fond
         Paramètres : 
@@ -72,6 +76,8 @@ class Ecran2:
         self.ecran = Ecran()
         self.fond = pygame.image.load('images/Fonds d\'ecran/casino.jpg').convert()
         self.musique = False
+        self.btns = [btn_boutique, btn_retour, btn_roulette, btn_pile_ou_face, btn_machine_a_sous, btn_blackjack, btn_jeu_combat]
+        self.choix_fait = False
     def set_musique(self):
         self.musique = False
     def affiche(self):
@@ -94,57 +100,64 @@ class Ecran2:
             self.fond = pygame.image.load('images/Fonds d\'ecran/casino.jpg').convert()
         fenetre.blit(self.fond, (0, 0))
         coin.activer_rotation()
-        # Jouer les animations des icones des jeux
-        if ecran2.ecran.get_actif() and 330 <= pygame.mouse.get_pos()[0] <= 390 and 45 <= pygame.mouse.get_pos()[1] <= 75 :
-            fenetre.blit(roulette2, (320, 20))
-        else:
-            fenetre.blit(roulette, (320, 20))
-        if bouton1.get_x() <= pygame.mouse.get_pos()[0] <= bouton1.get_x() + bouton1.get_largeur() and bouton1.get_y() <= pygame.mouse.get_pos()[1] <= bouton1.get_y() + bouton1.get_hauteur():
-            fenetre.blit(retour2, (105, 230))
-        else:
-            fenetre.blit(retour, (105, 230))
         dessiner_bouton(fenetre, joueur1.get_pseudo(), bouton2.get_x(), bouton2.get_y(), bouton2.get_largeur(), bouton2.get_hauteur(), blanc, noir, 20)
         dessiner_bouton(fenetre, f"Solde : {int(joueur1.get_cagnotte())}", bouton3.get_x(), bouton3.get_y(), bouton3.get_largeur(), bouton3.get_hauteur(), blanc, noir, 25)
-        if 330 <= pygame.mouse.get_pos()[0] <= 390 and 170 <= pygame.mouse.get_pos()[1] <= 220 :
-            fenetre.blit(machine_a_sous2, (320, 160))
-        else:
-            fenetre.blit(machine_a_sous1, (320, 160))
-        if 330 <= pygame.mouse.get_pos()[0] <= 390 and 240 <= pygame.mouse.get_pos()[1] <= 290 :
-            fenetre.blit(blackjack2, (320, 231))
-        else:
-            fenetre.blit(blackjack1, (320, 230))
-        if 330 <= pygame.mouse.get_pos()[0] <= 390 and 310 <= pygame.mouse.get_pos()[1] <= 360:
-            fenetre.blit(jeucombat2, (320, 300))
-        else:
-            fenetre.blit(jeucombat1, (320, 300))
-        if 330 <= pygame.mouse.get_pos()[0] <= 390 and 100 <= pygame.mouse.get_pos()[1] <= 150 :
-            fenetre.blit(imgpof2, (320, 91))
-        else:
-            fenetre.blit(imgpof, (320, 90))
-        if 25 <= pygame.mouse.get_pos()[0] <= 85 and 55 <= pygame.mouse.get_pos()[1] <= 115 :
-            fenetre.blit(boutique2, (21, 51))
-        else:
-            fenetre.blit(boutique1, (20, 50))
-        # Affichage des boutons des choix du pile ou face
-        if pileouface.get_actif():
-            fenetre.blit(face2, (125, 230))
-            fenetre.blit(pile2, (230, 230))
-                
+        if btn_boutique.collision(clic.get_clic()):
+            boutique.ecran.set_actif(True),ecran2.ecran.set_actif(False)
+            clic.set_clic((0,0))
+        elif btn_roulette.collision(clic.get_clic()):
+            click.play()
+            joueur1.set_roulette_active(True)
+            pileouface.set_actif(False)
+            pistolet.rouletterusse(joueur1)
+            joueur1.set_roulette_active(False)
+            clic.set_clic((0,0))
+        elif btn_pile_ou_face.collision(clic.get_clic()):
+            click.play()
+            clic.set_clic((0,0))
+            pileouface.set_actif(not pileouface.get_actif())
+            pileouface.set_cote(None)
+        elif btn_blackjack.collision(clic.get_clic()):
+            click.play()
+            clic.set_clic((0,0))
+            ecran2.ecran.set_actif(False), ecran_black.ecran.set_actif(True)
+        elif btn_retour.collision(clic.get_clic()):
+            click.play()
+            clic.set_clic((0,0))
+            connexion.ecran.set_actif(True)
+            ecran2.ecran.set_actif(False)
+        elif pileouface.get_actif():
+            # Pari sur le côté Face de la piece
+            if btn_face.collision(clic.get_clic()):
+                click.play()
+                pileouface.set_choix('Face') 
+                self.choix_fait = True
+            # Pari sur le côté Pile de la piece
+            elif btn_pile.collision(clic.get_clic()):
+                click.play()
+                pileouface.set_choix('Pile')
+                self.choix_fait = True
+            # Lancer l'animation de Pile ou Face quand le joueur a effectué son choix
+            if self.choix_fait:
+                pileouface.activer_animation()
+                self.choix_fait = False
 
         fenetre.blit(coin.get_image(),coin.get_pos())
         coin.update(0.04)
-
         fenetre.blit(pistolet.get_image(),pistolet.get_pos())
         pistolet.update_def(0.16,joueur1)  
         pistolet.update_vict(0.16,joueur1)  
-
         fenetre.blit(pileouface.get_image(),(170,140))
         if pileouface.get_actif():
             pileouface.update(0.20, joueur1)
 
         if joueur1.get_pseudo() == '666' or joueur1.get_pseudo() == 'Satan':
             fenetre.blit(diable, (100, 2))
-    
+        for btn in self.btns:
+            btn.draw(fenetre,pygame.mouse.get_pos())
+        # Affichage des boutons des choix du pile ou face
+        if pileouface.get_actif():
+            btn_pile.draw(fenetre,pygame.mouse.get_pos()),btn_face.draw(fenetre,pygame.mouse.get_pos())
 
 class EcranMort:
     def __init__(self):
@@ -172,10 +185,14 @@ class EcranVictoire:
             pygame.mixer.music.load(musique_victoire)
             pygame.mixer.music.play(-1)
 
-        if bouton1.get_x() <= pygame.mouse.get_pos()[0] <= bouton1.get_x() + bouton1.get_largeur() and bouton1.get_y() <= pygame.mouse.get_pos()[1] <= bouton1.get_y() + bouton1.get_hauteur():
-            fenetre.blit(self.retour2, (105, 230))
-        else:
-            fenetre.blit(self.retour1, (105, 230))
+        btn_retour.draw(fenetre,pygame.mouse.get_pos())
+        if btn_retour.collision(clic.get_clic()):
+            clic.set_clic((0,0))
+            pygame.mixer.music.unload()
+            connexion.choisir_musique()
+            ecran_victoire.ecran.set_actif(False)
+            ecran2.ecran.set_actif(True)
+
 class EcranBlack:
     def __init__(self):
         self.ecran = Ecran()
@@ -192,10 +209,10 @@ class EcranBoutique:
         self.frame = 0
     def affiche(self):
         fenetre.blit(self.fond, (0, 0))
-        if 340 <= pygame.mouse.get_pos()[0] <= 390 and 25 <= pygame.mouse.get_pos()[1] <= 65:
-            fenetre.blit(fleche_retour2, (341, 21))
-        else:
-            fenetre.blit(fleche_retour, (340, 20))
+        btn_fleche.draw(fenetre,pygame.mouse.get_pos())
+        if btn_fleche.collision(clic.get_clic()):
+            boutique.ecran.set_actif(False),ecran2.ecran.set_actif(True)
+            clic.set_clic((0,0))
         if 135 <= pygame.mouse.get_pos()[0] <= 195 and 135 <= pygame.mouse.get_pos()[1] <= 195:
             fenetre.blit(alcool2, (130, 130))
         else:

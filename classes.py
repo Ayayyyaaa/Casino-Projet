@@ -3,9 +3,9 @@ import pygame
 
 
 class Joueur:
-    def __init__(self, pseudo='Babibel'):
+    def __init__(self, pseudo=''):
         self.pseudo = pseudo
-        self.cagnotte = 2000000
+        self.cagnotte = 2000
         self.roulette_active = False
         self.mdp = None
         self.code_cb = None
@@ -127,3 +127,35 @@ class Bouton:
     def set_y(self, y):
         self.y = y
 
+
+class Button:
+    def __init__(self, image1, image2, x, y):
+        self.image1 = image1  # Image du bouton
+        self.image2 = image2  # Image du bouton
+        self.rect = self.image2.get_rect(topleft=(x, y))  # Rectangle pour la position
+        self.mask = pygame.mask.from_surface(self.image2)  # Masque pour collisions précises
+
+    def collision(self, mouse_pos):
+        # Convertir la position du clic dans le référentiel local du bouton
+        local_x = mouse_pos[0] - self.rect.x
+        local_y = mouse_pos[1] - self.rect.y
+
+        # Vérifier si le clic est dans le rectangle et dans le masque
+        if 0 <= local_x < self.rect.width and 0 <= local_y < self.rect.height:
+            return self.mask.get_at((local_x, local_y))
+        return False
+
+    def draw(self, surface, mouse_pos):
+        # Dessiner le bouton
+        if self.collision(mouse_pos):
+            surface.blit(self.image1, self.rect.topleft)
+        else:
+            surface.blit(self.image2, self.rect.topleft)
+
+class Clic:
+    def __init__(self):
+        self.clic = (0,0)
+    def get_clic(self):
+        return self.clic
+    def set_clic(self,clic):
+        self.clic = clic

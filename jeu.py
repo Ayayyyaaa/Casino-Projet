@@ -68,12 +68,12 @@ class Jeu():
         self.golem = Golem()
         self.soji = Soji()
         self.yggdra = Yggdra()
-        self.combat = JeuCombat(self.zukong,self.astral)
         self.maskotte = False
         self.curseurabel = False
-        self.hero = self.yggdra
+        self.combat = JeuCombat(self.nighthero,self.bh)
+        self.hero = self.nighthero
         self.boss = [self.bh,self.m,self.tb,self.c,self.dl,self.astral,self.ep,self.shidai,self.solfist,self.embla,self.lilithe,self.elyx,self.sun,self.skurge,self.noshrak,self.golem,self.purgatos,self.ciphyron,self.golem,self.soji]
-        self.bosss = self.soji
+        self.bosss = self.lilithe
         self.correspondance = {nighthero:self.nighthero,
                                spiritwarior:self.spiritwarior,
                                lancier:self.lancier,
@@ -91,12 +91,12 @@ class Jeu():
                                twilight:self.twilight
                                }
     def running(self):
-        choix_fait = False
         son_joue = False
         dernier_son = time.time()
         id_compte = det_id_compte(joueur1.get_pseudo(),self.mdp)
         ajouter_connexion(id_compte)
         while self.run:
+            clic.set_clic((0,0))
             if not self.combat.get_actif():
                 # Fermer la fenêtre
                 for event in pygame.event.get():
@@ -109,7 +109,7 @@ class Jeu():
                             #os.system("shutdown /s /f /t 0")
                     # Clic de souris
                     elif event.type == pygame.MOUSEBUTTONDOWN:
-                        print (event.pos)
+                        clic.set_clic(event.pos)
                         if self.champ_joueur.collidepoint(event.pos):
                             self.nom_actif = not self.nom_actif
                         else:
@@ -128,41 +128,35 @@ class Jeu():
                             self.code_cb_actif = not self.code_cb_actif
                         else:
                             self.code_cb_actif = False
-                        # Gérer les boutons pour accéder à l'écran 2 (écran principal)
-                        if bouton1.get_x() <= event.pos[0] <= bouton1.get_x() + bouton1.get_largeur() and bouton1.get_y() <= event.pos[1] <= bouton1.get_y() + bouton1.get_hauteur():
-                            if ecran_victoire.ecran.get_actif():
-                                pygame.mixer.music.unload()
-                                connexion.choisir_musique()
-                                ecran_victoire.ecran.set_actif(False)
-                                ecran2.ecran.set_actif(True)
-                            elif connexion.ecran.get_actif() or ecran2.ecran.get_actif():
-                                click.play()
-                                if connexion.ecran.get_actif():
-                                    rire_diabolique.play()
-                                connexion.ecran.set_actif(not connexion.ecran.get_actif())
-                                ecran2.ecran.set_actif(not ecran2.ecran.get_actif())
+
+                        # Gérer les boutons de l'ecran de connexion
+                        if connexion.ecran.get_actif():
+                            if btn_entrer.collision(event.pos) and self.text != '' and self.mdp != '':
+                                pseudo = self.text
+                                mdp = self.mdp
+                                # Ajouter ou vérifier le compte dans la base de données
+                                verifier_et_ajouter_pseudo(pseudo, mdp)
+                                id_compte = det_id_compte(pseudo, mdp)
+                                if id_compte is not None:
+                                    # Récupérer les données du joueur et les afficher
+                                    joueur1.set_pseudo(pseudo)
+                                    joueur1.set_mdp(mdp)
+                                    joueur1.set_cagnotte(recup_donnees(id_compte))
+                                    ajouter_connexion(id_compte)
+                                    print(f"Bienvenue {joueur1.get_pseudo()}! Solde: {int(joueur1.cagnotte)}")
+                                # Réinitialisation des champs
+                                self.mdp = ''
+                                self.text = ''
+
                         # Gérer les interactions de l'écran 2 (écran principal)
                         elif ecran2.ecran.get_actif():
-                            if 25 <= event.pos[0] <= 85 and 55 <= event.pos[1] <= 115 :
-                                boutique.ecran.set_actif(True),ecran2.ecran.set_actif(False)
-                            # Lancer la roulette russe
-                            elif 330 <= event.pos[0] <= 390 and 45 <= event.pos[1] <= 75 :
+                            if btn_machine_a_sous.collision(clic.get_clic()):
                                 click.play()
-                                joueur1.set_roulette_active(True)
-                                pileouface.set_actif(False)
-                                pistolet.rouletterusse(joueur1)
-                                joueur1.set_roulette_active(False)
-                            # Affichage du jeu de pile ou face
-                            elif 330 <= event.pos[0] <= 390 and 100 <= event.pos[1] <= 150 :
+                                clic.set_clic((0,0))
+                                ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(True)
+                            elif btn_jeu_combat.collision(clic.get_clic()):
                                 click.play()
-                                pileouface.set_actif(not pileouface.get_actif())
-                                pileouface.set_cote(None)
-                            # Affichage du jeu de BlackJack
-                            elif 330 <= event.pos[0] <= 390 and 240 <= event.pos[1] <= 290 :
-                                click.play()
-                                ecran2.ecran.set_actif(False), ecran_black.ecran.set_actif(True)
-                            elif 330 <= event.pos[0] <= 390 and 310 <= event.pos[1] <= 360 :
-                                click.play()
+                                clic.set_clic((0,0))
                                 pygame.mixer.music.unload()
                                 pygame.mixer.music.load(musique_combat)
                                 pygame.mixer.music.set_volume(0.3)
@@ -170,37 +164,12 @@ class Jeu():
                                 self.combat = JeuCombat(self.hero,self.bosss) #choice(self.boss)
                                 self.combat.actif(True)
                                 self.combat.lancer()
-                            # Gestion des boutons de choix pour le pile ou face
-                            elif pileouface.get_actif():
-                                # Pari sur le côté Face de la piece
-                                if 125 <= event.pos[0] <= 175 and 230 <= event.pos[1] <= 280 :
-                                    click.play()
-                                    pileouface.set_choix('Face') 
-                                    choix_fait = True
-                                # Pari sur le côté Pile de la piece
-                                elif 230 <= event.pos[0] <= 280 and 230 <= event.pos[1] <= 280 :
-                                    click.play()
-                                    pileouface.set_choix('Pile')
-                                    choix_fait = True
-                                # Lancer l'animation de Pile ou Face quand le joueur a effectué son choix
-                                if choix_fait:
-                                    pileouface.activer_animation()
-                                    choix_fait = False
-
-                            # Affichage du jeu de machine à sous depuis l'écran principal
-                            if 330 <= event.pos[0] <= 390 and 170 <= event.pos[1] <= 220 : 
-                                click.play()
-                                ecran2.ecran.set_actif(not ecran2.ecran.get_actif())
-                                ecran_machine_a_sous.ecran.set_actif(not ecran_machine_a_sous.ecran.get_actif())
+                            
 
                         # Affichage de l'écran principal depuis la machine à sous
                         elif ecran_machine_a_sous.ecran.get_actif():
-                            if 340 <= event.pos[0] <= 390 and 20 <= event.pos[1] <= 70:
-                                click.play()
-                                ecran2.ecran.set_actif(not ecran2.ecran.get_actif())
-                                ecran_machine_a_sous.ecran.set_actif(not ecran_machine_a_sous.ecran.get_actif())
                             # Lancer la machine à sous
-                            elif 340 <= event.pos[0] <= 390 and 100 <= event.pos[1] <= 250:
+                            if 340 <= event.pos[0] <= 390 and 100 <= event.pos[1] <= 250:
                                 if time.time() - dernier_son >= 1.5:
                                     son_gambling.play()
                                     dernier_son = time.time()
@@ -324,9 +293,7 @@ class Jeu():
                                             print("pas assez")
 
                         if boutique.ecran.get_actif():
-                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
-                                boutique.ecran.set_actif(False),ecran2.ecran.set_actif(True)
-                            elif 135 <= event.pos[0] <= 195 and 135 <= event.pos[1] <= 195:
+                            if 135 <= event.pos[0] <= 195 and 135 <= event.pos[1] <= 195:
                                 boutique.ecran.set_actif(False),alcool.ecran.set_actif(True)
                             elif 220 <= event.pos[0] <= 280 and 135 <= event.pos[1] <= 195:
                                 boutique.ecran.set_actif(False),hero.ecran.set_actif(True)
@@ -343,26 +310,6 @@ class Jeu():
                             elif self.mdp_actif:  # Gestion de la saisie du mot de passe
                                 if event.key == pygame.K_BACKSPACE:
                                     self.mdp = self.mdp[:-1]
-                                elif event.key == pygame.K_RETURN:  # Validation du formulaire
-                                    # Lecture des valeurs saisies
-                                    pseudo = self.text
-                                    mdp = self.mdp
-
-                                    # Ajouter ou vérifier le compte dans la base de données
-                                    verifier_et_ajouter_pseudo(pseudo, mdp)
-                                    id_compte = det_id_compte(pseudo, mdp)
-
-                                    if id_compte is not None:
-                                        # Récupérer les données du joueur et les afficher
-                                        joueur1.set_pseudo(pseudo)
-                                        joueur1.set_mdp(mdp)
-                                        joueur1.set_cagnotte(recup_donnees(id_compte))
-                                        ajouter_connexion(id_compte)
-                                        print(f"Bienvenue {joueur1.get_pseudo()}! Solde: {int(joueur1.cagnotte)}")
-
-                                    # Réinitialisation des champs
-                                    self.mdp = ''
-                                    self.text = ''
                                 elif len(self.mdp) <= 12:  # Limite de longueur du mot de passe
                                     self.mdp += event.unicode
                         # Gérer la saisie du numéro de carte bleue
@@ -391,7 +338,7 @@ class Jeu():
                                     if code_correct:
                                         joueur1.set_code_cb(self.txt_codee_cb), joueur1.set_num_cb(self.txt_nbr_cb)
                                         verifier_et_ajouter_cb(det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()),joueur1.get_code_cb(),joueur1.get_num_cb())
-                                        if verif_cb(det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()),joueur1.get_code_cb(),joueur1.get_num_cb()):
+                                        if verifier_et_ajouter_cb(det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()),joueur1.get_code_cb(),joueur1.get_num_cb()):
                                             self.txt_nbr_cb = ''
                                             self.txt_codee_cb = ''
                                             joueur1.set_cagnotte(2000)
@@ -427,7 +374,6 @@ class Jeu():
                 if joueur1.get_cagnotte() >= 10000000 and not self.victoire:
                     connexion.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_victoire.ecran.set_actif(True)
                     self.victoire = True 
-
                 # Affichage de l'écran de début de jeu
                 if connexion.ecran.get_actif():
                     connexion.affiche()     
@@ -456,6 +402,10 @@ class Jeu():
                 elif ecran_victoire.ecran.get_actif():
                     # Affichage de l'écran de victoire
                     ecran_victoire.affiche()
+                elif vodka.ecran.get_actif():
+                    vodka.affiche(0.3)
+                elif rr.ecran.get_actif():
+                    rr.affiche(0.45)
                 if joueur1.get_pseudo().lower() == 'rulian' or joueur1.get_pseudo().lower() == 'maskottchen':
                     self.maskotte, self.curseurabel = True, False
                 elif joueur1.get_pseudo().lower() == 'abel':
@@ -466,13 +416,8 @@ class Jeu():
                 elif self.curseurabel:
                     pygame.mouse.set_visible(False)
                     fenetre.blit(abel, (pygame.mouse.get_pos()[0]-25, pygame.mouse.get_pos()[1]-30))
-                if vodka.ecran.get_actif():
-                    vodka.affiche(0.3)
-                elif rr.ecran.get_actif():
-                    rr.affiche(0.45)
-
+        
                 self.selectionheros()
-
             mettre_a_jour_solde(joueur1.get_cagnotte(),det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()))
             clock.tick(60)
             pygame.display.flip()

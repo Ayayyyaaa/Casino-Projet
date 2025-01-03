@@ -1,5 +1,6 @@
 import sqlite3
 import pygame
+from objets_et_variables import joueur1
 
 def creer_table():
     conn = sqlite3.connect("base_de_donnee2.db")
@@ -45,7 +46,7 @@ def verifier_et_ajouter_pseudo(pseudo, mdp):
         cursor.execute("SELECT id_compte FROM compte WHERE pseudo = ? AND mdp = ?", (pseudo, mdp))
         id_ = cursor.fetchone()
         if id_:
-            cursor.execute("INSERT INTO inventaire (id_compte, solde) VALUES (?, ?)", (id_[0], 2000))
+            cursor.execute("INSERT INTO inventaire (id_compte, solde) VALUES (?, ?)", (id_[0], joueur1.get_cagnotte()))
             conn.commit()
             print(f"Compte créé avec succès ! Bienvenue '{pseudo}' !")
 
@@ -108,11 +109,4 @@ def verifier_et_ajouter_cb(id, num, code):
         if coordonnes:
             print(f"Coordonnées enregistrées avec succès !")
     conn.close()
-
-def verif_cb(id,num,code):
-    conn = sqlite3.connect("base_de_donnee2.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT code_cb,numero_cb FROM compte WHERE id_compte = ?", (id,))
-    coordonnees = cursor.fetchone()
-    conn.close()
-    return True if coordonnees[0] == code and coordonnees[1] == num else False
+    return True if compte[0] == code and compte[1] == num else False

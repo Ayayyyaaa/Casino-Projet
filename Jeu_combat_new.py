@@ -36,6 +36,9 @@ class Boss:
         self.type = element
         self.fond = fond
         self.nom_fond = nom_fond
+        self.collision = False
+    def get_collison(self):
+        return self.collision 
     def get_pv(self):
         return self.pv
     def get_pv_base(self):
@@ -112,6 +115,8 @@ class Boss:
         self.poison = poison
     def set_block(self,block):
         self.block = block
+    def set_collision(self,collision):
+        self.collision = collision
 
 class Hero:
     def __init__(self,pv,y,speed,spanim1,marche,cd1,cd2,portee,element):
@@ -138,6 +143,11 @@ class Hero:
         self.poison = False
         self.stun = False
         self.type = element
+        self.collision = False
+    def get_collison(self):
+        return self.colision 
+    def get_img(self):
+        return self.image
     def get_pv(self):
         return self.pv
     def get_pv_base(self):
@@ -189,7 +199,7 @@ class Hero:
     def set_attaque(self, actif):
         self.attaque = actif
     def modif_img(self, img):
-        self.image = pygame.image.load(img)
+        self.image = pygame.image.load(img).convert_alpha()
     def set_cd_img(self):
         self.cd_img = time.time()
     def set_victoire(self,vict):
@@ -210,6 +220,8 @@ class Hero:
         self.poison = poison
     def set_stun(self,stun):
         self.stun = stun
+    def set_collision(self,collision):
+        self.colision = collision
 
 class Night_Hero:
     def __init__(self):
@@ -242,7 +254,7 @@ class Night_Hero:
             if self.frame >= len(self.images_coup_depee_d)-1:
                 son_epee.play()
                 # Si le boss est à portée du héros
-                if self.hero.get_pos_x()-140 < j2.boss.get_pos_x() < self.hero.get_pos_x() + 100 and not j2.boss.get_block():
+                if self.hero.get_collison() and not j2.boss.get_block():
                     # Le boss perd 5 Pv
                     aie_boss.play()
                     j2.boss.modif_pv(-5*multis)
@@ -358,9 +370,8 @@ class Spirit_Hero:
             if not self.atk2:
                 if self.frame >= len(self.atk1_d)-1:
                     son_epee.play()
-                    print(j2.boss.get_pos_x(),self.hero.get_pos_x())
                     # Si le boss est à portée du héros
-                    if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
+                    if self.hero.get_collison() and not j2.boss.get_block():
                         # Le boss perd 5 Pv
                         aie_boss.play()
                         j2.boss.modif_pv(-randint(5,15)*multis)
@@ -381,7 +392,7 @@ class Spirit_Hero:
                 if self.frame >= len(self.atk2_d)-1:
                     son_epee.play()
                     # Si le boss est à portée du héros
-                    if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
+                    if self.hero.get_collison() and not j2.boss.get_block():
                         # Le boss perd 5 Pv
                         aie_boss.play()
                         j2.boss.modif_pv(-randint(10,20)*multis)
@@ -444,7 +455,7 @@ class Spirit_Hero:
             if self.frame >= len(self.cp2_d)-1:
                 son_epee.play()
                 # Si le boss est à portée du héros
-                if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
+                if self.hero.get_collison() and not j2.boss.get_block():
                     # Le boss perd 5 Pv
                     aie_boss.play()
                     j2.boss.modif_pv(-randint(15,40)*multis)
@@ -499,7 +510,7 @@ class Spirit_Warrior:
                 if self.frame >= len(self.atk1_d)-1:
                     son_epee.play()
                     # Si le boss est à portée du héros
-                    if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
+                    if self.hero.get_collison() and not j2.boss.get_block():
                         # Le boss perd 5 Pv
                         aie_boss.play()
                         j2.boss.modif_pv(-6*multis)
@@ -521,7 +532,7 @@ class Spirit_Warrior:
                 if self.frame >= len(self.atk2_d)-1:
                     son_epee.play()
                     # Si le boss est à portée du héros
-                    if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
+                    if self.hero.get_collison() and not j2.boss.get_block():
                         # Le boss perd 5 Pv
                         aie_boss.play()
                         j2.boss.modif_pv(-15*multis)
@@ -584,7 +595,7 @@ class Spirit_Warrior:
             if self.frame >= len(self.cp2_d)-1:
                 son_epee.play()
                 # Si le boss est à portée du héros
-                if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
+                if self.hero.get_collison() and not j2.boss.get_block():
                     # Le boss perd 5 Pv
                     aie_boss.play()
                     j2.boss.modif_pv(-20*multis)
@@ -637,7 +648,7 @@ class Lancier:
             if self.frame >= len(self.atk1_d)-1:
                 son_epee.play()
                 # Si le boss est à portée du héros
-                if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
+                if self.hero.get_collison() and not j2.boss.get_block():
                     # Le boss perd 5 Pv
                     aie_boss.play()
                     j2.boss.modif_pv(-8*multis)
@@ -686,7 +697,7 @@ class Lancier:
             if not self.charge:
                 self.hero.modif_img(self.images_marche_g[int(self.frame)])
             else:
-                if abs(distance(self,j2)) < 4:
+                if self.hero.get_collison():
                     if not j2.boss.get_block():
                         j2.boss.modif_pv(-20)
                         print(f"Attaque Charge Héros : Pv boss : {j2.boss.get_pv()}")
@@ -698,7 +709,7 @@ class Lancier:
             if not self.charge:
                 self.hero.modif_img(self.images_marche_d[int(self.frame)])
             else:
-                if abs(distance(self,j2)) < 4:
+                if self.hero.get_collison():
                     self.charge = False
                     self.hero.set_cp2(False)
                     self.hero.set_speed(4)
@@ -760,7 +771,7 @@ class Assassin:
                     son_epee.play()
                     print(j2.boss.get_pos_x(),self.hero.get_pos_x())
                     # Si le boss est à portée du héros
-                    if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
+                    if self.hero.get_collison() and not j2.boss.get_block():
                         # Le boss perd 5 Pv
                         aie_boss.play()
                         j2.boss.modif_pv(-8*multis)
@@ -781,7 +792,7 @@ class Assassin:
                 if self.frame >= len(self.atk2_d)-1:
                     son_epee.play()
                     # Si le boss est à portée du héros
-                    if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
+                    if self.hero.get_collison() and not j2.boss.get_block():
                         # Le boss perd 5 Pv
                         aie_boss.play()
                         j2.boss.modif_pv(-10*multis)
@@ -789,7 +800,6 @@ class Assassin:
                         # Affichage des dégâts subis
                         self.cd_dgt5 = time.time()
                     self.frame = 0
-                    print(self.hero.get_attaque())
                     self.hero.set_attaque(False)
                     self.hero.set_combo(False)
                     self.atk2 = False
@@ -899,7 +909,7 @@ class Zukong:
             - speed (float) : la vitesse à laquelle va se jouer l'animation
         '''
         if self.hero.get_pv() > 0:
-            if abs(distance(self, j2)) < self.hero.get_portee() and 5 <= self.frame <= 11 and not j2.boss.get_block():
+            if self.hero.get_collison() and 5 <= self.frame <= 11 and not j2.boss.get_block():
                 # Le boss perd 5 Pv
                 aie_boss.play()
                 j2.boss.modif_pv(-0.25*multis)
@@ -960,14 +970,9 @@ class Zukong:
         if self.hero.get_pv() > 0 :
             if self.frame >= len(self.cp2_d)-1:
                 son_epee.play()
-                # Si le boss est à portée du héros
-                if abs(distance(self, j2)) < self.hero.get_portee() and not j2.boss.get_block():
-                    # Le boss perd 5 Pv
+                if self.hero.get_collison() and not j2.boss.get_block():
                     aie_boss.play()
                     j2.boss.modif_pv(-8*multis)
-                    print(f"Attaque chargée Héros : Pv boss : {j2.boss.get_pv()}")
-                    # Affichage des dégâts subis
-                    self.cd_dgt5 = time.time()
                 self.frame = 0
                 self.hero.set_cp2(False)
             if sens == 'Gauche':
@@ -1023,17 +1028,17 @@ class Maehv:
             - speed (float) : la vitesse à laquelle va se jouer l'animation
         '''
         if self.hero.get_pv() > 0:
-            if abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 4 and not j2.boss.get_block():
+            if self.hero.get_collison() and int(self.frame) == 4 and not j2.boss.get_block():
                 if not self.dgt1:
                     aie_boss.play()
                     j2.boss.modif_pv((-6-self.bonus/3)*multis)
                     self.dgt1 = True
-            elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 8 and not j2.boss.get_block():
+            elif self.hero.get_collison() and int(self.frame) == 8 and not j2.boss.get_block():
                 if not self.dgt2:
                     aie_boss.play()
                     j2.boss.modif_pv((-10-self.bonus/3)*multis)
                     self.dgt2 = True
-            elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 23 and not j2.boss.get_block():
+            elif self.hero.get_collison() and int(self.frame) == 23 and not j2.boss.get_block():
                 if not self.dgt3:
                     aie_boss.play()
                     j2.boss.modif_pv((-15-self.bonus/3)*multis)
@@ -1152,23 +1157,23 @@ class Zendo:
             - speed (float) : la vitesse à laquelle va se jouer l'animation
         '''
         if self.hero.get_pv() > 0:
-            if abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 12 and not j2.boss.get_block():
+            if self.hero.get_collison() and int(self.frame) == 12 and not j2.boss.get_block():
                 if not self.dgt1:
                     aie_boss.play()
                     j2.boss.modif_pv(-6*multis)
                     self.dgt1 = True
-            elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 18 and not j2.boss.get_block():
+            elif self.hero.get_collison() and int(self.frame) == 18 and not j2.boss.get_block():
                 if not self.dgt2:
                     aie_boss.play()
                     j2.boss.modif_pv(-8*multis)
                     self.dgt2 = True
-            elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 24 and not j2.boss.get_block():
+            elif self.hero.get_collison() and int(self.frame) == 24 and not j2.boss.get_block():
                 if not self.dgt3:
                     aie_boss.play()
                     j2.boss.modif_pv(-10*multis)
                     self.dgt3 = True    
                     self.hero.set_block(True)
-            elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 30 and not j2.boss.get_block():
+            elif self.hero.get_collison() and int(self.frame) == 30 and not j2.boss.get_block():
                 if not self.dgt4:
                     aie_boss.play()
                     j2.boss.modif_pv(-16*multis)
@@ -1278,7 +1283,7 @@ class Pureblade:
             if 5 <= int(self.frame) <= 13 and not j2.boss.get_block():
                 aie_boss.play()
                 j2.boss.modif_pv(-0.55*multis)
-            elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 23 and not j2.boss.get_block():
+            elif self.hero.get_collison() and int(self.frame) == 23 and not j2.boss.get_block():
                 if not self.dgt2:
                     aie_boss.play()
                     j2.boss.modif_pv(-20*multis)
@@ -1382,12 +1387,12 @@ class Hsuku:
             - speed (float) : la vitesse à laquelle va se jouer l'animation
         '''
         if self.hero.get_pv() > 0:
-            if abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 2 and not j2.boss.get_block():
+            if self.hero.get_collison() and int(self.frame) == 2 and not j2.boss.get_block():
                 if not self.dgt1:
                     aie_boss.play()
                     j2.boss.modif_pv(-6*multis)
                     self.dgt1 = True
-            elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 5 and not j2.boss.get_block():
+            elif self.hero.get_collison() and int(self.frame) == 5 and not j2.boss.get_block():
                 if not self.dgt2:
                     aie_boss.play()
                     j2.boss.modif_pv(-6*multis)
@@ -1503,10 +1508,10 @@ class Sanguinar:
             - speed (float) : la vitesse à laquelle va se jouer l'animation
         '''
         if self.hero.get_pv() > 0:
-            if abs(distance(self, j2)) < self.hero.get_portee() and 5 <= int(self.frame) <= 11 and not j2.boss.get_block():
+            if self.hero.get_collison() and 5 <= int(self.frame) <= 11 and not j2.boss.get_block():
                 aie_boss.play()
                 j2.boss.modif_pv(-0.25)
-            elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 16:
+            elif self.hero.get_collison() and int(self.frame) == 16:
                 if not j2.boss.get_block() and not self.dgt1:
                     aie_boss.play()
                     j2.boss.modif_pv(-6*multis)
@@ -1728,7 +1733,7 @@ class Tethermancer:
         if self.hero.get_pv() > 0:
             if int(self.frame) == 6:
                 self.hero.set_block(True)
-            elif abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 14:
+            elif self.hero.get_collison() and int(self.frame) == 14:
                 if not j2.boss.get_block() and not self.dgt1:
                     aie_boss.play()
                     j2.boss.modif_pv(-22*multis)
@@ -1832,7 +1837,7 @@ class Aether:
             - speed (float) : la vitesse à laquelle va se jouer l'animation
         '''
         if self.hero.get_pv() > 0:
-            if abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 12 and not j2.boss.get_block():
+            if self.hero.get_collison() and int(self.frame) == 12 and not j2.boss.get_block():
                 if not self.dgt1:
                     aie_boss.play()
                     j2.boss.modif_pv((-6-self.bonus)*multis)
@@ -1940,7 +1945,7 @@ class Twilight:
             - speed (float) : la vitesse à laquelle va se jouer l'animation
         '''
         if self.hero.get_pv() > 0:
-            if abs(distance(self, j2)) < self.hero.get_portee() and 9 <= int(self.frame) <= 16 and not j2.boss.get_block():
+            if self.hero.get_collison() and 9 <= int(self.frame) <= 16 and not j2.boss.get_block():
                 aie_boss.play()
                 j2.boss.modif_pv(-0.60*multis)
                 j2.boss.set_poison(time.time())
@@ -2038,7 +2043,7 @@ class Yggdra:
             - speed (float) : la vitesse à laquelle va se jouer l'animation
         '''
         if self.hero.get_pv() > 0:
-            if abs(distance(self, j2)) < self.hero.get_portee() and int(self.frame) == 9 and not j2.boss.get_block():
+            if self.hero.get_collison() and int(self.frame) == 9 and not j2.boss.get_block():
                 if not self.dgt1:
                     aie_boss.play()
                     j2.boss.modif_pv(-52*multis)
@@ -2111,7 +2116,7 @@ class Yggdra:
 
 class Hell_Boss:
     def __init__(self):
-        self.boss = Boss(140,0,50,470,1.2,0.1,2.5,4.5,0,'Nature',[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)],'Lave')
+        self.boss = Boss(140,0,50,470,1.2,0.1,2.5,4.5,0,'Nature',lave,'Lave')
         self.images_coup_poing = [pygame.image.load(f'images/Jeu de combat/Boss/Attaque1/Coup_de_poing{i}.png') for i in range(1,6)]
         self.images_coup_faux = [pygame.image.load(f'images/Jeu de combat/Boss/Attaque2/Faux{i}.png') for i in range(1,8)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Boss/Marche/Droite/Marche{i}.png') for i in range(1,8)]
@@ -2302,7 +2307,7 @@ class Hell_Boss:
             
 class Michel:
     def __init__(self):
-        self.boss = Boss(100,0,50,360,3,0.15,4,0,0,'Neutre',[pygame.image.load(f'images/Jeu de combat/Fonds/Chute/_a_frm{i},100.png') for i in range(4)],'Chute')
+        self.boss = Boss(100,0,50,360,3,0.15,4,0,0,'Neutre',chute,'Chute')
         self.images_attaque1 = [pygame.image.load(f'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm{i},70.png') for i in range(44,69)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/LancierBoss/Droite/Marche/_a_frm{i},70.png') for i in range(16)]
         self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/LancierBoss/Gauche/Marche/_a_frm{i},70.png') for i in range(16)]
@@ -2428,14 +2433,14 @@ class Michel:
                 
 class TankBoss:
     def __init__(self):
-        self.boss = Boss(230,0,170,350,4.5,0.16,5.7,10,0,'Foudre',[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)],'Lave')
-        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Droite/Attaque1/_a_{i},60.png') for i in range(19)]
-        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Gauche/Attaque1/_a_{i},60.png') for i in range(19)]
-        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Droite/Marche/_a_{i},60.png') for i in range(8)]
-        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Gauche/Marche/_a_{i},60.png') for i in range(8)]
-        self.images_mort = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Mort/_a_{i},60.png') for i in range(15)]
-        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Droite/Inaction/_a_{i},80.png') for i in range(15)]
-        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Gauche/Inaction/_a_{i},80.png') for i in range(15)]
+        self.boss = Boss(230,0,170,350,4.5,0.16,5.7,10,0,'Foudre',temple,'Temple')
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Droite/Attaque1/_a_{i},60.png').convert_alpha() for i in range(19)]
+        self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Gauche/Attaque1/_a_{i},60.png').convert_alpha() for i in range(19)]
+        self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Droite/Marche/_a_{i},60.png').convert_alpha() for i in range(8)]
+        self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Gauche/Marche/_a_{i},60.png').convert_alpha() for i in range(8)]
+        self.images_mort = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Mort/_a_{i},60.png').convert_alpha() for i in range(15)]
+        self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Droite/Inaction/_a_{i},80.png').convert_alpha() for i in range(15)]
+        self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Gauche/Inaction/_a_{i},80.png').convert_alpha() for i in range(15)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
         self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
@@ -2463,7 +2468,7 @@ class TankBoss:
         frame_actuelle = int(self.frame)
         if not j1.hero.get_block():
             # Si le joueur est à portée et que cette frame n'a pas encore infligé de dégâts
-            if self.sens == 'Gauche' and -self.boss.get_portee() < distance(j1, self) < 0 or self.sens == 'Droite' and 0 < distance(j1, self) < self.boss.get_portee() and frame_actuelle not in self.frames_degats.keys():
+            if self.boss.get_collison() and frame_actuelle not in self.frames_degats.keys():
                 # Infliger des dégâts différents selon la frame
                 degats = 0  # Dégâts de base
                 if frame_actuelle == 8:
@@ -2554,12 +2559,13 @@ class TankBoss:
 
     def patern_boss(self,xhero,j1):
         # Si le boss se trouve à portée, lancement des attaques
+        print(self.boss.get_collison(),"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')
             else:
                 self.attaque1(0.18,j1,'Droite')
-        elif not self.atk1 and not -140 < distance(j1,self) < 140:
+        elif not self.atk1 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
@@ -2567,7 +2573,7 @@ class TankBoss:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if -140 < distance(j1,self) < 140:
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo():
                 if not self.atk1:
                     self.frame = 0
@@ -2575,7 +2581,7 @@ class TankBoss:
 
 class Cindera:
     def __init__(self):
-        self.boss = Boss(160,0,50,400,4,0.15,4.5,0,0,'Feu',[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)],'Lave')
+        self.boss = Boss(160,0,50,400,4,0.15,4.5,0,0,'Feu',lave,'Lave')
         self.images_attaque1 = [pygame.image.load(f'images/Jeu de combat/Cindera/Gauche/Attaque1/_a_{i},100.png') for i in range(40)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Cindera/Droite/Marche/_a_frm{i},0.png') for i in range(8)]
         self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Cindera/Gauche/Marche/_a_frm{i},0.png') for i in range(8)]
@@ -2601,7 +2607,7 @@ class Cindera:
         self.atk1 = True
         # Si toutes les images ont été jouées :
         if self.frame >= len(self.images_attaque1)-1:
-            if abs(distance(j1,self)) < 180 and not j1.hero.get_block():
+            if self.boss.get_collison() and not j1.hero.get_block():
                 # Le héros perd 20 Pv
                 j1.hero.modif_pv(-90)
                 aie_hero.play()
@@ -2615,7 +2621,7 @@ class Cindera:
             self.atk1 = False
             # Si le héros se trouve à portée du boss :
         elif 5 <= self.frame:
-            if abs(distance(j1,self)) < 220 and not j1.hero.get_block():
+            if self.boss.get_collison() and not j1.hero.get_block():
                 j1.hero.modif_pv(-0.28)
                 print(f'Fournaise : Pv hero {j1.hero.get_pv()}')
                 if not self.ralenti:
@@ -2653,13 +2659,10 @@ class Cindera:
             - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
         '''
-        if int(self.frame) >= len(self.images_inaction_d)-1:
+        if int(self.frame) >= len(self.images_inaction)-1:
             self.frame = 0
         self.frame += speed
-        if sens == 'Gauche':
-            self.boss.modif_img(self.images_inaction[int(self.frame)])
-        else:
-            self.boss.modif_img(self.images_inaction[int(self.frame)])
+        self.boss.modif_img(self.images_inaction[int(self.frame)])
 
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
@@ -2694,12 +2697,12 @@ class Cindera:
         # Si le boss se trouve à portée, lancement des attaques
         if self.atk1:
             self.attaque1(0.15,j1)
-        elif not self.atk1 and not self.atk2 and not abs(distance(j1,self)) < 140:
+        elif not self.atk1 and not self.atk2 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
             self.inaction(0.12)
-        if abs(distance(j1,self)) < 140:
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo() and not self.atk2:
                 if not self.atk1:
                     self.frame = 0
@@ -2707,7 +2710,7 @@ class Cindera:
 
 class DarkLord:
     def __init__(self):
-        self.boss = Boss(160,0,50,450,4,0.16,2.8,10,0,'Nuit',[pygame.image.load(f'images/Jeu de combat/Fonds/Pluie/_a_frm{i},120.png') for i in range(8)],'Pluie')
+        self.boss = Boss(160,0,50,450,4,0.16,2.8,10,0,'Nuit',pluie,'Pluie')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/DarkLord/Droite/Attaque1/_a_frm{i},0.png') for i in range(23)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/DarkLord/Gauche/Attaque1/_a_frm{i},0.png') for i in range(23)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/DarkLord/Droite/Marche/_a_frm{i},0.png') for i in range(8)]
@@ -2737,7 +2740,7 @@ class DarkLord:
         self.atk1 = True
         # Si toutes les images ont été jouées :
         if self.frame >= len(self.images_attaque1_d)-1:
-            if 60 < abs(distance(j1,self)) < 220 and not j1.hero.get_block():
+            if self.boss.get_collison() and not j1.hero.get_block():
                 # Le héros perd 20 Pv
                 j1.hero.modif_pv(-55)
                 aie_hero.play()
@@ -2825,7 +2828,7 @@ class DarkLord:
                 self.attaque1(0.18,j1,'Gauche')
             else:
                 self.attaque1(0.18,j1,'Droite')
-        elif not self.atk1 and not -140 < distance(j1,self) < 140:
+        elif not self.atk1 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
@@ -2833,7 +2836,7 @@ class DarkLord:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if -140 < distance(j1,self) < 140:
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo() and not self.atk2:
                 if not self.atk1:
                     self.frame = 0
@@ -2841,7 +2844,7 @@ class DarkLord:
 
 class Astral:
     def __init__(self):
-        self.boss = Boss(160,0,50,440,4,0.16,3.2,10,0,'Esprit',[pygame.image.load(f'images/Jeu de combat/Fonds/Eglise/_a_frm{i},150.png') for i in range(8)],'Eglise')
+        self.boss = Boss(160,0,50,440,4,0.16,3.2,10,0,'Esprit',eglise,'Eglise')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Astral/Droite/Attaque1/_a_{i},100.png') for i in range(29)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Astral/Gauche/Attaque1/_a_{i},100.png') for i in range(29)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Astral/Droite/Marche/_a_{i},100.png') for i in range(8)]
@@ -2871,13 +2874,13 @@ class Astral:
         self.atk1 = True
         # Si toutes les images ont été jouées :
         if self.frame >= len(self.images_attaque1_d)-1:
-            if abs(distance(j1,self)) < 220 and not j1.hero.get_block():
+            if self.boss.get_collison() and not j1.hero.get_block():
                 aie_hero.play()
                 j1.hero.set_poison(time.time())
             self.boss.set_cd_attaque1()
             self.boss.set_attaque1_dispo(False)
             self.atk1 = False
-        if abs(distance(j1,self)) < 220 and not j1.hero.get_block() and 16 <= self.frame <= 25:
+        if self.boss.get_collison() and not j1.hero.get_block() and 16 <= self.frame <= 25:
                 # Le héros perd 20 Pv
                 j1.hero.modif_pv(-0.5)
                 aie_hero.play()
@@ -2960,7 +2963,7 @@ class Astral:
                 self.attaque1(0.18,j1,'Gauche')
             else:
                 self.attaque1(0.18,j1,'Droite')
-        elif not self.atk1 and not -170 < distance(j1,self) < 170:
+        elif not self.atk1 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
@@ -2968,7 +2971,7 @@ class Astral:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if -170 < distance(j1,self) < 170:
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo() and not self.atk2:
                 if not self.atk1:
                     self.frame = 0
@@ -2976,7 +2979,7 @@ class Astral:
 
 class EternityPainter:
     def __init__(self):
-        self.boss = Boss(150,0,160,495,4,0.16,3.2,10,0,'Esprit',[pygame.image.load(f'images/Jeu de combat/Fonds/Chute/_a_frm{i},100.png') for i in range(4)],'Chute')
+        self.boss = Boss(150,0,160,495,4,0.16,3.2,10,0,'Esprit',chute,'Chute')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Ep/Droite/Attaque1/_a_frm{i},60.png') for i in range(23)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Ep/Gauche/Attaque1/_a_frm{i},60.png') for i in range(23)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Ep/Droite/Marche/_a_frm{i},60.png') for i in range(8)]
@@ -3009,17 +3012,17 @@ class EternityPainter:
         self.atk1 = True
         if not j1.hero.get_block():
             # Si toutes les images ont été jouées :
-            if abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 5:
+            if self.boss.get_collison() and int(self.frame) == 5:
                 if not self.dgt1:
                     aie_hero.play()
                     j1.hero.modif_pv(-8)
                     self.dgt1 = True
-            elif abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 11:
+            elif self.boss.get_collison() and int(self.frame) == 11:
                 if not self.dgt2:
                     aie_hero.play()
                     j1.hero.modif_pv(-10)
                     self.dgt2 = True
-            elif abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 17:
+            elif self.boss.get_collison() and int(self.frame) == 17:
                 if not self.dgt3:
                     aie_hero.play()
                     j1.hero.modif_pv(-20)
@@ -3107,7 +3110,7 @@ class EternityPainter:
                 self.attaque1(0.18,j1,'Gauche')
             else:
                 self.attaque1(0.18,j1,'Droite')
-        elif not self.atk1 and not abs(distance(j1,self)) < self.boss.get_portee()*0.7:
+        elif not self.atk1 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
@@ -3115,7 +3118,7 @@ class EternityPainter:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if abs(distance(j1,self)) < self.boss.get_portee():
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo() and not self.atk2:
                 if not self.atk1:
                     self.frame = 0
@@ -3123,7 +3126,7 @@ class EternityPainter:
 
 class Shidai:
     def __init__(self):
-        self.boss = Boss(180,0,160,445,4,0.16,2.8,4,0,'Air',[pygame.image.load(f'images/Jeu de combat/Fonds/Dojo/_a_frm{i},100.png') for i in range(48)],'Dojo')
+        self.boss = Boss(180,0,160,445,4,0.16,2.8,4,0,'Air',chute,'Chute')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Shidai/Droite/Attaque1/_a_{i},60.png') for i in range(20)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Shidai/Gauche/Attaque1/_a_{i},60.png') for i in range(20)]
         self.cp2_d = [pygame.image.load(f'images/Jeu de combat/Shidai/Droite/Attaque2/_a_{i},60.png') for i in range(6)]
@@ -3160,17 +3163,17 @@ class Shidai:
         self.atk1 = True
         if not j1.hero.get_block():
             # Si toutes les images ont été jouées :
-            if abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 3:
+            if self.boss.get_collison() and int(self.frame) == 3:
                 if not self.dgt1:
                     aie_hero.play()
                     j1.hero.modif_pv(-10-self.bonus/3)
                     self.dgt1 = True
-            elif abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 6:
+            elif self.boss.get_collison() and int(self.frame) == 6:
                 if not self.dgt2:
                     aie_hero.play()
                     j1.hero.modif_pv(-10-self.bonus/3)
                     self.dgt2 = True
-            elif abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 13:
+            elif self.boss.get_collison() and int(self.frame) == 13:
                 if not self.dgt3:
                     aie_hero.play()
                     j1.hero.modif_pv(-20-self.bonus/3)
@@ -3288,7 +3291,7 @@ class Shidai:
                 self.cp2(0.18,'Gauche',j1)
             else:
                 self.cp2(0.18,'Droite',j1)
-        elif not self.atk1 and not -140 < distance(j1,self) < 140:
+        elif not self.atk1 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
@@ -3296,12 +3299,12 @@ class Shidai:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if -140 < distance(j1,self) < 140:
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo() and not self.atk2:
                 if not self.atk1:
                     self.frame = 0
                 self.atk1 = True
-        if self.boss.get_attaque2_dispo() and not self.atk1 and -320 < distance(j1,self) < 320:
+        if self.boss.get_attaque2_dispo() and not self.atk1 and abs(distance(j1,self)) < 320:
                 if not self.atk2:
                     self.frame = 0
                     self.pv_actuels = self.boss.get_pv()
@@ -3309,7 +3312,7 @@ class Shidai:
 
 class Lilithe:
     def __init__(self):
-        self.boss = Boss(180,0,180,455,4,0.16,5,7,2.5,'Feu',[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)],'Lave')
+        self.boss = Boss(180,0,180,455,4,0.16,3.8,5,2.7,'Feu',lave,'Lave')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Lilithe/Droite/Attaque1/_a_{i},100.png') for i in range(12)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Lilithe/Gauche/Attaque1/_a_{i},100.png') for i in range(12)]
         self.images_attaque2_d = [pygame.image.load(f'images/Jeu de combat/Lilithe/Droite/Attaque2/_a_{i},70.png') for i in range(25)]
@@ -3350,7 +3353,7 @@ class Lilithe:
         self.atk1 = True
         if not j1.hero.get_block():
             # Si toutes les images ont été jouées :
-            if abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 6:
+            if self.boss.get_collison() and int(self.frame) == 6:
                 if not self.dgt1:
                     aie_hero.play()
                     j1.hero.modif_pv(-8)
@@ -3384,12 +3387,12 @@ class Lilithe:
         self.atk2 = True
         if not j1.hero.get_block():
             # Si toutes les images ont été jouées :
-            if abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 6:
+            if self.boss.get_collison() and int(self.frame) == 6:
                 if not self.dgt1:
                     aie_hero.play()
                     j1.hero.modif_pv(-10-self.bonus/2)
                     self.dgt1 = True
-            elif abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 17:
+            elif self.boss.get_collison() and int(self.frame) == 17:
                 if not self.dgt2:
                     aie_hero.play()
                     j1.hero.modif_pv(-20-self.bonus/2)
@@ -3510,7 +3513,12 @@ class Lilithe:
                 self.cp2(0.18,'Gauche',j1)
             else:
                 self.cp2(0.18,'Droite',j1)
-        elif not self.atk1 and not self.atk2 and not self.atk3 and not abs(distance(j1,self)) < self.boss.get_portee():
+                if self.boss.get_collison() and self.bonus >= 25:
+                    self.frame = 0
+                    self.boss.set_cd_attaque3()
+                    self.boss.set_attaque3_dispo(False)
+                    self.atk3 = False
+        elif not self.atk1 and not self.atk2 and not self.atk3 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
@@ -3518,7 +3526,7 @@ class Lilithe:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if  abs(distance(j1,self)) < self.boss.get_portee():
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo() and not self.atk2 and not self.atk3:
                 if not self.atk1:
                     self.frame = 0
@@ -3535,7 +3543,7 @@ class Lilithe:
 
 class Solfist:
     def __init__(self):
-        self.boss = Boss(230,0,160,450,4,0.16,4.5,10,0,'Feu',[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)],'Lave')
+        self.boss = Boss(230,0,160,450,4,0.16,4.5,10,0,'Feu',lave,'Lave')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Solfist/Droite/Attaque1/_a_{i},100.png') for i in range(41)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Solfist/Gauche/Attaque1/_a_{i},100.png') for i in range(41)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Solfist/Droite/Marche/_a_{i},100.png') for i in range(8)]
@@ -3568,11 +3576,11 @@ class Solfist:
         self.atk1 = True
         if not j1.hero.get_block():
             if 7 <= int(self.frame) <= 18:
-                if self.sens == 'Gauche' and -self.boss.get_portee() < distance(j1, self) < 0 or self.sens == 'Droite' and 0 < distance(j1, self) < self.boss.get_portee():
+                if self.boss.get_collison():
                     aie_hero.play()
                     j1.hero.modif_pv(-0.4)
             elif int(self.frame) == 30:
-                if self.sens == 'Gauche' and -self.boss.get_portee() < distance(j1, self) < 0 or self.sens == 'Droite' and 0 < distance(j1, self) < self.boss.get_portee():
+                if self.boss.get_collison():
                     if not self.dgt2:
                         aie_hero.play()
                         j1.hero.modif_pv(-45)
@@ -3658,7 +3666,7 @@ class Solfist:
                 self.attaque1(0.18,j1,'Gauche')
             else:
                 self.attaque1(0.18,j1,'Droite')
-        elif not self.atk1 and not abs(distance(j1,self)) < 140:
+        elif not self.atk1 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
@@ -3666,7 +3674,7 @@ class Solfist:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if abs(distance(j1,self)) < 140:
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo() and not self.atk2:
                 if not self.atk1:
                     self.frame = 0
@@ -3674,7 +3682,7 @@ class Solfist:
 
 class Elyx:
     def __init__(self):
-        self.boss = Boss(220,0,160,470,3.5,0.16,5,10,0,'Neutre',[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)],'Lave')
+        self.boss = Boss(220,0,160,470,3.5,0.16,5,10,0,'Neutre',chute,'Chute')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Elyx/Droite/Attaque1/_a_{i},100.png') for i in range(12)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Elyx/Gauche/Attaque1/_a_{i},100.png') for i in range(12)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Elyx/Droite/Marche/_a_{i},100.png') for i in range(8)]
@@ -3708,7 +3716,7 @@ class Elyx:
         if not j1.hero.get_block():
             # Si toutes les images ont été jouées :
             if int(self.frame) == 7 and not self.dgt2:
-                if self.sens == 'Gauche' and -self.boss.get_portee() < distance(j1, self) < 0 or self.sens == 'Droite' and 0 < distance(j1, self) < self.boss.get_portee():
+                if self.boss.get_collison():
                     aie_hero.play()
                     j1.hero.modif_pv(-18)
                     self.dgt2 = True
@@ -3802,7 +3810,7 @@ class Elyx:
                 self.attaque1(0.18,j1,'Gauche')
             else:
                 self.attaque1(0.18,j1,'Droite')
-        elif not self.atk1 and not abs(distance(j1,self)) < 140:
+        elif not self.atk1 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
             self.boss.set_block(True)
@@ -3812,7 +3820,7 @@ class Elyx:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if abs(distance(j1,self)) < 140:
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo() and not self.atk2:
                 self.dgt3 = False
                 if not self.atk1:
@@ -3821,7 +3829,7 @@ class Elyx:
 
 class Embla:
     def __init__(self):
-        self.boss = Boss(150,0,180,440,4,0.16,2.8,4,0,'Glace',[pygame.image.load(f'images/Jeu de combat/Fonds/Temple/_a_frm{i},100.png') for i in range(8)],'Temple')
+        self.boss = Boss(150,0,180,440,4,0.16,2.8,4,0,'Glace',temple,'Temple')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Embla/Droite/Attaque1/_a_{i},60.png') for i in range(38)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Embla/Gauche/Attaque1/_a_{i},60.png') for i in range(38)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Embla/Droite/Marche/_a_{i},60.png') for i in range(10)]
@@ -3855,17 +3863,17 @@ class Embla:
         self.atk1 = True
         if not j1.hero.get_block():
             # Si toutes les images ont été jouées :
-            if abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 7:
+            if self.boss.get_collison() and int(self.frame) == 7:
                 if not self.dgt1:
                     aie_hero.play()
                     j1.hero.modif_pv(-12)
                     self.dgt1 = True
-            elif abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 14:
+            elif self.boss.get_collison() and int(self.frame) == 14:
                 if not self.dgt2:
                     aie_hero.play()
                     j1.hero.modif_pv(-12)
                     self.dgt2 = True
-            elif abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 27:
+            elif self.boss.get_collison() and int(self.frame) == 27:
                 if not self.dgt3:
                     aie_hero.play()
                     j1.hero.modif_pv(-35)
@@ -3953,7 +3961,7 @@ class Embla:
                 self.attaque1(0.18,j1,'Gauche')
             else:
                 self.attaque1(0.18,j1,'Droite')
-        elif not self.atk1 and not -140 < distance(j1,self) < 140:
+        elif not self.atk1 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
@@ -3961,7 +3969,7 @@ class Embla:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if -140 < distance(j1,self) < 140:
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo():
                 if not self.atk1:
                     self.frame = 0
@@ -3969,7 +3977,7 @@ class Embla:
 
 class Sun:
     def __init__(self):
-        self.boss = Boss(180,0,160,450,4,0.16,5,10,0,'Feu',[pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)],'Lave')
+        self.boss = Boss(180,0,160,450,4,0.16,5,10,0,'Feu',lave,'Lave')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Sun/Droite/Attaque1/_a_{i},100.png') for i in range(33)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Sun/Gauche/Attaque1/_a_{i},100.png') for i in range(33)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Sun/Droite/Marche/_a_{i},100.png') for i in range(5)]
@@ -4002,13 +4010,13 @@ class Sun:
         self.atk1 = True
         if not j1.hero.get_block():
             if int(self.frame) == 19:
-                if abs(distance(j1, self)) < self.boss.get_portee():
+                if self.boss.get_collison():
                     if not self.dgt1:
                         aie_hero.play()
                         j1.hero.modif_pv(-35)
                         self.dgt1 = True  
             elif int(self.frame) == 20:
-                if abs(distance(j1, self)) < self.boss.get_portee():
+                if self.boss.get_collison():
                     if not self.dgt2:
                         aie_hero.play()
                         j1.hero.modif_pv(-45)
@@ -4095,7 +4103,7 @@ class Sun:
                 self.attaque1(0.18,j1,'Gauche')
             else:
                 self.attaque1(0.18,j1,'Droite')
-        elif not self.atk1 and not abs(distance(j1,self)) < 140:
+        elif not self.atk1 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
@@ -4103,7 +4111,7 @@ class Sun:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if abs(distance(j1,self)) < 140:
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo() and not self.atk2:
                 if not self.atk1:
                     self.frame = 0
@@ -4111,7 +4119,7 @@ class Sun:
 
 class Skurge:
     def __init__(self):
-        self.boss = Boss(140,0,160,510,5,0.16,6.5,10,0,'Nature',[pygame.image.load(f'images/Jeu de combat/Fonds/Chute/_a_frm{i},100.png') for i in range(4)],'Chute')
+        self.boss = Boss(140,0,160,510,5,0.16,6.5,10,0,'Nature',chute,'Chute')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Skurge/Droite/Attaque1/_a_{i},100.png') for i in range(14)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Skurge/Gauche/Attaque1/_a_{i},100.png') for i in range(14)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Skurge/Droite/Marche/_a_{i},100.png') for i in range(8)]
@@ -4144,7 +4152,6 @@ class Skurge:
             self.sens = s
         self.atk1 = True
         if int(self.frame) == 9 and not j1.hero.get_block():
-            print(self.sens, distance(j1,self))
             if not self.dgt1 and self.sens == 'Gauche' and distance(j1,self) < 0 or not self.dgt1 and self.sens == 'Droite' and distance(j1,self) > 0:
                 aie_hero.play()
                 dgt = choice([40,40,40,40,80])
@@ -4262,7 +4269,7 @@ class Skurge:
 
 class NoshRak:
     def __init__(self):
-        self.boss = Boss(150,0,180,470,4,0.16,2.8,4,0,'Foudre',[pygame.image.load(f'images/Jeu de combat/Fonds/Desert/_a_frm{i},80.png') for i in range(8)],'Desert')
+        self.boss = Boss(150,0,180,470,4,0.16,2.8,4,0,'Foudre',desert,'Desert')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Nosh-Rak/Droite/Attaque1/_a_{i},60.png') for i in range(35)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Nosh-Rak/Gauche/Attaque1/_a_{i},60.png') for i in range(35)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Nosh-Rak/Droite/Marche/_a_{i},60.png') for i in range(8)]
@@ -4296,19 +4303,19 @@ class NoshRak:
         self.atk1 = True
         if not j1.hero.get_block():
             # Si toutes les images ont été jouées :
-            if abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 2:
+            if self.boss.get_collison() and int(self.frame) == 2:
                 if not self.dgt1:
                     aie_hero.play()
                     j1.hero.modif_pv(-8)
                     self.dgt1 = True
-            elif abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 8:
+            elif self.boss.get_collison() and int(self.frame) == 8:
                 if not self.dgt2:
                     aie_hero.play()
                     j1.hero.modif_pv(-8)
                     self.dgt2 = True
                     if self.dgt1:
                         j1.hero.set_stun(True)
-            elif abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 23:
+            elif self.boss.get_collison() and int(self.frame) == 23:
                 if not self.dgt3:
                     aie_hero.play()
                     j1.hero.modif_pv(-30)
@@ -4397,7 +4404,7 @@ class NoshRak:
                 self.attaque1(0.18,j1,'Gauche')
             else:
                 self.attaque1(0.18,j1,'Droite')
-        elif not self.atk1 and not -140 < distance(j1,self) < 140:
+        elif not self.atk1 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
@@ -4405,7 +4412,7 @@ class NoshRak:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if -140 < distance(j1,self) < 140:
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo():
                 if not self.atk1:
                     self.frame = 0
@@ -4413,7 +4420,7 @@ class NoshRak:
 
 class Purgatos:
     def __init__(self):
-        self.boss = Boss(150,0,180,420,4,0.16,2.0,0,0,'Esprit',[pygame.image.load(f'images/Jeu de combat/Fonds/Eglise/_a_frm{i},150.png') for i in range(8)],'Desert')
+        self.boss = Boss(150,0,180,420,4,0.16,2.0,0,0,'Esprit',eglise,'Desert')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Purgatos/Droite/Attaque1/_a_{i},100.png') for i in range(23)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Purgatos/Gauche/Attaque1/_a_{i},100.png') for i in range(23)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Purgatos/Droite/Marche/_a_{i},100.png') for i in range(8)]
@@ -4447,13 +4454,13 @@ class Purgatos:
         self.atk1 = True
         if not j1.hero.get_block():
             # Si toutes les images ont été jouées :
-            if self.sens == 'Gauche' and -self.boss.get_portee() < distance(j1, self) < 0 or self.sens == 'Droite' and 0 < distance(j1, self) < self.boss.get_portee():
-                if int(self.frame) == 15:
-                    if not self.dgt1:
-                        aie_hero.play()
-                        j1.hero.modif_pv(-35)
-                        self.dgt1 = True 
-                        j1.hero.set_poison(True)
+            print("aaaaaaa",self.boss.get_collison(),self.frame)
+            if self.boss.get_collison() and int(self.frame) == 15:
+                if not self.dgt1:
+                    aie_hero.play()
+                    j1.hero.modif_pv(-35)
+                    self.dgt1 = True 
+                    j1.hero.set_poison(True)
         if self.frame >= len(self.images_attaque1_d)-1:
             self.boss.set_cd_attaque1()
             self.boss.set_attaque1_dispo(False)
@@ -4525,7 +4532,7 @@ class Purgatos:
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
-        elif distance(j1,self) > 0:
+        else:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
@@ -4536,7 +4543,7 @@ class Purgatos:
                 self.attaque1(0.25,j1,'Gauche')
             else:
                 self.attaque1(0.25,j1,'Droite')
-        elif not self.atk1 and not -140 < distance(j1,self) < 140:
+        elif not self.atk1 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
@@ -4544,7 +4551,7 @@ class Purgatos:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if -140 < distance(j1,self) < 140:
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo():
                 if not self.atk1:
                     self.frame = 0
@@ -4552,7 +4559,7 @@ class Purgatos:
 
 class Ciphyron:
     def __init__(self):
-        self.boss = Boss(150,0,180,420,4,0.16,2.0,0,0,'Foudre',[pygame.image.load(f'images/Jeu de combat/Fonds/Desert/_a_frm{i},80.png') for i in range(8)],'Desert')
+        self.boss = Boss(150,0,180,420,4,0.16,2.0,0,0,'Foudre',desert,'Desert')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Ciphyron/Droite/Attaque1/_a_{i},60.png') for i in range(22)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Ciphyron/Gauche/Attaque1/_a_{i},60.png') for i in range(22)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Ciphyron/Droite/Marche/_a_{i},60.png') for i in range(8)]
@@ -4587,7 +4594,7 @@ class Ciphyron:
         self.atk1 = True
         if not j1.hero.get_block():
             # Si toutes les images ont été jouées :
-            if abs(distance(j1, self)) < self.boss.get_portee() and not j1.hero.get_block():
+            if self.boss.get_collison() and not j1.hero.get_block():
                 if int(self.frame) == 9:
                     if not self.dgt1:
                         aie_hero.play()
@@ -4694,7 +4701,7 @@ class Ciphyron:
                 self.attaque1(0.25,j1,'Gauche')
             else:
                 self.attaque1(0.25,j1,'Droite')
-        elif not self.atk1 and not -140 < distance(j1,self) < 140:
+        elif not self.atk1 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
@@ -4702,7 +4709,7 @@ class Ciphyron:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if -140 < distance(j1,self) < 140:
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo():
                 if not self.atk1:
                     self.frame = 0
@@ -4710,7 +4717,7 @@ class Ciphyron:
 
 class Golem:
     def __init__(self):
-        self.boss = Boss(350,0,180,357,2.8,0.16,6.8,4,0,'Foudre',[pygame.image.load(f'images/Jeu de combat/Fonds/Temple/_a_frm{i},100.png') for i in range(8)],'Temple')
+        self.boss = Boss(350,0,180,357,2.8,0.16,6.8,4,0,'Foudre',temple,'Temple')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Golem/Droite/Attaque1/_a_{i},70.png') for i in range(28)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Golem/Gauche/Attaque1/_a_{i},70.png') for i in range(28)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Golem/Droite/Marche/_a_{i},70.png') for i in range(12)]
@@ -4751,7 +4758,7 @@ class Golem:
         
         if not j1.hero.get_block():
             # Si le joueur est à portée et que cette frame n'a pas encore infligé de dégâts
-            if abs(distance(j1, self)) < self.boss.get_portee() and frame_actuelle not in self.frames_degats:
+            if self.boss.get_collison() and frame_actuelle not in self.frames_degats:
                 # Infliger des dégâts différents selon la frame
                 degats = 0  # Dégâts de base
                 if frame_actuelle == 10:
@@ -4852,7 +4859,7 @@ class Golem:
                 self.attaque1(0.18,j1,'Gauche')
             else:
                 self.attaque1(0.18,j1,'Droite')
-        elif not self.atk1 and not -140 < distance(j1,self) < 140:
+        elif not self.atk1 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
@@ -4860,7 +4867,7 @@ class Golem:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if -140 < distance(j1,self) < 140:
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo():
                 if not self.atk1:
                     self.frame = 0
@@ -4868,7 +4875,7 @@ class Golem:
 
 class Soji:
     def __init__(self):
-        self.boss = Boss(210,0,140,480,4,0.16,5,7,4.5,'Foudre',[pygame.image.load(f'images/Jeu de combat/Fonds/Desert/_a_frm{i},80.png') for i in range(8)],'Desert')
+        self.boss = Boss(210,0,140,480,4,0.16,5,7,4.5,'Foudre',desert,'Desert')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Soji/Droite/Attaque1/_a_{i},100.png') for i in range(22)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Soji/Gauche/Attaque1/_a_{i},100.png') for i in range(22)]
         self.images_attaque2_d = [pygame.image.load(f'images/Jeu de combat/Soji/Droite/Attaque2/_a_{i},70.png') for i in range(25)]
@@ -4907,14 +4914,14 @@ class Soji:
         if self.frame < 1:
             self.sens = s
         self.atk1 = True
-        if not j1.hero.get_block():
+        if not j1.hero.get_block() and self.boss.get_collison():
             # Si toutes les images ont été jouées :
-            if abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 8:
+            if int(self.frame) == 8:
                 if not self.dgt1:
                     aie_hero.play()
                     j1.hero.modif_pv(-5)
                     self.dgt1 = True
-            elif abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 17:
+            elif int(self.frame) == 17:
                 if not self.dgt2:
                     aie_hero.play()
                     j1.hero.modif_pv(-25)
@@ -4947,19 +4954,19 @@ class Soji:
         if self.frame < 1:
             self.sens = s
         self.atk2 = True
-        if not j1.hero.get_block():
+        if not j1.hero.get_block() and self.boss.get_collison():
             # Si toutes les images ont été jouées :
-            if abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 7:
+            if int(self.frame) == 7:
                 if not self.dgt1:
                     aie_hero.play()
                     j1.hero.modif_pv(-10-self.bonus/3)
                     self.dgt1 = True
-            elif abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 11:
+            elif int(self.frame) == 11:
                 if not self.dgt2:
                     aie_hero.play()
                     j1.hero.modif_pv(-10-self.bonus/3)
                     self.dgt2 = True
-            elif abs(distance(j1, self)) < self.boss.get_portee() and int(self.frame) == 16:
+            elif int(self.frame) == 16:
                 if not self.dgt3:
                     aie_hero.play()
                     j1.hero.modif_pv(-30-self.bonus/3)
@@ -5081,12 +5088,12 @@ class Soji:
                 self.cp2(0.18,'Gauche',j1)
             else:
                 self.cp2(0.18,'Droite',j1)
-            if abs(distance(j1,self)) < self.boss.get_portee() and self.bonus >= 25:
+            if self.boss.get_collison() and self.bonus >= 25:
                 self.frame = 0
                 self.boss.set_cd_attaque3()
                 self.boss.set_attaque3_dispo(False)
                 self.atk3 = False
-        elif not self.atk1 and not self.atk2 and not self.atk3 and not abs(distance(j1,self)) < self.boss.get_portee():
+        elif not self.atk1 and not self.atk2 and not self.atk3 and not self.boss.get_collison():
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
@@ -5094,7 +5101,7 @@ class Soji:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if  abs(distance(j1,self)) < self.boss.get_portee():
+        if self.boss.get_collison():
             if self.boss.get_attaque1_dispo() and not self.atk2 and not self.atk3:
                 if not self.atk1:
                     self.frame = 0
@@ -5219,6 +5226,18 @@ class JeuCombat:
         self.j2.boss.set_mort(False)
         while not self.j1.hero.get_victoire() and not self.j2.boss.get_victoire() and self.run:
             self.frame += 0.14
+            mask1 = pygame.mask.from_surface(self.j1.hero.image)
+            mask2 = pygame.mask.from_surface(self.j2.boss.image)
+            offset_x = self.j2.boss.get_pos_x() - self.j1.hero.get_pos_x()
+            offset_y = self.j2.boss.get_pos_y() - self.j1.hero.get_pos_y()
+            mask1_overlap = mask1.overlap(mask2, (offset_x, offset_y))
+            mask2_overlap = mask2.overlap(mask1, (-offset_x, -offset_y))
+
+            # Mettre à jour les collisions
+            self.j1.hero.set_collision(mask1_overlap)
+            self.j2.boss.set_collision(mask2_overlap)
+            print(offset_x,offset_y,mask1.overlap(mask2, (offset_x, offset_y)))
+
             if self.frame >= len(self.fond)-1:
                 # On remet tout à 0
                 self.frame = 0
@@ -5296,7 +5315,10 @@ class JeuCombat:
                 self.j1.inaction(self.j2)
             
             self.affichage_degats()
-
+            #mask1_surface = mask1.to_surface(setcolor=(255, 255, 255), unsetcolor=(0, 0, 0))
+            #mask2_surface = mask2.to_surface(setcolor=(255, 255, 255), unsetcolor=(0, 0, 0))
+            #fenetre.blit(mask2_surface, (self.j2.boss.get_pos_x(), self.j2.boss.get_pos_y()-self.fonds[self.j2.boss.get_nomfond()]))
+            #fenetre.blit(mask1_surface, (self.j1.hero.get_pos_x(), self.j1.hero.get_pos_y()-self.fonds[self.j2.boss.get_nomfond()]))
             self.fenetre.blit(self.j2.boss.image, (self.j2.boss.get_pos_x(), self.j2.boss.get_pos_y()-self.fonds[self.j2.boss.get_nomfond()]))
             self.fenetre.blit(self.j1.hero.image, (self.j1.hero.get_pos_x(), self.j1.hero.get_pos_y()-self.fonds[self.j2.boss.get_nomfond()]))
             self.fenetre.blit(self.vie_hero, (0, -50))
@@ -5316,7 +5338,7 @@ class JeuCombat:
             joueur1.set_cagnotte(0)
         elif self.j1.hero.get_victoire():
             self.set_reussi()
-            joueur1.modifier_cagnotte(joueur1.get_cagnotte()/4+30000)
+            joueur1.modifier_cagnotte(joueur1.get_cagnotte()/4+15000)
         else:
             pygame.quit()
 
