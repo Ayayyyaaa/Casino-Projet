@@ -1,6 +1,7 @@
 # classes.py
 import pygame
 
+print("Chargement de classes.py")
 
 class Joueur:
     def __init__(self, pseudo=''):

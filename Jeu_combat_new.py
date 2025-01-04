@@ -4,6 +4,10 @@ import sys
 from objets_et_variables import *
 from sons import son_epee,aie_boss,aie_hero
 from random import randint,choice
+from fonctions import afficher_ecran_chargement
+
+afficher_ecran_chargement(chargement[8])
+print("Chargement du jeu de combat...")
 
 def distance(j1,j2):
     return j1.hero.get_pos_x()-j2.boss.get_pos_x()

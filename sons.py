@@ -1,5 +1,10 @@
 import pygame
 pygame.mixer.init()
+from fonctions import afficher_ecran_chargement
+from img import chargement
+
+afficher_ecran_chargement(chargement[2])
+print("Chargement des sons...")
 
 son_gambling = pygame.mixer.Sound('son/lets_go_gambling.mp3')
 son_fall = pygame.mixer.Sound('son/fall.mp3')

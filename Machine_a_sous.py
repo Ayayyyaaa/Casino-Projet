@@ -5,6 +5,9 @@ from Ecrans import Ecran,ecran2
 from objets_et_variables import joueur1
 from sons import click
 
+afficher_ecran_chargement(chargement[7])
+print("Chargement de Machine_a_sous.py")
+
 class Emplacement(pygame.sprite.Sprite):
 
     def __init__(self, pos_x, pos_y):

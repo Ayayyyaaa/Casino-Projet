@@ -6,9 +6,10 @@ from Roulette_Russe import pistolet
 from PileouFace import pileouface
 from sons import *
 from SQL import *
-import time
 
-pygame.mixer.init()
+afficher_ecran_chargement(chargement[6])
+print("Chargement de Ecrans.py")
+
 
 class Ecran:
     def __init__(self, actif=False):
@@ -28,7 +29,6 @@ class Ecran1:
     def affiche(self):
         if self.ecran.get_actif():
             fenetre.blit(fond, (0, 0))
-            self.choisir_musique()
             btn_entrer.draw(fenetre,pygame.mouse.get_pos())
             if btn_entrer.collision(clic.get_clic()):
                 click.play()
@@ -36,6 +36,7 @@ class Ecran1:
                     connexion.ecran.set_actif(False)
                     ecran2.ecran.set_actif(True)
                     clic.set_clic((0,0))
+                    self.choisir_musique()
     def choisir_musique(self):
         '''Permet de chosir la musique de fond
         Paramètres : 
@@ -54,7 +55,7 @@ class Ecran1:
                 self.fin_combat = True
         elif joueur1.get_pseudo().lower() in ['rick','rickroll','rick roll', 'rickastley', 'rick astley']:
             if not pygame.mixer.music.get_busy() or self.ancien_pseudo != joueur1.get_pseudo():
-                rr.ecran.set_actif(True),connexion.ecran.set_actif(False)
+                rr.ecran.set_actif(True),ecran2.ecran.set_actif(False)
                 pygame.mixer.music.unload()
                 pygame.mixer.music.load(rickr)
                 pygame.mixer.music.set_volume(1)

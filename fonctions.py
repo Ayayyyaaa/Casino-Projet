@@ -1,7 +1,7 @@
 import pygame
 from objets_et_variables import *
-from img import *
 
+print("Chargement de fonctions.py")
 
 fond2 = pygame.image.load('images/Fonds d\'ecran/casino.jpg').convert()
 
@@ -51,6 +51,9 @@ def achat(article):
     else:
         print("Solde insuffisant !")
 
+def afficher_ecran_chargement(img):
+    fenetre.blit(img, (0, 0))  # Afficher le fond
+    pygame.display.flip()
 
 
 

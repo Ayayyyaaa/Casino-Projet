@@ -1,6 +1,11 @@
 import pygame
 from random import randint
 from sons import tire_balle,tire_balle_blanc
+from fonctions import afficher_ecran_chargement
+from img import chargement
+
+afficher_ecran_chargement(chargement[4])
+print("Chargement de Roulette_Russe.py")
 
 class RouletteRusse:
     def __init__(self, pos_x, pos_y,son,son_blanc):

@@ -1,11 +1,22 @@
 import pygame
 
+print("Chargement de img.py")
+
 pygame.init()
 pygame.display.set_caption("Le Babelcasino")
 largeur, hauteur = 400, 400
-
 fenetre = pygame.display.set_mode((largeur, hauteur))
-fond = pygame.image.load('images/Fonds d\'ecran/Croupier2.png').convert()
+fond = pygame.image.load('images/Fonds d\'ecran/Croupier2.png').convert()  # Fond d'écran initial
+chargement = [pygame.image.load(f'images/Fonds d\'ecran/Chargement/_a_{i},333.png').convert() for i in range(3,14)]
+fenetre.blit(chargement[0], (0, 0))  # Afficher le fond
+pygame.display.flip()  # Mettre à jour l'affichage
+
+chute = [pygame.image.load(f'images/Jeu de combat/Fonds/Chute/_a_frm{i},100.png') for i in range(4)]
+eglise = [pygame.image.load(f'images/Jeu de combat/Fonds/Eglise/_a_frm{i},150.png') for i in range(8)]
+pluie = [pygame.image.load(f'images/Jeu de combat/Fonds/Pluie/_a_frm{i},120.png') for i in range(8)]
+lave = [pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)]
+temple = [pygame.image.load(f'images/Jeu de combat/Fonds/Temple/_a_frm{i},100.png') for i in range(8)]
+desert = [pygame.image.load(f'images/Jeu de combat/Fonds/Desert/_a_frm{i},80.png') for i in range(8)]
 fond3 = pygame.image.load('images/Fonds d\'ecran/enfer2.png').convert()
 roulette = pygame.image.load('images/roulette2.png').convert_alpha()
 roulette2 = pygame.image.load('images/roulette3.png').convert_alpha()
@@ -67,11 +78,4 @@ icone_pureblade = pygame.image.load('images/icone_pureblade.png').convert_alpha(
 icone_aether = pygame.image.load('images/icone_aether.png').convert_alpha()
 info1 = pygame.image.load('images/Jeu de Combat/Infos/Info.png').convert_alpha()
 info2 = pygame.image.load('images/Jeu de Combat/Infos/Info2.png').convert_alpha()
-chute = [pygame.image.load(f'images/Jeu de combat/Fonds/Chute/_a_frm{i},100.png') for i in range(4)]
-eglise = [pygame.image.load(f'images/Jeu de combat/Fonds/Eglise/_a_frm{i},150.png') for i in range(8)]
-pluie = [pygame.image.load(f'images/Jeu de combat/Fonds/Pluie/_a_frm{i},120.png') for i in range(8)]
-lave = [pygame.image.load(f'images/Jeu de combat/Fonds/Lave/_a_frm{i},100.png') for i in range(8)]
-temple = [pygame.image.load(f'images/Jeu de combat/Fonds/Temple/_a_frm{i},100.png') for i in range(8)]
-desert = [pygame.image.load(f'images/Jeu de combat/Fonds/Desert/_a_frm{i},80.png') for i in range(8)]
-
 pygame.display.set_icon(icone)

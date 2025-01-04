@@ -14,8 +14,10 @@ import time
 import os
 from random import choice
 from classes import *
+from fonctions import afficher_ecran_chargement
 
-pygame.init()
+afficher_ecran_chargement(chargement[10])
+print("Chargement du jeu...")
 
 class Jeu():
     def __init__(self):

@@ -6,12 +6,8 @@ from objets_et_variables import *
 from Ecrans import *
 from sons import pioche_carte, click
 
-pygame.init()
-
-
-LARGEUR = 400
-HAUTEUR = 400
-fenetre = pygame.display.set_mode((LARGEUR, HAUTEUR))
+afficher_ecran_chargement(chargement[9])
+print("Chargement de blackjack.py")
 
 class Blackjack:
     def __init__(self):

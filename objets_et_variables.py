@@ -1,6 +1,10 @@
 from classes import *
 from img import *
 
+fenetre.blit(chargement[1], (0, 0))  # Afficher le fond
+pygame.display.flip()  # Mettre à jour l'affichage
+print("Chargement de objets_et_variables...")
+
 blanc = (255, 255, 255)
 noir = (0, 0, 0)
 gris = (128, 128, 128)

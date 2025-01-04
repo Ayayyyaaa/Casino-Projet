@@ -1,6 +1,11 @@
 import sqlite3
 import pygame
 from objets_et_variables import joueur1
+from img import chargement
+from fonctions import afficher_ecran_chargement
+
+afficher_ecran_chargement(chargement[5])
+print("Chargement de SQL.py")
 
 def creer_table():
     conn = sqlite3.connect("base_de_donnee2.db")
