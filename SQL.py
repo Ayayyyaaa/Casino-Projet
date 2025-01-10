@@ -7,7 +7,7 @@ from fonctions import afficher_ecran_chargement
 afficher_ecran_chargement(chargement[5])
 print("Chargement de SQL.py")
 
-def creer_table():
+def creer_table(possede, nom_heros):
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     cursor.execute("""
@@ -19,18 +19,61 @@ def creer_table():
         )
     """)
     cursor.execute("""
+        CREATE TABLE IF NOT EXISTS objets(
+            nom_objet TEXT PRIMARY KEY,
+            prix INTEGER,
+            duree INTEGER,
+            effet TEXT,
+        )
+    """)
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS inventaire (
             id_compte INTEGER PRIMARY KEY,
             solde INTEGER DEFAULT 2000,
-            FOREIGN KEY (id_compte) REFERENCES compte (id_compte)
+            nom_objet TEXT,
+            quantite_objet INTEGER,
+            FOREIGN KEY (id_compte) REFERENCES compte (id_compte),
+            FOREIGN KEY (nom_objet) REFERENCES objets (nom_objet)
         )
     """)
-    cursor.execute("""CREATE TABLE IF NOT EXISTS "cd_bancaires" (
-    "code_cb"	TEXT,
-    "numero_cb"	TEXT,
-    "id_compte"	INTEGER,
-    FOREIGN KEY("id_compte") REFERENCES "compte"("id_compte"))""")
-
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS heros(
+            nom_hero TEXT PRIMARY KEY,
+            prix INTEGER,
+            faction TEXT,
+            element TEXT,
+            rarete INTEGER,
+            lore TEXT,
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS boss(
+            nom_boss TEXT PRIMARY KEY,
+            element TEXT,
+            difficulte INTEGER,
+            lore TEXT,
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS stats(
+            id_compte INTEGER PRIMARY KEY,
+            victoires INTEGER,
+            defaites INTEGER,
+            nom_boss TEXT,
+            FOREIGN KEY(id_compte) REFERENCES compte (id_compte)
+            FOREIGN KEY(nom_boss) REFERENCES boss (nom_boss)
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS casier(
+            id_compte INTEGER PRIMARY KEY,
+            nom_hero INTEGER,
+            possede INTEGER DEFAULT 0,
+            FOREIGN KEY(id_compte) REFERENCES compte (id_compte),
+            FOREIGN KEY(nom_hero) REFERENCES heros (nom_heros)
+        )
+    """)
+    cursor.execute("UPDATE casier SET possede = 1 WHERE nom_hero = 'Night_Hero'", (possede, nom_heros))
     conn.commit()
     conn.close()
 
@@ -51,7 +94,6 @@ def verifier_et_ajouter_pseudo(pseudo, mdp):
         cursor.execute("SELECT id_compte FROM compte WHERE pseudo = ? AND mdp = ?", (pseudo, mdp))
         id_ = cursor.fetchone()
         if id_:
-            joueur1.set_cagnotte(200000)
             cursor.execute("INSERT INTO inventaire (id_compte, solde) VALUES (?, ?)", (id_[0], joueur1.get_cagnotte()))
             conn.commit()
             print(f"Compte créé avec succès ! Bienvenue '{pseudo}' !")
@@ -66,11 +108,9 @@ def det_id_compte(pseudo,mdp):
     conn.close()
     return id_compte[0] if id_compte else None
 
-def recup_donnees(id_compte:int):
+def recup_donnees(id_compte):
     """
     Récupère le solde du joueur dans la base de données.
-    Paramètres:
-    - id_compte: int
     """
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
@@ -99,22 +139,188 @@ def mettre_a_jour_solde(solde, id_compte):
     conn.commit()
     conn.close()
 
-def verifier_et_ajouter_cb(ide, num, code):
+def verifier_et_ajouter_cb(id, num, code):
     """
     Vérifie si la combinaison id est associée au numéro de code de cb. Si non, l'ajoute.
     """
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT code_cb,numero_cb FROM compte WHERE id_compte = ?", (ide,))
+    cursor.execute("SELECT code_cb,numero_cb FROM compte WHERE id_compte = ?", (id,))
     compte = cursor.fetchone()
     if compte == (None,None):
         # Ajouter le compte à la base
-        cursor.execute("UPDATE compte SET code_cb = ?, numero_cb = ? WHERE id_compte = ?", (code,num,ide))
+        cursor.execute("UPDATE compte SET code_cb = ?, numero_cb = ? WHERE id_compte = ?", (code,num,id))
         conn.commit()
-        cursor.execute("SELECT code_cb,numero_cb FROM compte WHERE id_compte = ?", (ide,))
+        cursor.execute("SELECT code_cb,numero_cb FROM compte WHERE id_compte = ?", (id,))
         coordonnes = cursor.fetchone()
         conn.commit()
         if coordonnes:
             print(f"Coordonnées enregistrées avec succès !")
     conn.close()
     return True if compte[0] == code and compte[1] == num else False
+
+def ajout_des_attributs():
+    '''
+    ajoute les attributs dans la base de donnée
+    '''
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+
+    #Création des objets 
+ 
+    #Vodka
+    cursor.execute('''INSERT INTO objets VALUES ('Vodka', 1000, 1, 'Augmente les gains de la Roulette Russe de 10% (n'est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
+    #Biere
+    cursor.execute('''INSERT INTO objets VALUES ('Biere', 100000, 2, 'Enlève une balle dans la roulette russe et diminue les gains de 10% (n'est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
+    #Vin
+    cursor.execute('''INSERT INTO objets VALUES ('Vin', 10000, 1, 'Augmente les gains et les pertes du Blackjack de 10% (n'est pas compatible avec un autre alcool qui affecte le Blackjack)')''')
+    #Rhum
+    cursor.execute('''INSERT INTO objets VALUES ('Rhum', 50000, 1, 'Ajoute une balle à la Roulette Russe et augmente les gains de 30%(n'est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
+    #Whisky
+    cursor.execute('''INSERT INTO objets VALUES ('Whisky', 35000, 5, 'Augmente les chances de gagner au pile ou face de 10% et diminue les chances d'obtenir 3 fruits dans la machine à sous (n'est pas compatible avec un autre alcool qui affecte la machine à sous ou le pile ou face)')''')
+    #Mojito
+    cursor.execute('''INSERT INTO objets VALUES ('Mojito', 35000, 7, 'Sélectionne aléatoirement deux fruits et augmente les chances de les obtenir de 10% (n'est pas compatible avec un autre alcool qui affecte la machine à sous)')''')
+
+    #Création des heros
+
+    #Night_Hero
+    cursor.execute('''INSERT INTO heros VALUES ('Night_Hero', 0, 'Abyss', 'Nuit', 1, 'blabla')''')
+    #Spirit_Hero
+    cursor.execute('''INSERT INTO heros VALUES ('Spirit_Hero', 45000, 'Nécrons', 'Esprit', 2, 'blabla')''')
+    #Spirit_Warrior
+    cursor.execute('''INSERT INTO heros VALUES ('Spirit_Warrior', 30000, 'Nécrons', 'Esprit', 2, 'blabla')''')
+    #Lancier
+    cursor.execute('''INSERT INTO heros VALUES ('Lancier', 45000, 'Nécrons', 'Esprit', 2, 'blabla')''')
+    #Assassin
+    cursor.execute('''INSERT INTO heros VALUES ('Assassin', 60000, 'Mercenaire', 'Neutre', 3, 'blabla')''')
+    #Zukong
+    cursor.execute('''INSERT INTO heros VALUES ('Zukong', 45000, 'Murim', 'Neutre', 2, 'blabla')''')
+    #Maevh
+    cursor.execute('''INSERT INTO heros VALUES ('Maevh', 350000, 'Abyss', 'Feu', 5, 'blabla')''')
+    #Zendo
+    cursor.execute('''INSERT INTO heros VALUES ('Zendo', 200000, 'Murim', 'Air', 4, 'blabla')''')
+    #Pureblade
+    cursor.execute('''INSERT INTO heros VALUES ('Pureblade', 275000, 'Empire', 'Feu', 5, 'blabla')''')
+    #Hsuku
+    cursor.execute('''INSERT INTO heros VALUES ('Hsuku', 300000, 'Mercenaire 'Neutre', 5, 'blabla')''')
+    #Sanguinar
+    cursor.execute('''INSERT INTO heros VALUES ('Sanguinar', 400000, 'Abyss', 'Nuit', 5, 'blabla')''')
+    #Whistler
+    cursor.execute('''INSERT INTO heros VALUES ('Whistler', 400000, 'Empire', 'Feu', 5, 'blabla')''')
+    #Tethermancer
+    cursor.execute('''INSERT INTO heros VALUES ('Tethermancer', 250000, 'Mercenaire', 'Feu', 4, 'blabla')''')
+    #Aether
+    cursor.execute('''INSERT INTO heros VALUES ('Aether', 175000, 'Empire', 'Air', 4, 'blabla')''')
+    #Twilight
+    cursor.execute('''INSERT INTO heros VALUES ('Twilight', 180000, 'Créature légendaire', 'Feu', 4, 'blabla')''')
+    #Yggdra
+    cursor.execute('''INSERT INTO heros VALUES ('Yggdra', 450000, 'Abyss', 'Feu', 5, 'blabla')''')
+
+    #Création des boss
+
+    #Michel
+    cursor.execute('''INSERT INTO boss VALUES ('Michel', 'Neutre', 2, 'blabla')''')
+    #TankBoss
+    cursor.execute('''INSERT INTO boss VALUES ('TankBoss', 'Foudre', 4, 'blabla')''')
+    #Cindera
+    cursor.execute('''INSERT INTO boss VALUES ('Cindera', 'Feu', 3, 'blabla')''')
+    #DarkLord
+    cursor.execute('''INSERT INTO boss VALUES ('DarkLord', 'Nuit', 2, 'blabla')''')
+    #Astral (il est nul)
+    cursor.execute('''INSERT INTO boss VALUES ('Astral (il est nul)', 'Esprit', 0, 'blabla')''')
+    #EternityPainter
+    cursor.execute('''INSERT INTO boss VALUES ('EternityPainter', 'Esprit', 3, 'blabla')''')
+    #Shidai
+    cursor.execute('''INSERT INTO boss VALUES ('Shidai', 'Foudre', 4, 'blabla')''')
+    #Lilithe
+    cursor.execute('''INSERT INTO boss VALUES ('Lilithe', 'Feu', 5, 'blabla')''')
+    #Solfist
+    cursor.execute('''INSERT INTO boss VALUES ('Solfist', 'Feu', 2, 'blabla')''')
+    #Elyx
+    cursor.execute('''INSERT INTO boss VALUES ('Elyx', 'Foudre', 3, 'blabla')''')
+    #Embla
+    cursor.execute('''INSERT INTO boss VALUES ('Embla', 'Glace', 3, 'blabla')''')
+    #Sun
+    cursor.execute('''INSERT INTO boss VALUES ('Sun', 'Feu', 2, 'blabla')''')
+    #Skurge
+    cursor.execute('''INSERT INTO boss VALUES ('Skurge', 'Feu', 4,  'blabla')''')
+    #NoshRak
+    cursor.execute('''INSERT INTO boss VALUES ('NoshRak', 'Foudre', 5, 'blabla')''')
+    #Purgatos
+    cursor.execute('''INSERT INTO boss VALUES ('Purgatos', 'Feu', 2, 'blabla')''')
+    #Ciphyron
+    cursor.execute('''INSERT INTO boss VALUES ('Ciphyron', 'Foudre', 2, 'blabla')''')
+    #Golem
+    cursor.execute('''INSERT INTO boss VALUES ('Golem', 'Foudre', 4, 'blabla')''')
+    #Soji
+    cursor.execute('''INSERT INTO boss VALUES ('Soji', 'Foudre', 5, 'blabla')''')
+    conn.commit()
+    conn.close()
+
+ajout_des_attributs()
+
+def ajouter_hero_casier(possede, id_compte, nom_hero):
+    """
+    Ajoute le hero au casier du joueur
+    """
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("UPDATE casier SET possede = 1 WHERE id_compte = ? and nom_hero = ?", (possede, id_compte, nom_hero))
+    conn.commit()
+    conn.close()
+
+def ajouter_objet_inventaire(quantite_objet, id_compte, nom_objet):
+    """
+    Ajoute l'objet a l'inventaire du joueur
+    """
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("UPDATE inventaire SET quantite_objet = ? WHERE id_compte = ? and nom_objet = ?", (quantite_objet, id_compte, nom_objet))
+    conn.commit()
+    conn.close()
+
+def stats_boss_vaincu(victoires,id_compte, nom_boss):
+    '''
+    Change la stat du nombre de victoire contre un boss
+    '''
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("UPDATE stats SET victoires = ? WHERE id_compte = ? and nom_boss = ?", (victoires, id_compte, nom_boss))
+    conn.commit()
+    conn.close()
+
+def stats_boss_defaite(defaites,id_compte, nom_boss):
+    '''
+    Change la stat du nombre de défaite contre un boss
+    '''
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("UPDATE stats SET defaites = ? WHERE id_compte = ? and nom_boss = ?", (defaites, id_compte, nom_boss))
+    conn.commit()
+    conn.close()
+
+def defaites_total(id_compte,):
+    '''
+    renvoie le nombre de defaites total
+    '''
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT defaites FROM stats WHERE id_compte = ?", (id_compte))
+    toutes_defaites = cursor.fetchone()
+    defaite = 0
+    for i in range(len(toutes_defaites)):
+        defaite += toutes_defaites[i][0]
+    return defaite
+
+def victoires_total(id_compte,):
+    '''
+    renvoie le nombre de defaites total
+    '''
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT victoires FROM stats WHERE id_compte = ?", (id_compte))
+    toutes_victoires = cursor.fetchone()
+    victoire = 0
+    for i in range(len(toutes_victoires)):
+        victoire += toutes_victoires[i][0]
+    return victoire
