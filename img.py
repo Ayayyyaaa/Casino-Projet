@@ -1,16 +1,19 @@
 import pygame
-
+import time
 print("Chargement de img.py")
 
 pygame.init()
 pygame.display.set_caption("Le Babelcasino")
 largeur, hauteur = 400, 400
 fenetre = pygame.display.set_mode((largeur, hauteur))
-fond = pygame.image.load('images/Fonds d\'ecran/Croupier2.png').convert()  # Fond d'écran initial
-chargement = [pygame.image.load(f'images/Fonds d\'ecran/Chargement/_a_{i},333.png').convert() for i in range(3,14)]
+chargement = [pygame.image.load(f'images/Fonds d\'ecran/Chargement/c{i}.png').convert() for i in range(1,12)]
 fenetre.blit(chargement[0], (0, 0))  # Afficher le fond
 pygame.display.flip()  # Mettre à jour l'affichage
 
+time.sleep(3)
+
+souris = pygame.image.load('images/curseur.cur').convert_alpha()
+fond = pygame.image.load('images/Fonds d\'ecran/Croupier2.png').convert()
 chute = [pygame.image.load(f'images/Jeu de combat/Fonds/Chute/_a_frm{i},100.png') for i in range(4)]
 eglise = [pygame.image.load(f'images/Jeu de combat/Fonds/Eglise/_a_frm{i},150.png') for i in range(8)]
 pluie = [pygame.image.load(f'images/Jeu de combat/Fonds/Pluie/_a_frm{i},120.png') for i in range(8)]
@@ -76,6 +79,10 @@ icone_tethermancer = pygame.image.load('images/icone_tether.png').convert_alpha(
 icone_twilight = pygame.image.load('images/icone_twilight.png').convert_alpha()
 icone_pureblade = pygame.image.load('images/icone_pureblade.png').convert_alpha()
 icone_aether = pygame.image.load('images/icone_aether.png').convert_alpha()
+icone_suzumebachi = pygame.image.load('images/icone_suzumebachi.png').convert_alpha()
 info1 = pygame.image.load('images/Jeu de Combat/Infos/Info.png').convert_alpha()
 info2 = pygame.image.load('images/Jeu de Combat/Infos/Info2.png').convert_alpha()
+valider = pygame.image.load("images/Jeu de combat/valider.png").convert_alpha()
+img_hero = pygame.image.load('images/Btn_heros/_a_frm0,70.png').convert_alpha()
+
 pygame.display.set_icon(icone)

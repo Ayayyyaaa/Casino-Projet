@@ -55,7 +55,21 @@ def afficher_ecran_chargement(img):
     fenetre.blit(img, (0, 0))  # Afficher le fond
     pygame.display.flip()
 
-
+def valider_numero_carte_bancaire(numero:str)->bool:
+    "Fonction qui permet de valider un numéro de carte bancaire avec la methode de Luhn (oui on est motivés)"
+    numero = ''.join(filter(str.isdigit, numero))
+    if len(numero) != 16:
+        return False
+    somme = 0
+    inverse = numero[::-1]
+    for i, chiffre in enumerate(inverse):
+        n = int(chiffre)
+        if i % 2 == 1:
+            n *= 2
+            if n > 9:
+                n -= 9  
+        somme += n
+    return somme % 10 == 0
 
 
 

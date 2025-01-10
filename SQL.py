@@ -51,6 +51,7 @@ def verifier_et_ajouter_pseudo(pseudo, mdp):
         cursor.execute("SELECT id_compte FROM compte WHERE pseudo = ? AND mdp = ?", (pseudo, mdp))
         id_ = cursor.fetchone()
         if id_:
+            joueur1.set_cagnotte(200000)
             cursor.execute("INSERT INTO inventaire (id_compte, solde) VALUES (?, ?)", (id_[0], joueur1.get_cagnotte()))
             conn.commit()
             print(f"Compte créé avec succès ! Bienvenue '{pseudo}' !")
@@ -65,9 +66,11 @@ def det_id_compte(pseudo,mdp):
     conn.close()
     return id_compte[0] if id_compte else None
 
-def recup_donnees(id_compte):
+def recup_donnees(id_compte:int):
     """
     Récupère le solde du joueur dans la base de données.
+    Paramètres:
+    - id_compte: int
     """
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
@@ -96,19 +99,19 @@ def mettre_a_jour_solde(solde, id_compte):
     conn.commit()
     conn.close()
 
-def verifier_et_ajouter_cb(id, num, code):
+def verifier_et_ajouter_cb(ide, num, code):
     """
     Vérifie si la combinaison id est associée au numéro de code de cb. Si non, l'ajoute.
     """
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT code_cb,numero_cb FROM compte WHERE id_compte = ?", (id,))
+    cursor.execute("SELECT code_cb,numero_cb FROM compte WHERE id_compte = ?", (ide,))
     compte = cursor.fetchone()
     if compte == (None,None):
         # Ajouter le compte à la base
-        cursor.execute("UPDATE compte SET code_cb = ?, numero_cb = ? WHERE id_compte = ?", (code,num,id))
+        cursor.execute("UPDATE compte SET code_cb = ?, numero_cb = ? WHERE id_compte = ?", (code,num,ide))
         conn.commit()
-        cursor.execute("SELECT code_cb,numero_cb FROM compte WHERE id_compte = ?", (id,))
+        cursor.execute("SELECT code_cb,numero_cb FROM compte WHERE id_compte = ?", (ide,))
         coordonnes = cursor.fetchone()
         conn.commit()
         if coordonnes:
