@@ -72,12 +72,13 @@ class Jeu():
         self.suzumebachi = Suzumebachi()    
         #self.pandora = Pandora()
         self.dusk = Dusk()
+        self.prophet = Prophet()
         self.maskotte = False
         self.curseurabel = False
         self.combat = JeuCombat(self.nighthero,self.m)
-        self.hero = self.yggdra
+        self.hero = self.nighthero
         self.boss = [self.m,self.tb,self.c,self.dl,self.astral,self.ep,self.shidai,self.solfist,self.embla,self.lilithe,self.elyx,self.sun,self.skurge,self.noshrak,self.golem,self.purgatos,self.ciphyron,self.golem,self.soji]
-        self.bosss = self.soji
+        self.bosss = self.prophet
         self.correspondance = {nighthero:self.nighthero,
                                spiritwarior:self.spiritwarior,
                                lancier:self.lancier,

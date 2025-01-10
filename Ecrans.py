@@ -398,6 +398,8 @@ aether = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Aether.png
 pureblade = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Pureblade.png').convert_alpha(),[f'images/Jeu de combat/Pureblade/Droite/Inaction/_a_frm{i},80.png' for i in range(10)],('Pureblade',175000),10)
 twilight = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Twilight.png').convert_alpha(),[f'images/Jeu de combat/Twilight/Droite/Inaction/_a_{i},80.png' for i in range(14)],('Twilight',60000),20)
 suzumebachi = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Suzumebachi.png').convert_alpha(),[f'images/Jeu de combat/Suzumebachi/Droite/Inaction/_a_{i},80.png' for i in range(32)],('Suzumebachi',125000),20)
+#dusk = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Suzumebachi.png').convert_alpha(),[f'images/Jeu de combat/Suzumebachi/Droite/Inaction/_a_{i},80.png' for i in range(32)],('Suzumebachi',125000),20)
+#yggdra = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Yggdra.png').convert_alpha(),[f'images/Jeu de combat/Suzumebachi/Droite/Inaction/_a_{i},80.png' for i in range(32)],('Suzumebachi',125000),20)
 
 
 class EcranHeros:
@@ -433,4 +435,8 @@ hero2 = EcranHeros({btn_fleche : ecran_boutique,
                     btn_aether : aether,
                     btn_twilight : twilight,
                     btn_pureblade : pureblade,
-                    btn_suzumebachi : suzumebachi})
+                    btn_suzumebachi : suzumebachi,
+                    })
+
+'''btn_dusk : dusk,
+                    btn_yggdra : yggdra'''

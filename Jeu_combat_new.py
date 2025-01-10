@@ -5144,8 +5144,8 @@ class Soji:
                 self.atk3 = True
 class Prophet:
     def __init__(self):
-        self.boss = Boss(350,0,180,357,2.8,0.16,6.8,4,0,'Foudre',temple,'Temple')
-        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Prphet/Droite/Attaque1/_a_{i},100.png') for i in range(34)]
+        self.boss = Boss(350,500,2.8,0.16,5.5,4,0,'Foudre',temple,'Temple')
+        self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Prophet/Droite/Attaque1/_a_{i},100.png') for i in range(34)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Prophet/Gauche/Attaque1/_a_{i},100.png') for i in range(34)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Prophet/Droite/Marche/_a_{i},100.png') for i in range(8)]
         self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Prophet/Gauche/Marche/_a_{i},100.png') for i in range(8)]
@@ -5166,7 +5166,7 @@ class Prophet:
         self.dgt2 = False
         self.dgt3 = False
         self.pv_actuels = self.boss.get_pv()
-   def attaque1(self,speed:float,j1,s):
+    def attaque1(self,speed:float,j1,s):
         '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
             - self
@@ -5178,10 +5178,10 @@ class Prophet:
         self.atk1 = True
         # Si toutes les images ont été jouées :
         if 8<int(self.frame)<15:
-            if self.sens == 'Gauche':
-                j1.hero.modif_pos_x(5.5)
+            if distance(j1,self) < 0:
+                j1.hero.modif_pos_x(8)
             else:
-                j1.hero.modif_pos_x(-5.5)
+                j1.hero.modif_pos_x(-8)
         
         if int(self.frame) == 16 and not self.dgt1:
             if self.boss.get_collison() and not j1.hero.get_block():
@@ -5270,7 +5270,7 @@ class Prophet:
                 self.attaque1(0.18,j1,'Gauche')
             else:
                 self.attaque1(0.18,j1,'Droite')
-        elif not self.atk1 and not self.boss.get_collison():
+        elif not self.atk1 and not abs(distance(j1,self)) < 200:
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
@@ -5278,7 +5278,7 @@ class Prophet:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
-        if self.boss.get_collison():
+        if abs(distance(j1,self)) < 200:
             if self.boss.get_attaque1_dispo():
                 if not self.atk1:
                     self.frame = 0
