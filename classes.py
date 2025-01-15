@@ -6,7 +6,7 @@ print("Chargement de classes.py")
 class Joueur:
     def __init__(self, pseudo=''):
         self.pseudo = pseudo
-        self.cagnotte = 2000
+        self.cagnotte = 200000
         self.roulette_active = False
         self.mdp = None
         self.code_cb = None
@@ -62,6 +62,9 @@ class Joueur:
 
     def ajouter_inventaire(self,article):
         self.inventaire[article] += 1
+
+    def set_heros(self,heros):
+        self.heros = heros
 
     def ajouter_heros(self,heros):
         self.heros.append(heros)

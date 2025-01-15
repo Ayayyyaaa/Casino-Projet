@@ -1,5 +1,5 @@
 import pygame
-from fonctions import dessiner_zone_texte,achat
+from fonctions import dessiner_zone_texte,achat,afficher_ecran_chargement,valider_numero_carte_bancaire
 from img import *
 from objets_et_variables import *
 from sons import *
@@ -14,7 +14,7 @@ import time
 import os
 from random import choice
 from classes import *
-from fonctions import afficher_ecran_chargement
+from Jeu_platforme import *
 
 afficher_ecran_chargement(chargement[10])
 print("Chargement du jeu...")
@@ -22,6 +22,7 @@ print("Chargement du jeu...")
 class Jeu():
     def __init__(self):
         self.run = True
+        self.ecrans = [ecran_machine_a_sous,ecran_mort,ecran_victoire,ecran_boutique,alcool,hero,hero2,niveaux]
         self.champ_joueur = pygame.Rect(135, 210, 140, 32)
         self.code_cb = pygame.Rect(130, 325, 140, 32)
         self.nb_cb = pygame.Rect(100, 275, 200, 32)
@@ -36,7 +37,6 @@ class Jeu():
         self.txt_codee_cb = ""  
         self.victoire = False
         self.nighthero = Night_Hero()
-        self.bh = Hell_Boss()
         self.spirithero = Spirit_Hero()
         self.spiritwarior = Spirit_Warrior()
         self.lancier = Lancier()
@@ -70,12 +70,16 @@ class Jeu():
         self.golem = Golem()
         self.soji = Soji()
         self.yggdra = Yggdra()
+        self.suzumebachi = Suzumebachi()    
+        #self.pandora = Pandora()
+        self.dusk = Dusk()
+        self.prophet = Prophet()
         self.maskotte = False
         self.curseurabel = False
-        self.combat = JeuCombat(self.nighthero,self.bh)
+        self.combat = JeuCombat(self.nighthero,self.m)
         self.hero = self.nighthero
-        self.boss = [self.bh,self.m,self.tb,self.c,self.dl,self.astral,self.ep,self.shidai,self.solfist,self.embla,self.lilithe,self.elyx,self.sun,self.skurge,self.noshrak,self.golem,self.purgatos,self.ciphyron,self.golem,self.soji]
-        self.bosss = self.lilithe
+        self.boss = [self.m,self.tb,self.c,self.dl,self.astral,self.ep,self.shidai,self.solfist,self.embla,self.lilithe,self.elyx,self.sun,self.skurge,self.noshrak,self.golem,self.purgatos,self.ciphyron,self.golem,self.soji]
+        self.bosss = self.prophet
         self.correspondance = {nighthero:self.nighthero,
                                spiritwarior:self.spiritwarior,
                                lancier:self.lancier,
@@ -90,8 +94,10 @@ class Jeu():
                                tethermancer:self.tethermancer,
                                pureblade:self.pureblade,
                                aether:self.aether,
-                               twilight:self.twilight
-                               }
+                               twilight:self.twilight,
+                               suzumebachi:self.suzumebachi,
+                               yggdra:self.yggdra,
+                               dusk:self.dusk}
     def running(self):
         son_joue = False
         dernier_son = time.time()
@@ -136,16 +142,19 @@ class Jeu():
                             if btn_entrer.collision(event.pos) and self.text != '' and self.mdp != '':
                                 pseudo = self.text
                                 mdp = self.mdp
+                                assert type(pseudo) == str, "Le pseudo doit être une chaîne de caractère."
+                                assert type(mdp) == str, "Le mot de passe doit être une chaîne de caractère."
                                 # Ajouter ou vérifier le compte dans la base de données
                                 verifier_et_ajouter_pseudo(pseudo, mdp)
                                 id_compte = det_id_compte(pseudo, mdp)
-                                if id_compte is not None:
-                                    # Récupérer les données du joueur et les afficher
-                                    joueur1.set_pseudo(pseudo)
-                                    joueur1.set_mdp(mdp)
-                                    joueur1.set_cagnotte(recup_donnees(id_compte))
-                                    ajouter_connexion(id_compte)
-                                    print(f"Bienvenue {joueur1.get_pseudo()}! Solde: {int(joueur1.cagnotte)}")
+                                assert id_compte is not None,"Probleme,le compte ne correspond a rien"
+                                # Récupérer les données du joueur et les afficher
+                                joueur1.set_pseudo(pseudo)
+                                joueur1.set_mdp(mdp)
+                                joueur1.set_cagnotte(recup_donnees(id_compte))
+                                joueur1.set_heros(det_heros(id_compte))
+                                ajouter_connexion(id_compte)
+                                print(f"Bienvenue {joueur1.get_pseudo()}! Solde: {int(joueur1.cagnotte)}")
                                 # Réinitialisation des champs
                                 self.mdp = ''
                                 self.text = ''
@@ -167,8 +176,6 @@ class Jeu():
                                 self.combat.actif(True)
                                 self.combat.lancer()
                             
-
-                        # Affichage de l'écran principal depuis la machine à sous
                         elif ecran_machine_a_sous.ecran.get_actif():
                             # Lancer la machine à sous
                             if 340 <= event.pos[0] <= 390 and 100 <= event.pos[1] <= 250:
@@ -177,128 +184,39 @@ class Jeu():
                                     dernier_son = time.time()
                                 ecran_machine_a_sous.lancement()
                                 joueur1.modifier_cagnotte(-100 - joueur1.get_cagnotte()//100)
-
-                        elif alcool.ecran.get_actif():
-                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
-                                alcool.ecran.set_actif(False),boutique.ecran.set_actif(True)
-                            elif 25 <= event.pos[0] <= 85 and 165 <= event.pos[1] <= 225:
-                                alcool.ecran.set_actif(False),vodka.ecran.set_actif(True)
-                                pygame.mixer.music.unload()
-                            elif 105 <= event.pos[0] <= 165 and 165 <= event.pos[1] <= 225:
-                                achat('Chope de Bière')
-                            elif 185 <= event.pos[0] <= 265 and 165 <= event.pos[1] <= 225:
-                                achat('Bouteille de Whisky')
-
+                        
                         elif hero.ecran.get_actif():
-                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
-                                hero.ecran.set_actif(False),boutique.ecran.set_actif(True)
-                            elif 340 <= event.pos[0] <= 390 and 300 <= event.pos[1] <= 350:
+                            if btn_suivant.collision(clic.get_clic()):
+                                clic.set_clic((0,0))
                                 hero.ecran.set_actif(False),hero2.ecran.set_actif(True)
-                            if 165 <= event.pos[1] <= 225:
-                                hero.ecran.set_actif(False)
-                                if 105 <= event.pos[0] <= 165:
-                                    spiritwarior.ecran.set_actif(True)
-                                elif 25 <= event.pos[0] <= 85:
-                                    nighthero.ecran.set_actif(True)
-                                elif 185 <= event.pos[0] <= 245:
-                                    spirithero.ecran.set_actif(True)
-                                elif 265 <= event.pos[0] <= 325:
-                                    lancier.ecran.set_actif(True)
-                            elif 245 <= event.pos[1] <= 305:
-                                hero.ecran.set_actif(False)
-                                if 105 <= event.pos[0] <= 165:
-                                    zukong.ecran.set_actif(True)
-                                elif 25 <= event.pos[0] <= 85:
-                                    assassin.ecran.set_actif(True)
-                                elif 185 <= event.pos[0] <= 245:
-                                    zendo.ecran.set_actif(True)
-                                elif 265 <= event.pos[0] <= 325:
-                                    maehv.ecran.set_actif(True)
-                                else:
-                                    hero.ecran.set_actif(True)
-                            elif 325 <= event.pos[1] <= 385:
-                                hero.ecran.set_actif(False)
-                                if 25 <= event.pos[0] <= 85:
-                                    hsuku.ecran.set_actif(True)
-                                elif 105 <= event.pos[0] <= 165:
-                                    sanguinar.ecran.set_actif(True)
-                                elif 185 <= event.pos[0] <= 245:
-                                    whistler.ecran.set_actif(True)
-                                elif 265 <= event.pos[0] <= 325:
-                                    tethermancer.ecran.set_actif(True)
-                                else:
-                                    hero.ecran.set_actif(True)
 
                         elif hero2.ecran.get_actif():
-                            if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
-                                hero2.ecran.set_actif(False),boutique.ecran.set_actif(True)
-                            elif 340 <= event.pos[0] <= 390 and 300 <= event.pos[1] <= 350:
-                                hero2.ecran.set_actif(False),hero.ecran.set_actif(True)
-                            elif 340 <= event.pos[0] <= 390 and 300 <= event.pos[1] <= 350:
-                                hero2.ecran.set_actif(False),hero2.ecran.set_actif(True)
-                            if 165 <= event.pos[1] <= 225:
-                                hero2.ecran.set_actif(False)
-                                if 105 <= event.pos[0] <= 165:
-                                    aether.ecran.set_actif(True)
-                                elif 25 <= event.pos[0] <= 85:
-                                    pureblade.ecran.set_actif(True)
-                                elif 185 <= event.pos[0] <= 245:
-                                    twilight.ecran.set_actif(True)
-                                elif 265 <= event.pos[0] <= 325:
-                                    zukong.ecran.set_actif(True)
-                                else:
-                                    hero2.ecran.set_actif(True)
-                            elif 245 <= event.pos[1] <= 305:
-                                hero2.ecran.set_actif(False)
-                                if 105 <= event.pos[0] <= 165:
-                                    nighthero.ecran.set_actif(True)
-                                elif 25 <= event.pos[0] <= 85:
-                                    spirithero.ecran.set_actif(True)
-                                elif 185 <= event.pos[0] <= 245:
-                                    spiritwarior.ecran.set_actif(True)
-                                elif 265 <= event.pos[0] <= 325:
-                                    lancier.ecran.set_actif(True)
-                                else:
-                                    hero2.ecran.set_actif(True)
-                            elif 325 <= event.pos[1] <= 385:
-                                hero2.ecran.set_actif(False)
-                                if 25 <= event.pos[0] <= 85:
-                                    hsuku.ecran.set_actif(True)
-                                elif 105 <= event.pos[0] <= 165:
-                                    sanguinar.ecran.set_actif(True)
-                                elif 185 <= event.pos[0] <= 245:
-                                    whistler.ecran.set_actif(True)
-                                elif 265 <= event.pos[0] <= 325:
-                                    tethermancer.ecran.set_actif(True)
-                                else:
-                                    hero2.ecran.set_actif(True)
-
-                        for perso in [assassin,maehv,zendo,zukong,nighthero,lancier,spiritwarior,spirithero,hsuku,whistler,sanguinar,tethermancer,pureblade,aether,twilight]:
+                            if btn_suivant.collision(clic.get_clic()):
+                                clic.set_clic((0,0))
+                                hero.ecran.set_actif(True),hero2.ecran.set_actif(False)
+                        print(joueur1.get_heros())
+                        for perso in [assassin,maehv,zendo,zukong,nighthero,lancier,spiritwarior,spirithero,hsuku,whistler,sanguinar,tethermancer,pureblade,aether,twilight,suzumebachi,yggdra,dusk]:
                             if perso.ecran.get_actif():
-                                print(perso.get_heros())
-                                if 340 <= event.pos[0] <= 390 and 25 <= event.pos[1] <= 65:
+                                if btn_fleche.collision(clic.get_clic()):
+                                    clic.set_clic((0,0))
                                     hero.ecran.set_actif(True),perso.ecran.set_actif(False)
-                                elif 340 <= event.pos[0] <= 390 and 200 <= event.pos[1] <= 250:
+                                elif btn_info.collision(clic.get_clic()):
+                                    clic.set_clic((0,0))
                                     perso.setinfos(not perso.getinfos())
-                                elif 145 <= event.pos[0] <= 245 and 330 <= event.pos[1] <= 375:
-                                    print(joueur1.get_heros())
+                                elif btn_selection.collision(clic.get_clic()):
                                     if perso.get_heros()[0] in joueur1.get_heros():
+                                        clic.set_clic((0,0))
                                         self.hero = self.correspondance[perso]
                                         hero.ecran.set_actif(True),perso.ecran.set_actif(False)
                                         print(perso.get_heros()[0],hero.ecran.get_actif(),perso.ecran.get_actif())
                                     else:
                                         if joueur1.get_cagnotte() > perso.get_heros()[1]:
+                                            ajouter_hero_casier(det_id_compte(joueur1.get_pseudo(), joueur1.get_mdp()), perso.get_heros()[0])
                                             joueur1.ajouter_heros(perso.get_heros()[0])
                                             joueur1.modifier_cagnotte(-perso.get_heros()[1])
-                                            print("achete")
+                                            print(f"{perso.get_heros()[0]} acheté !")
                                         else:
-                                            print("pas assez")
-
-                        if boutique.ecran.get_actif():
-                            if 135 <= event.pos[0] <= 195 and 135 <= event.pos[1] <= 195:
-                                boutique.ecran.set_actif(False),alcool.ecran.set_actif(True)
-                            elif 220 <= event.pos[0] <= 280 and 135 <= event.pos[1] <= 195:
-                                boutique.ecran.set_actif(False),hero.ecran.set_actif(True)
+                                            print("Solde insuffisant !")
                                 
                         
                     elif event.type == pygame.KEYDOWN:
@@ -307,7 +225,7 @@ class Jeu():
                             if self.nom_actif:  # Gestion de la saisie du pseudo
                                 if event.key == pygame.K_BACKSPACE:
                                     self.text = self.text[:-1]
-                                elif len(self.text) <= 9:  # Limite de longueur du pseudo
+                                elif len(self.text) <= 12:  # Limite de longueur du pseudo
                                     self.text += event.unicode
                             elif self.mdp_actif:  # Gestion de la saisie du mot de passe
                                 if event.key == pygame.K_BACKSPACE:
@@ -329,14 +247,7 @@ class Jeu():
                             # Gérer la saisie du code de carte bleue
                             if event.key == pygame.K_RETURN:
                                 if len(self.txt_nbr_cb) == 19 and len(self.txt_codee_cb) == 3:
-                                    code_correct = True
-                                    for nb in self.txt_nbr_cb:
-                                        compteur = 0
-                                        for nbr in self.txt_nbr_cb:
-                                            if nb == nbr:
-                                                compteur += 1
-                                        if compteur >= 5:
-                                            code_correct = False
+                                    code_correct = valider_numero_carte_bancaire(self.txt_nbr_cb)
                                     if code_correct:
                                         joueur1.set_code_cb(self.txt_codee_cb), joueur1.set_num_cb(self.txt_nbr_cb)
                                         verifier_et_ajouter_cb(det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()),joueur1.get_code_cb(),joueur1.get_num_cb())
@@ -356,6 +267,13 @@ class Jeu():
                                 self.txt_codee_cb = self.txt_codee_cb[:-1]
                             elif len(self.txt_codee_cb) < 3 and event.unicode in "0123456789":
                                 self.txt_codee_cb += event.unicode
+                        else:
+                            print(event.unicode)
+                            if event.unicode == 'v':
+                                ecran2.ecran.set_actif(False), niveaux.ecran.set_actif(True)
+                            if event.unicode == '1' and niveaux.ecran.get_actif():
+                                niveaux.ecran.set_actif(False), plat.ecran.set_actif(True)
+
 
                 # Afficher l'ecran du Blackjack
                 if ecran_black.ecran.get_actif():
@@ -368,16 +286,19 @@ class Jeu():
 
                 # Conditions de défaite
                 if joueur1.get_cagnotte() <= 0:
-                    connexion.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_black.ecran.set_actif(False),boutique.ecran.set_actif(False),alcool.ecran.set_actif(False),ecran_mort.ecran.set_actif(True) 
+                    connexion.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_black.ecran.set_actif(False),ecran_boutique.ecran.set_actif(False),alcool.ecran.set_actif(False),ecran_mort.ecran.set_actif(True) 
                     if son_joue is False:
                         son_fall.play()
                         son_joue = True
                 # Conditions de victoire
-                if joueur1.get_cagnotte() >= 10000000 and not self.victoire:
+                elif joueur1.get_cagnotte() >= 10000000 and not self.victoire:
                     connexion.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_victoire.ecran.set_actif(True)
                     self.victoire = True 
-                # Affichage de l'écran de début de jeu
-                if connexion.ecran.get_actif():
+
+                if ecran0.ecran.get_actif():
+                    ecran0.affiche(0.45)
+                # Affichage de l'écran de connexion
+                elif connexion.ecran.get_actif():
                     connexion.affiche()     
                     dessiner_zone_texte(fenetre, self.champ_joueur, self.text, self.nom_actif)
                     dessiner_zone_texte(fenetre, self.champ_mdp, self.mdp, self.mdp_actif)            
@@ -385,47 +306,41 @@ class Jeu():
                 elif ecran2.ecran.get_actif():
                     son_joue = False
                     ecran2.affiche()
-                elif boutique.ecran.get_actif():
-                    boutique.affiche()
-                elif alcool.ecran.get_actif():
-                    alcool.affiche()
-                elif hero.ecran.get_actif():
-                    hero.affiche()
-                elif hero2.ecran.get_actif():
-                    hero2.affiche()
-                elif ecran_mort.ecran.get_actif():
-                    # Affichage de l'écran de défaite
-                    ecran_mort.affiche()
-                    dessiner_zone_texte(fenetre, self.nb_cb, self.txt_nbr_cb, self.nb_cb_actif)
-                    dessiner_zone_texte(fenetre, self.code_cb, self.txt_codee_cb, self.code_cb_actif)
-                elif ecran_machine_a_sous.ecran.get_actif():
-                    # Affichage de l'écran de la machine à sous
-                    ecran_machine_a_sous.affiche()   
-                elif ecran_victoire.ecran.get_actif():
-                    # Affichage de l'écran de victoire
-                    ecran_victoire.affiche()
                 elif vodka.ecran.get_actif():
                     vodka.affiche(0.3)
                 elif rr.ecran.get_actif():
                     rr.affiche(0.45)
-                if joueur1.get_pseudo().lower() == 'rulian' or joueur1.get_pseudo().lower() == 'maskottchen':
+                elif ecran_black.ecran.get_actif():
+                    ecran_black.affiche(blackjack)
+                elif plat.ecran.get_actif():
+                    plat.affiche(0.45)
+                for ecran in self.ecrans:
+                    assert isinstance(ecran, object), f"L'écran {ecran} est un {type(ecran)}, et non pas un écran !"
+                    if ecran.ecran.get_actif():
+                        ecran.affiche()
+                if ecran_mort.ecran.get_actif():
+                    dessiner_zone_texte(fenetre, self.nb_cb, self.txt_nbr_cb, self.nb_cb_actif)
+                    dessiner_zone_texte(fenetre, self.code_cb, self.txt_codee_cb, self.code_cb_actif)
+                self.selectionheros()
+
+                if joueur1.get_pseudo().lower() in ['rulian','maskottchen','maskot']:
                     self.maskotte, self.curseurabel = True, False
                 elif joueur1.get_pseudo().lower() == 'abel':
                     self.maskotte, self.curseurabel = False, True
                 if self.maskotte:
-                    pygame.mouse.set_visible(False)
                     fenetre.blit(maskot, (pygame.mouse.get_pos()[0]-25, pygame.mouse.get_pos()[1]-30))
                 elif self.curseurabel:
-                    pygame.mouse.set_visible(False)
                     fenetre.blit(abel, (pygame.mouse.get_pos()[0]-25, pygame.mouse.get_pos()[1]-30))
+                else:
+                    fenetre.blit(souris, pygame.mouse.get_pos())
         
-                self.selectionheros()
             mettre_a_jour_solde(joueur1.get_cagnotte(),det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()))
             clock.tick(60)
+            pygame.mouse.set_visible(False)
             pygame.display.flip()
 
     def selectionheros(self):
-        for hero in [assassin,maehv,zendo,zukong,nighthero,lancier,spiritwarior,spirithero,hsuku,whistler,sanguinar,tethermancer,pureblade,aether,twilight]:
+        for hero in [assassin,maehv,zendo,zukong,nighthero,lancier,spiritwarior,spirithero,hsuku,whistler,sanguinar,tethermancer,pureblade,aether,twilight,suzumebachi,yggdra,dusk]:
             if hero.ecran.get_actif():
                 hero.affiche(0.15)
         

@@ -6,10 +6,11 @@ from Roulette_Russe import pistolet
 from PileouFace import pileouface
 from sons import *
 from SQL import *
+from fonctions import achat
+from Jeu_platforme import *
 
 afficher_ecran_chargement(chargement[6])
 print("Chargement de Ecrans.py")
-
 
 class Ecran:
     def __init__(self, actif=False):
@@ -23,7 +24,7 @@ class Ecran:
 
 class Ecran1:
     def __init__(self):
-        self.ecran = Ecran(True)
+        self.ecran = Ecran()
         self.ancien_pseudo = joueur1.get_pseudo()
         self.fin_combat = False
     def affiche(self):
@@ -43,6 +44,7 @@ class Ecran1:
             - combat (bool) : Détermine si le combat face au boss à été réussi
         Post-conditions :
             - Si le joueur s'appelle Fredou et qu'il n'y a pas de musique de fond, que le joueur change de pseudo ou que le combat a été réussi, on charge un nouvelle musique (son_champignon)
+            - Si le joueur a un pseudo qui s'apparente a un RickRoll, on lance celui-ci.
             - Sinon, s'il n'y a pas de musique de fond, que le joueur change de pseudo ou que le combat a été réussi, on charge un nouvelle musique (musique_de_fond)
         '''
         if joueur1.get_pseudo().lower() == 'fredou':
@@ -104,7 +106,7 @@ class Ecran2:
         dessiner_bouton(fenetre, joueur1.get_pseudo(), bouton2.get_x(), bouton2.get_y(), bouton2.get_largeur(), bouton2.get_hauteur(), blanc, noir, 20)
         dessiner_bouton(fenetre, f"Solde : {int(joueur1.get_cagnotte())}", bouton3.get_x(), bouton3.get_y(), bouton3.get_largeur(), bouton3.get_hauteur(), blanc, noir, 25)
         if btn_boutique.collision(clic.get_clic()):
-            boutique.ecran.set_actif(True),ecran2.ecran.set_actif(False)
+            ecran_boutique.ecran.set_actif(True),ecran2.ecran.set_actif(False)
             clic.set_clic((0,0))
         elif btn_roulette.collision(clic.get_clic()):
             click.play()
@@ -206,28 +208,34 @@ class EcranBoutique:
         self.ecran = Ecran()
         self.fond = pygame.image.load('images/Fonds d\'ecran/Boutique.png').convert_alpha()
         self.btn_heros = [f'images/Btn_heros/_a_frm{i},70.png' for i in range(13)]
-        self.btn = pygame.image.load('images/Btn_heros/_a_frm0,70.png').convert_alpha()
+        self.btn = pygame.image.load(self.btn_heros[0]).convert_alpha()
         self.frame = 0
+
     def affiche(self):
         fenetre.blit(self.fond, (0, 0))
         btn_fleche.draw(fenetre,pygame.mouse.get_pos())
+        btn_alcool.draw(fenetre,pygame.mouse.get_pos())
         if btn_fleche.collision(clic.get_clic()):
-            boutique.ecran.set_actif(False),ecran2.ecran.set_actif(True)
+            ecran_boutique.ecran.set_actif(False),ecran2.ecran.set_actif(True)
             clic.set_clic((0,0))
-        if 135 <= pygame.mouse.get_pos()[0] <= 195 and 135 <= pygame.mouse.get_pos()[1] <= 195:
-            fenetre.blit(alcool2, (130, 130))
-        else:
-            fenetre.blit(alcool1, (130, 130))
-        if 220 <= pygame.mouse.get_pos()[0] <= 280 and 135 <= pygame.mouse.get_pos()[1] <= 195:
+        elif btn_hero.collision(clic.get_clic()):
+            ecran_boutique.ecran.set_actif(False),hero.ecran.set_actif(True)
+            clic.set_clic((0,0))
+        elif btn_alcool.collision(clic.get_clic()):
+            ecran_boutique.ecran.set_actif(False),alcool.ecran.set_actif(True)
+            clic.set_clic((0,0))
+        elif btn_hero.collision(pygame.mouse.get_pos()):
             self.anim(0.1)
         else:
-            fenetre.blit(self.btn, (215, 130))
+            btn_hero.draw(fenetre,pygame.mouse.get_pos())
             self.frame = 0
+
     def anim(self,speed):
         self.frame += speed
         if self.frame >= len(self.btn_heros)-1:
             self.frame = 0
         fenetre.blit(pygame.image.load(self.btn_heros[int(self.frame)]).convert_alpha(), (215, 130))
+
 
 class EcranAlcool:
     def __init__(self):
@@ -236,30 +244,30 @@ class EcranAlcool:
         self.vodka = False
         self.biere = False
         self.whisky = False
+        self.btns = [btn_whisky, btn_biere, btn_vodka, btn_fleche]
+
     def affiche(self):
         fenetre.blit(self.fond, (0, 0))
-        if 340 <= pygame.mouse.get_pos()[0] <= 390 and 25 <= pygame.mouse.get_pos()[1] <= 65:
-            fenetre.blit(fleche_retour2, (341, 21))
-        else:
-            fenetre.blit(fleche_retour, (340, 20))
-        if 105 <= pygame.mouse.get_pos()[0] <= 165 and 165 <= pygame.mouse.get_pos()[1] <= 225:
-            fenetre.blit(biere2, (100, 160))
+        if btn_whisky.collision(pygame.mouse.get_pos()):
+            self.whisky = True
+        elif btn_biere.collision(pygame.mouse.get_pos()):
             self.biere = True
-        else:
-            fenetre.blit(biere1, (100, 160))
-            self.biere = False
-        if 25 <= pygame.mouse.get_pos()[0] <= 85 and 165 <= pygame.mouse.get_pos()[1] <= 225:
-            fenetre.blit(vodka2, (20, 160))
+        elif btn_vodka.collision(pygame.mouse.get_pos()):
             self.vodka = True
         else:
-            fenetre.blit(vodka1, (20, 160))
-            self.vodka = False
-        if 185 <= pygame.mouse.get_pos()[0] <= 265 and 165 <= pygame.mouse.get_pos()[1] <= 225:
-            fenetre.blit(whisky2, (180, 160))
-            self.whisky = True
-        else:
-            fenetre.blit(whisky1, (180, 160))
-            self.whisky = False
+            self.vodka,self.biere,self.whisky = False,False,False
+        if btn_fleche.collision(clic.get_clic()):
+            clic.set_clic((0,0))
+            alcool.ecran.set_actif(False),ecran_boutique.ecran.set_actif(True)
+        elif btn_vodka.collision(clic.get_clic()):
+            alcool.ecran.set_actif(False),vodka.ecran.set_actif(True)
+            pygame.mixer.music.unload()
+        elif btn_biere.collision(clic.get_clic()):
+            achat('Chope de Bière')
+        elif btn_whisky.collision(clic.get_clic()):
+            achat('Bouteille de Whisky')
+        for btn in self.btns:
+            btn.draw(fenetre,pygame.mouse.get_pos())
         self.affiche_effets()
 
     def affiche_effets(self):
@@ -270,60 +278,6 @@ class EcranAlcool:
         elif self.whisky:
             fenetre.blit(effet_whisky, (pygame.mouse.get_pos()[0]-180, pygame.mouse.get_pos()[1]-30))
 
-class EcranHeros1:
-    def __init__(self):
-        self.ecran = Ecran()
-        self.fond = pygame.image.load('images/Fonds d\'ecran/Boutique.png').convert_alpha()
-    def affiche(self):
-        fenetre.blit(self.fond, (0, 0))
-        if 340 <= pygame.mouse.get_pos()[0] <= 390 and 25 <= pygame.mouse.get_pos()[1] <= 65:
-            fenetre.blit(fleche_retour2, (341, 21))
-        else:
-            fenetre.blit(fleche_retour, (340, 20))
-        if 340 <= pygame.mouse.get_pos()[0] <= 390 and 305 <= pygame.mouse.get_pos()[1] <= 345:
-            fenetre.blit(fleche_retour2, (341, 301))
-        else:
-            fenetre.blit(fleche_retour, (340, 300))
-        fenetre.blit(icone_sw, (100, 160))
-        fenetre.blit(icone_hero, (20, 160))
-        fenetre.blit(icone_spirithero, (180, 160))
-        fenetre.blit(icone_lancier, (260, 160))
-        fenetre.blit(icone_zukong, (100, 240))
-        fenetre.blit(icone_assassin, (20, 240))
-        fenetre.blit(icone_zendo, (180, 240))
-        fenetre.blit(icone_maehv, (260, 240))
-        fenetre.blit(icone_hsuku, (20, 320))
-        fenetre.blit(icone_sanguinar, (100, 320))
-        fenetre.blit(icone_whistler, (180, 320))
-        fenetre.blit(icone_tethermancer, (260, 320))
-
-class EcranHeros2:
-    def __init__(self):
-        self.ecran = Ecran()
-        self.fond = pygame.image.load('images/Fonds d\'ecran/Boutique.png').convert_alpha()
-    def affiche(self):
-        fenetre.blit(self.fond, (0, 0))
-        if 340 <= pygame.mouse.get_pos()[0] <= 390 and 25 <= pygame.mouse.get_pos()[1] <= 65:
-            fenetre.blit(fleche_retour2, (341, 21))
-        else:
-            fenetre.blit(fleche_retour, (340, 20))
-        if 340 <= pygame.mouse.get_pos()[0] <= 390 and 305 <= pygame.mouse.get_pos()[1] <= 345:
-            fenetre.blit(fleche_retour2, (341, 301))
-        else:
-            fenetre.blit(fleche_retour, (340, 300))
-        fenetre.blit(icone_aether, (100, 160))
-        fenetre.blit(icone_pureblade, (20, 160))
-        fenetre.blit(icone_twilight, (180, 160))
-        fenetre.blit(icone_zukong, (260, 160))
-        fenetre.blit(icone_hero, (100, 240))
-        fenetre.blit(icone_spirithero, (20, 240))
-        fenetre.blit(icone_sw, (180, 240))
-        fenetre.blit(icone_lancier, (260, 240))
-        fenetre.blit(icone_hsuku, (20, 320))
-        fenetre.blit(icone_sanguinar, (100, 320))
-        fenetre.blit(icone_whistler, (180, 320))
-        fenetre.blit(icone_tethermancer, (260, 320))
-
 class EcranSelection:
     def __init__(self, c, liste, hero, y, x = 50):
         self.police = pygame.font.Font('8-bitanco.ttf', 15)
@@ -331,8 +285,6 @@ class EcranSelection:
         self.fond = pygame.image.load('images/arene.png').convert_alpha()
         self.anim = liste
         self.frame = 0
-        self.bouton = pygame.image.load("images/Jeu de combat/compteur2.png")
-        self.bouton2 = pygame.image.load("images/Jeu de combat/compteur3.png")
         self.valider = self.police.render(("Val ider"), True, noir)
         self.hero = hero
         self.prix = self.police.render((str(self.hero[1])), True, noir)
@@ -350,22 +302,16 @@ class EcranSelection:
         self.frame += speed
         if self.frame >= len(self.anim)-1:
             self.frame = 0
-        if 340 <= pygame.mouse.get_pos()[0] <= 390 and 25 <= pygame.mouse.get_pos()[1] <= 65:
-            fenetre.blit(fleche_retour2, (341, 21))
-        else:
-            fenetre.blit(fleche_retour, (340, 20))
-        if 340 <= pygame.mouse.get_pos()[0] <= 390 and 200 <= pygame.mouse.get_pos()[1] <= 250:
-            fenetre.blit(info2, (340, 200))
-        else:
-            fenetre.blit(info1, (340, 200))
         if self.infos:
             fenetre.blit(self.caracteristiques, (30, 50))
         elif self.hero[0] in joueur1.get_heros():
-            fenetre.blit(self.bouton, (140, 330))
+            btn_selection.draw(fenetre,pygame.mouse.get_pos())
             fenetre.blit(self.valider, (165, 345))
         else:
-            fenetre.blit(self.bouton, (140, 330))
+            btn_selection.draw(fenetre,pygame.mouse.get_pos())
             fenetre.blit(self.prix, (165, 345))
+        btn_fleche.draw(fenetre,pygame.mouse.get_pos())
+        btn_info.draw(fenetre,pygame.mouse.get_pos())
         
     def get_heros(self):
         return self.hero
@@ -407,17 +353,54 @@ class EcranRR:
             self.num_frame = 0
         fenetre.blit(pygame.image.load(self.frame),(0,0))
 
+
+class EcranNiveaux:
+    def __init__(self):
+        self.ecran = Ecran()
+    def affiche(self):
+        # Si toutes les images ont été jouées :
+        fenetre.blit(voiture.get_sprites()[voiture.get_frame()],(voiture.get_x(),voiture.get_y()))
+
+class EcranPlatforme:
+    def __init__(self):
+        self.ecran = Ecran()
+        self.fond = pygame.image.load('images/arene.png').convert_alpha()
+    def affiche(self,speed):
+        babelrace.actif(True)
+        babelrace.lancer()
+
+class EcranChargement:
+    def __init__(self):
+        self.ecran = Ecran(True)
+        self.frames = [f'images/Fonds d\'ecran/Chargement/frm ({i}).png' for i in range(1,116)]
+        self.frame = 'images/Fonds d\'ecran/Chargement/frm (2).png'
+        self.num_frame = 0
+        self.stop = True
+    def affiche(self,speed):
+        if self.num_frame <= 73 or not self.stop:
+            self.num_frame += speed
+        if clic.get_clic() != (0,0) and self.num_frame >= 56:
+            self.stop = False
+        # Si toutes les images ont été jouées :
+        if int(self.num_frame) == len(self.frames)-1:
+            # On remet tout à 0
+            self.num_frame = 0
+            connexion.ecran.set_actif(True),self.ecran.set_actif(False)
+        self.frame = self.frames[int(self.num_frame)]
+        fenetre.blit(pygame.image.load(self.frame),(0,0))
+
+ecran0 = EcranChargement()
 connexion = Ecran1()
 ecran2 = Ecran2()
-boutique = EcranBoutique()
+ecran_boutique = EcranBoutique()
 vodka = EcranVodka()
 ecran_mort = EcranMort()
 ecran_victoire = EcranVictoire()
 ecran_black = EcranBlack()
 rr = EcranRR()
 alcool = EcranAlcool()
-hero = EcranHeros1()
-hero2 = EcranHeros2()
+niveaux = EcranNiveaux()
+plat = EcranPlatforme()
 assassin = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/NightHero.png').convert_alpha(), [f'images/Jeu de combat/Assassin/Droite/Attaque1/_a_frm{i},100.png' for i in range(10)] + [f'images/Jeu de combat/Assassin/Droite/Attaque2/_a_frm{i},100.png' for i in range(11,18)] + [f'images/Jeu de combat/Assassin/Droite/Marche/_a_frm{i},100.png' for i in range(8)] + [f'images/Jeu de combat/Assassin/Droite/Course/_a_frm{i},70.png' for i in range(8)] + [f'images/Jeu de combat/Assassin/Droite/Saut/_a_frm{i},100.png' for i in range(2,14)] + [f'images/Jeu de combat/Assassin/Mort/_a_frm{i},100.png' for i in range(16)],('Assassin',60000), 50)
 maehv = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Maehv.png').convert_alpha(),[f'images/Jeu de combat/Maehv/Droite/Inaction/_a_{i},80.png' for i in range(14)],('Maehv',450000),5)
 zendo = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Zendo.png').convert_alpha(),[f'images/Jeu de combat/Zendo/Droite/Inaction/_a_frm{i},60.png' for i in range(14)],('Zendo',125000),5)
@@ -430,6 +413,48 @@ hsuku = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Hsuku.png')
 sanguinar = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/NightHero.png').convert_alpha(),[f'images/Jeu de combat/Sanguinar/Droite/Inaction/_a_{i},80.png' for i in range(14)],('Sanguinar',60000),10)
 whistler = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Whistler.png').convert_alpha(),[f'images/Jeu de combat/Whistler/Droite/Inaction/_a_{i},100.png' for i in range(18)],('Whistler',60000),80,95)
 tethermancer = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Whistler.png').convert_alpha(),[f'images/Jeu de combat/Tethermancer/Droite/Inaction/_a_{i},100.png' for i in range(17)],('Tethermancer',60000),20)
-aether = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/NightHero.png').convert_alpha(),[f'images/Jeu de combat/Aether/Droite/Inaction/_a_{i},100.png' for i in range(12)],('Aether',60000),97,93)
-pureblade = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Pureblade.png').convert_alpha(),[f'images/Jeu de combat/Pureblade/Droite/Inaction/_a_frm{i},80.png' for i in range(10)],('Pureblade',60000),10)
+aether = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Aether.png').convert_alpha(),[f'images/Jeu de combat/Aether/Droite/Inaction/_a_{i},100.png' for i in range(12)],('Aether',60000),97,93)
+pureblade = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Pureblade.png').convert_alpha(),[f'images/Jeu de combat/Pureblade/Droite/Inaction/_a_frm{i},80.png' for i in range(10)],('Pureblade',175000),10)
 twilight = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Twilight.png').convert_alpha(),[f'images/Jeu de combat/Twilight/Droite/Inaction/_a_{i},80.png' for i in range(14)],('Twilight',60000),20)
+suzumebachi = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Suzumebachi.png').convert_alpha(),[f'images/Jeu de combat/Suzumebachi/Droite/Inaction/_a_{i},80.png' for i in range(32)],('Suzumebachi',125000),20)
+dusk = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Suzumebachi.png').convert_alpha(),[f'images/Jeu de combat/Dusk/Droite/Inaction/_a_{i},80.png' for i in range(14)],('Dusk',200000),20)
+yggdra = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Suzumebachi.png').convert_alpha(),[f'images/Jeu de combat/Yggdra/Droite/Inaction/_a_{i},80.png' for i in range(7)],('Yggdra',450000),20)
+
+
+class EcranHeros:
+    def __init__(self,btns):
+        self.ecran = Ecran()
+        self.fond = pygame.image.load('images/Fonds d\'ecran/Boutique.png').convert_alpha()
+        self.btns = btns
+    def affiche(self):
+        fenetre.blit(self.fond, (0, 0))
+        btn_suivant.draw(fenetre,pygame.mouse.get_pos())
+        for btn,ecran in self.btns.items():
+            btn.draw(fenetre,pygame.mouse.get_pos())
+            if btn.collision(clic.get_clic()):
+                clic.set_clic((0,0))
+                ecran.ecran.set_actif(True),self.ecran.set_actif(False)
+
+hero = EcranHeros({
+            btn_fleche : ecran_boutique,
+            btn_sw : spiritwarior,
+            btn_nighthero : nighthero,
+            btn_spirithero : spirithero,
+            btn_lancier : lancier,
+            btn_zukong : zukong,
+            btn_assassin : assassin,
+            btn_zendo : zendo,
+            btn_maehv : maehv,
+            btn_hsuku : hsuku,
+            btn_sanguinar : sanguinar,
+            btn_whistler : whistler,
+            btn_tethermancer : tethermancer})
+
+hero2 = EcranHeros({btn_fleche : ecran_boutique,
+                    btn_aether : aether,
+                    btn_twilight : twilight,
+                    btn_pureblade : pureblade,
+                    btn_suzumebachi : suzumebachi,
+                    btn_dusk : dusk,
+                    btn_yggdra : yggdra
+                    })

@@ -1,10 +1,13 @@
 import pygame
 from random import randint
 import sys
-from fonctions import dessiner_bouton
+from fonctions import dessiner_bouton,afficher_ecran_chargement
 from objets_et_variables import *
-from Ecrans import *
+from img import souris
 from sons import pioche_carte, click
+from Ecrans import ecran2,ecran_black,ecran_mort
+
+
 
 afficher_ecran_chargement(chargement[9])
 print("Chargement de blackjack.py")
@@ -32,7 +35,7 @@ class Blackjack:
         self.img_joker = pygame.image.load("cartes/joker.png")
         self.img = [[f"cartes/{couleur}/carte-{i}.png" for i in range(2, 11)] for couleur in ['Carreau', 'Coeur', 'Pique', 'Trefle']] 
         self.dos_de_carte = pygame.image.load("cartes/dos_de_carte.png")
-        self.solde = pygame.image.load("images/Jeu de combat/compteur2.png")
+        self.solde = pygame.image.load("images/Jeu de combat/valider.png")
         self.police = pygame.font.Font('8-bitanco.ttf', 15)
         self.retour = False # Booléen qui determine si la souris est sur la fleche
         self.img_carte = pygame.image.load("images/None.png")
@@ -168,6 +171,7 @@ class Blackjack:
             self.nettoyer_ecran()
             #la partie continue tant qu'au moins un des deux joueurs veut continuer
             while self.j_jouer == True and self.actif or self.c_jouer == True and self.actif:
+                fenetre.blit(souris, pygame.mouse.get_pos())
                 #fait jouer le joueur si il veut continuer
                 if self.j_jouer == True:
                     self.tour_joueur()
@@ -264,7 +268,7 @@ class Blackjack:
                 
             else:
                 fenetre.blit(bouton_play_bj, (15, 285)) 
-                  
+        fenetre.blit(souris, pygame.mouse.get_pos())
         # Mettre à jour l’affichage
         pygame.display.update()
 

@@ -11,30 +11,75 @@ def creer_table():
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS compte (
-            id_compte INTEGER PRIMARY KEY AUTOINCREMENT,
-            pseudo TEXT NOT NULL,
-            mdp TEXT,
-            derniere_connexion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        CREATE TABLE IF NOT EXISTS "compte" (
+            "id_compte"	INTEGER,
+            "pseudo" TEXT NOT NULL,
+            "mdp" TEXT,
+            solde INTEGER DEFAULT 2000,
+            "derniere_connexion" TIMESTAMP,
+            "code_cb" TEXT,
+            "numero_cb"	TEXT,
+            PRIMARY KEY("id_compte" AUTOINCREMENT)
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS objets(
+            nom_objet TEXT PRIMARY KEY,
+            prix INTEGER,
+            duree INTEGER,
+            effet TEXT
         )
     """)
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS inventaire (
-            id_compte INTEGER PRIMARY KEY,
-            solde INTEGER DEFAULT 2000,
-            FOREIGN KEY (id_compte) REFERENCES compte (id_compte)
+            id_compte INTEGER,
+            nom_objet TEXT,
+            quantite_objet INTEGER,
+            FOREIGN KEY (id_compte) REFERENCES compte (id_compte),
+            FOREIGN KEY (nom_objet) REFERENCES objets (nom_objet),
+            PRIMARY KEY(id_compte, nom_objet)
         )
     """)
-    cursor.execute("""CREATE TABLE IF NOT EXISTS "cd_bancaires" (
-    "code_cb"	TEXT,
-    "numero_cb"	TEXT,
-    "id_compte"	INTEGER,
-    FOREIGN KEY("id_compte") REFERENCES "compte"("id_compte"))""")
-
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS heros(
+            nom_heros TEXT PRIMARY KEY,
+            prix INTEGER,
+            faction TEXT,
+            element TEXT,
+            rarete INTEGER,
+            lore TEXT
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS boss(
+            nom_boss TEXT PRIMARY KEY,
+            element TEXT,
+            difficulte INTEGER,
+            lore TEXT
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS stats(
+            id_compte INTEGER,
+            victoires INTEGER,
+            defaites INTEGER,
+            nom_boss TEXT,
+            FOREIGN KEY(id_compte) REFERENCES compte (id_compte),
+            FOREIGN KEY(nom_boss) REFERENCES boss (nom_boss),
+            PRIMARY KEY(id_compte, nom_boss)
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS casier(
+            id_compte INTEGER,
+            nom_heros TEXT,
+            FOREIGN KEY(id_compte) REFERENCES compte (id_compte),
+            FOREIGN KEY(nom_heros) REFERENCES heros (nom_heros),
+            PRIMARY KEY(id_compte, nom_heros)
+        )
+    """)
     conn.commit()
     conn.close()
-
-creer_table()
 
 def verifier_et_ajouter_pseudo(pseudo, mdp):
     """
@@ -46,21 +91,21 @@ def verifier_et_ajouter_pseudo(pseudo, mdp):
     compte = cursor.fetchone()
     if compte is None:
         # Ajouter le compte à la base
-        cursor.execute("INSERT INTO compte (pseudo, mdp) VALUES (?, ?)", (pseudo, mdp))
+        cursor.execute("INSERT INTO compte (pseudo, mdp,solde) VALUES (?, ?,?)", (pseudo, mdp,joueur1.get_cagnotte()))
         conn.commit()
         cursor.execute("SELECT id_compte FROM compte WHERE pseudo = ? AND mdp = ?", (pseudo, mdp))
         id_ = cursor.fetchone()
-        if id_:
-            cursor.execute("INSERT INTO inventaire (id_compte, solde) VALUES (?, ?)", (id_[0], joueur1.get_cagnotte()))
-            conn.commit()
-            print(f"Compte créé avec succès ! Bienvenue '{pseudo}' !")
+        ajouter_hero_casier(id_[0],'Night_Hero')
+        cursor.execute("INSERT INTO inventaire (id_compte) VALUES (?)", (id_[0],))
+        conn.commit()
+        print(f"Compte créé avec succès ! Bienvenue '{pseudo}' !")
 
     conn.close()
 
 def det_id_compte(pseudo,mdp):
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT id_compte FROM compte WHERE pseudo = ? AND mdp = ?", (pseudo,mdp,))
+    cursor.execute("SELECT id_compte FROM compte WHERE pseudo = ? AND mdp = ?", (pseudo,mdp))
     id_compte = cursor.fetchone()
     conn.close()
     return id_compte[0] if id_compte else None
@@ -71,10 +116,10 @@ def recup_donnees(id_compte):
     """
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT solde FROM inventaire WHERE id_compte = ?", (id_compte,))
-    inventaire = cursor.fetchone()
+    cursor.execute("SELECT solde FROM compte WHERE id_compte = ?", (id_compte,))
+    solde = cursor.fetchone()
     conn.close()
-    return inventaire[0] if inventaire else None
+    return solde[0] if solde else 200000
 
 def ajouter_connexion(id_compte):
     """
@@ -92,7 +137,7 @@ def mettre_a_jour_solde(solde, id_compte):
     """
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
-    cursor.execute("UPDATE inventaire SET solde = ? WHERE id_compte = ?", (solde, id_compte))
+    cursor.execute("UPDATE compte SET solde = ? WHERE id_compte = ?", (solde, id_compte))
     conn.commit()
     conn.close()
 
@@ -115,3 +160,195 @@ def verifier_et_ajouter_cb(id, num, code):
             print(f"Coordonnées enregistrées avec succès !")
     conn.close()
     return True if compte[0] == code and compte[1] == num else False
+
+def ajout_des_attributs():
+    '''
+    ajoute les attributs dans la base de donnée
+    '''
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+
+    #Création des objets 
+ 
+    """#Vodka
+    cursor.execute('''INSERT INTO objets VALUES ('Vodka', 1000, 1, 'Augmente les gains de la Roulette Russe de 10% (n est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
+    #Biere
+    cursor.execute('''INSERT INTO objets VALUES ('Biere', 100000, 2, 'Enlève une balle dans la roulette russe et diminue les gains de 10% (n est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
+    #Vin
+    cursor.execute('''INSERT INTO objets VALUES ('Vin', 10000, 1, 'Augmente les gains et les pertes du Blackjack de 10% (n est pas compatible avec un autre alcool qui affecte le Blackjack)')''')
+    #Rhum
+    cursor.execute('''INSERT INTO objets VALUES ('Rhum', 50000, 1, 'Ajoute une balle à la Roulette Russe et augmente les gains de 30%(n est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
+    #Whisky
+    cursor.execute('''INSERT INTO objets VALUES ('Whisky', 35000, 5, 'Augmente les chances de gagner au pile ou face de 10% et diminue les chances d obtenir 3 fruits dans la machine à sous (n est pas compatible avec un autre alcool qui affecte la machine à sous ou le pile ou face)')''')
+    #Mojito
+    cursor.execute('''INSERT INTO objets VALUES ('Mojito', 35000, 7, 'Sélectionne aléatoirement deux fruits et augmente les chances de les obtenir de 10% (n est pas compatible avec un autre alcool qui affecte la machine à sous)')''')
+    """
+    #Création des heros
+
+    #Night_Hero
+    cursor.execute('''INSERT INTO heros VALUES ('Night_Hero', 0, 'Abyss', 'Nuit', 1, 'blabla')''')
+    #Spirit_Hero
+    cursor.execute('''INSERT INTO heros VALUES ('Spirit_Hero', 45000, 'Nécrons', 'Esprit', 2, 'blabla')''')
+    #Spirit_Warrior
+    cursor.execute('''INSERT INTO heros VALUES ('Spirit_Warrior', 30000, 'Nécrons', 'Esprit', 2, 'blabla')''')
+    #Lancier
+    cursor.execute('''INSERT INTO heros VALUES ('Lancier', 45000, 'Nécrons', 'Esprit', 2, 'blabla')''')
+    #Assassin
+    cursor.execute('''INSERT INTO heros VALUES ('Assassin', 60000, 'Mercenaire', 'Neutre', 3, 'blabla')''')
+    #Zukong
+    cursor.execute('''INSERT INTO heros VALUES ('Zukong', 45000, 'Murim', 'Neutre', 2, 'blabla')''')
+    #Maevh
+    cursor.execute('''INSERT INTO heros VALUES ('Maevh', 350000, 'Abyss', 'Feu', 5, 'blabla')''')
+    #Zendo
+    cursor.execute('''INSERT INTO heros VALUES ('Zendo', 200000, 'Murim', 'Air', 4, 'blabla')''')
+    #Pureblade
+    cursor.execute('''INSERT INTO heros VALUES ('Pureblade', 275000, 'Empire', 'Feu', 5, 'blabla')''')
+    #Hsuku
+    cursor.execute('''INSERT INTO heros VALUES ('Hsuku', 300000, 'Mercenaire', 'Neutre', 5, 'blabla')''')
+    #Sanguinar
+    cursor.execute('''INSERT INTO heros VALUES ('Sanguinar', 400000, 'Abyss', 'Nuit', 5, 'blabla')''')
+    #Whistler
+    cursor.execute('''INSERT INTO heros VALUES ('Whistler', 400000, 'Empire', 'Feu', 5, 'blabla')''')
+    #Tethermancer
+    cursor.execute('''INSERT INTO heros VALUES ('Tethermancer', 250000, 'Mercenaire', 'Feu', 4, 'blabla')''')
+    #Aether
+    cursor.execute('''INSERT INTO heros VALUES ('Aether', 175000, 'Empire', 'Air', 4, 'blabla')''')
+    #Twilight
+    cursor.execute('''INSERT INTO heros VALUES ('Twilight', 180000, 'Créature légendaire', 'Feu', 4, 'blabla')''')
+    #Yggdra
+    cursor.execute('''INSERT INTO heros VALUES ('Yggdra', 450000, 'Abyss', 'Feu', 5, 'blabla')''')
+
+    #Création des boss
+    """""
+    #Michel
+    cursor.execute('''INSERT INTO boss VALUES ('Michel', 'Neutre', 2, 'blabla')''')
+    #TankBoss
+    cursor.execute('''INSERT INTO boss VALUES ('TankBoss', 'Foudre', 4, 'blabla')''')
+    #Cindera
+    cursor.execute('''INSERT INTO boss VALUES ('Cindera', 'Feu', 3, 'blabla')''')
+    #DarkLord
+    cursor.execute('''INSERT INTO boss VALUES ('DarkLord', 'Nuit', 2, 'blabla')''')
+    #Astral (il est nul)
+    cursor.execute('''INSERT INTO boss VALUES ('Astral (il est nul)', 'Esprit', 0, 'blabla')''')
+    #EternityPainter
+    cursor.execute('''INSERT INTO boss VALUES ('EternityPainter', 'Esprit', 3, 'blabla')''')
+    #Shidai
+    cursor.execute('''INSERT INTO boss VALUES ('Shidai', 'Foudre', 4, 'blabla')''')
+    #Lilithe
+    cursor.execute('''INSERT INTO boss VALUES ('Lilithe', 'Feu', 5, 'blabla')''')
+    #Solfist
+    cursor.execute('''INSERT INTO boss VALUES ('Solfist', 'Feu', 2, 'blabla')''')
+    #Elyx
+    cursor.execute('''INSERT INTO boss VALUES ('Elyx', 'Foudre', 3, 'blabla')''')
+    #Embla
+    cursor.execute('''INSERT INTO boss VALUES ('Embla', 'Glace', 3, 'blabla')''')
+    #Sun
+    cursor.execute('''INSERT INTO boss VALUES ('Sun', 'Feu', 2, 'blabla')''')
+    #Skurge
+    cursor.execute('''INSERT INTO boss VALUES ('Skurge', 'Feu', 4,  'blabla')''')
+    #NoshRak
+    cursor.execute('''INSERT INTO boss VALUES ('NoshRak', 'Foudre', 5, 'blabla')''')
+    #Purgatos
+    cursor.execute('''INSERT INTO boss VALUES ('Purgatos', 'Feu', 2, 'blabla')''')
+    #Ciphyron
+    cursor.execute('''INSERT INTO boss VALUES ('Ciphyron', 'Foudre', 2, 'blabla')''')
+    #Golem
+    cursor.execute('''INSERT INTO boss VALUES ('Golem', 'Foudre', 4, 'blabla')''')
+    #Soji
+    cursor.execute('''INSERT INTO boss VALUES ('Soji', 'Foudre', 5, 'blabla')''')"""
+    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    conn.commit()
+    conn.close()
+
+
+def ajouter_hero_casier(id_compte, nom_hero):
+    """
+    Ajoute le hero au casier du joueur
+    """
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO casier VALUES (?,?)", (id_compte, nom_hero))
+    conn.commit()
+    conn.close()
+
+def ajouter_objet_inventaire(quantite_objet, id_compte, nom_objet):
+    """
+    Ajoute l'objet a l'inventaire du joueur
+    """
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("UPDATE inventaire SET quantite_objet = ? WHERE id_compte = ? and nom_objet = ?", (quantite_objet, id_compte, nom_objet))
+    conn.commit()
+    conn.close()
+
+def stats_boss_vaincu(victoires,id_compte, nom_boss):
+    '''
+    Change la stat du nombre de victoire contre un boss
+    '''
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("UPDATE stats SET victoires = ? WHERE id_compte = ? and nom_boss = ?", (victoires, id_compte, nom_boss))
+    conn.commit()
+    conn.close()
+
+def stats_boss_defaite(defaites,id_compte, nom_boss):
+    '''
+    Change la stat du nombre de défaite contre un boss
+    '''
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("UPDATE stats SET defaites = ? WHERE id_compte = ? and nom_boss = ?", (defaites, id_compte, nom_boss))
+    conn.commit()
+    conn.close()
+
+def defaites_total(id_compte,):
+    '''
+    renvoie le nombre de defaites total
+    '''
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT defaites FROM stats WHERE id_compte = ?", (id_compte,))
+    toutes_defaites = cursor.fetchone()
+    defaite = 0
+    for i in range(len(toutes_defaites)):
+        defaite += toutes_defaites[i][0]
+    return defaite
+
+def victoires_total(id_compte):
+    '''
+    renvoie le nombre de defaites total
+    '''
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT victoires FROM stats WHERE id_compte = ?", (id_compte,))
+    toutes_victoires = cursor.fetchone()
+    victoire = 0
+    for i in range(len(toutes_victoires)):
+        victoire += toutes_victoires[i][0]
+    return victoire
+
+def supprimer_table():
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("DROP TABLE inventaire")
+    cursor.execute("DROP TABLE stats")
+    cursor.execute("DROP TABLE compte")
+    cursor.execute("DROP TABLE casier")
+    conn.commit()
+    conn.close()
+
+def det_heros(id_compte):
+    print(id_compte)
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT nom_heros FROM casier WHERE id_compte = ?", (id_compte,))
+    id_compte = cursor.fetchall()
+    conn.close()
+    liste_heros = [heros[0] for heros in id_compte]
+    print(id_compte,liste_heros)
+    return liste_heros
+
+#supprimer_table()
+creer_table()
+
+#ajout_des_attributs()
