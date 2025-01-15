@@ -7,7 +7,7 @@ from fonctions import afficher_ecran_chargement
 afficher_ecran_chargement(chargement[5])
 print("Chargement de SQL.py")
 
-def creer_table():
+def creer_table(possede, nom_heros):
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     cursor.execute("""
@@ -28,6 +28,14 @@ def creer_table():
             prix INTEGER,
             duree INTEGER,
             effet TEXT
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS objets(
+            nom_objet TEXT PRIMARY KEY,
+            prix INTEGER,
+            duree INTEGER,
+            effet TEXT,
         )
     """)
     cursor.execute("""
