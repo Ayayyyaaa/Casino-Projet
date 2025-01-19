@@ -43,7 +43,7 @@ class Joueur:
 
     def modifier_cagnotte(self, montant):   
         """
-        permet de modifier la cagnotte à partir d'un montant
+        Permet de modifier la cagnotte à partir d'un montant
         montant(int) : le montant qu'on ajoute à la cagnotte
         """
         self.cagnotte += montant
@@ -56,16 +56,12 @@ class Joueur:
 
     def set_code_cb(self, code):
         self.code_cb = code
-
     def set_num_cb(self, num):
         self.num_cb = num
-
     def ajouter_inventaire(self,article):
         self.inventaire[article] += 1
-
     def set_heros(self,heros):
         self.heros = heros
-
     def ajouter_heros(self,heros):
         self.heros.append(heros)
 
@@ -80,19 +76,16 @@ class Coin:
         self.sprites.append(pygame.image.load('pieces/coin-4.png.png'))
         self.pos_x = pos_x
         self.pos_y = pos_y
-
         self.actuel_sprite = 0
         self.image = self.sprites[self.actuel_sprite]
-
     def activer_rotation(self):
         self.tourne_animation = True
-
     def get_image(self):
         return self.image
     def get_pos(self):
         return(self.pos_x,self.pos_y)
-
     def update(self, speed):
+        '''Permet d'effectuer l'animation de la rotation de la piece.'''
         if self.tourne_animation:
             self.actuel_sprite += speed
             if int(self.actuel_sprite) >= len(self.sprites):
@@ -106,51 +99,44 @@ class Bouton:
         self.hauteur = hauteur
         self.x = x
         self.y = y
-
     def get_largeur(self):
         return self.largeur
-
     def get_hauteur(self):
         return self.hauteur
-
     def get_x(self):
         return self.x
-
     def get_y(self):
         return self.y
-
     def set_largeur(self, largeur):
         self.largeur = largeur
-
     def set_hauteur(self, hauteur):
         self.hauteur = hauteur
-
     def set_x(self, x):
         self.x = x
-
     def set_y(self, y):
         self.y = y
 
 
 class Button:
     def __init__(self, image1, image2, x, y):
-        self.image1 = image1  # Image du bouton
-        self.image2 = image2  # Image du bouton
+        self.image1 = image1 
+        self.image2 = image2  
         self.rect = self.image2.get_rect(topleft=(x, y))  # Rectangle pour la position
-        self.mask = pygame.mask.from_surface(self.image2)  # Masque pour collisions précises
+        self.mask = pygame.mask.from_surface(self.image2)  # Masque pour les collisions 
 
     def collision(self, mouse_pos):
-        # Convertir la position du clic dans le référentiel local du bouton
-        local_x = mouse_pos[0] - self.rect.x
-        local_y = mouse_pos[1] - self.rect.y
+        '''Permet de vérifier si le clic est dans la zone du bouton'''
+        # Convertir la position du clic dans le référentiel de l'image du bouton
+        x = mouse_pos[0] - self.rect.x
+        y = mouse_pos[1] - self.rect.y
 
         # Vérifier si le clic est dans le rectangle et dans le masque
-        if 0 <= local_x < self.rect.width and 0 <= local_y < self.rect.height:
-            return self.mask.get_at((local_x, local_y))
+        if 0 <= x < self.rect.width and 0 <= y < self.rect.height:
+            return self.mask.get_at((x, y))
         return False
 
     def draw(self, surface, mouse_pos):
-        # Dessiner le bouton
+        '''Permet de dessiner le bouton et de gérer le changement d'image en fonction du clic'''
         if self.collision(mouse_pos):
             surface.blit(self.image1, self.rect.topleft)
         else:

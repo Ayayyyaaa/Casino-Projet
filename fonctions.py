@@ -43,7 +43,10 @@ def dessiner_zone_texte(fenetre, rect, texte:str, actif:bool):
     texte_surface = police.render(texte, True, noir)
     fenetre.blit(texte_surface, (rect.x + 5, rect.y + 5))
 
-def achat(article):
+def achat(article:str) -> None:
+    '''Permet d'acheter un article en fonction de son prix.
+    Paramètres:
+        - article (str) : Le nom de l'article à acheter'''
     if joueur1.get_cagnotte() >= boutique[article]:
         joueur1.modifier_cagnotte(-boutique[article])
         joueur1.ajouter_inventaire(article)
@@ -51,12 +54,16 @@ def achat(article):
     else:
         print("Solde insuffisant !")
 
-def afficher_ecran_chargement(img):
+def afficher_ecran_chargement(img) -> None:
+    '''Permet d'afficher l'écran de chargement
+    Paramètres:
+        - img : L'image à afficher'''
     fenetre.blit(img, (0, 0))  # Afficher le fond
     pygame.display.flip()
 
-def valider_numero_carte_bancaire(numero:str)->bool:
+def valider_numero_carte_bancaire(numero:str) -> bool:
     "Fonction qui permet de valider un numéro de carte bancaire avec la methode de Luhn (oui on est motivés)"
+    assert type(numero) == str, "Le numéro de carte bancaire doit être une chaîne de caractères"
     numero = ''.join(filter(str.isdigit, numero))
     if len(numero) != 16:
         return False

@@ -1,5 +1,5 @@
 import pygame
-from fonctions import dessiner_zone_texte,achat,afficher_ecran_chargement,valider_numero_carte_bancaire
+from fonctions import dessiner_zone_texte,afficher_ecran_chargement,valider_numero_carte_bancaire
 from img import *
 from objets_et_variables import *
 from sons import *
@@ -21,6 +21,25 @@ print("Chargement du jeu...")
 
 class Jeu():
     def __init__(self):
+        '''Éléments du jeu :
+        - run : booléen pour la boucle principale
+        - ecrans : liste des écrans du jeu
+        - champ_joueur : rectangle pour le champ de saisie du nom du joueur
+        - code_cb : rectangle pour le champ de saisie du code CB
+        - nb_cb : rectangle pour le champ de saisie du numéro CB
+        - champ_mdp : rectangle pour le champ de saisie du mot de passe
+        - text : chaîne de caractères pour la saisie du nom du joueur
+        - mdp : chaîne de caractères pour la saisie du mot de passe
+        - txt_nbr_cb : chaîne de caractères pour la saisie du numéro CB
+        - self.victoire : booléen pour la victoire (affichage de l'écran de victoire)
+        - self.nighthero à self.prophet : objets du jeu de combat pour les heros et boss
+        - self.maskotte : booléen pour la souris Maskottchen
+        - self.curseurabel : booléen pour la souris Princesse
+        - self.boss : boss du jeu de combat
+        - self.bosss : choix possibles de boss pour le jeu de combat
+        - self.combat : objet du jeu de combat pour le hero et le boss
+        - self.hero : hero sélectionné par la joueur pour le jeu de combat
+        - self.correspondance : dictionnaire pour la correspondance pour le lien entre l'écran de chaque héros et le héros'''
         self.run = True
         self.ecrans = [ecran_machine_a_sous,ecran_mort,ecran_victoire,ecran_boutique,alcool,hero,hero2,niveaux]
         self.champ_joueur = pygame.Rect(135, 210, 140, 32)
@@ -194,7 +213,6 @@ class Jeu():
                             if btn_suivant.collision(clic.get_clic()):
                                 clic.set_clic((0,0))
                                 hero.ecran.set_actif(True),hero2.ecran.set_actif(False)
-                        print(joueur1.get_heros())
                         for perso in [assassin,maehv,zendo,zukong,nighthero,lancier,spiritwarior,spirithero,hsuku,whistler,sanguinar,tethermancer,pureblade,aether,twilight,suzumebachi,yggdra,dusk]:
                             if perso.ecran.get_actif():
                                 if btn_fleche.collision(clic.get_clic()):
@@ -208,7 +226,6 @@ class Jeu():
                                         clic.set_clic((0,0))
                                         self.hero = self.correspondance[perso]
                                         hero.ecran.set_actif(True),perso.ecran.set_actif(False)
-                                        print(perso.get_heros()[0],hero.ecran.get_actif(),perso.ecran.get_actif())
                                     else:
                                         if joueur1.get_cagnotte() > perso.get_heros()[1]:
                                             ajouter_hero_casier(det_id_compte(joueur1.get_pseudo(), joueur1.get_mdp()), perso.get_heros()[0])
@@ -248,7 +265,7 @@ class Jeu():
                             if event.key == pygame.K_RETURN:
                                 if len(self.txt_nbr_cb) == 19 and len(self.txt_codee_cb) == 3:
                                     code_correct = valider_numero_carte_bancaire(self.txt_nbr_cb)
-                                    if code_correct:
+                                    if code_correct and self.txt_nbr_cb != '8888 8888 8888 8888':
                                         joueur1.set_code_cb(self.txt_codee_cb), joueur1.set_num_cb(self.txt_nbr_cb)
                                         verifier_et_ajouter_cb(det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()),joueur1.get_code_cb(),joueur1.get_num_cb())
                                         if verifier_et_ajouter_cb(det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()),joueur1.get_code_cb(),joueur1.get_num_cb()):
@@ -268,11 +285,11 @@ class Jeu():
                             elif len(self.txt_codee_cb) < 3 and event.unicode in "0123456789":
                                 self.txt_codee_cb += event.unicode
                         else:
-                            print(event.unicode)
                             if event.unicode == 'v':
                                 ecran2.ecran.set_actif(False), niveaux.ecran.set_actif(True)
-                            if event.unicode == '1' and niveaux.ecran.get_actif():
-                                niveaux.ecran.set_actif(False), plat.ecran.set_actif(True)
+                            if event.unicode == '1' and ecran2.ecran.get_actif():
+                                babelrace.actif(True)
+                                babelrace.lancer()
 
 
                 # Afficher l'ecran du Blackjack
@@ -312,8 +329,6 @@ class Jeu():
                     rr.affiche(0.45)
                 elif ecran_black.ecran.get_actif():
                     ecran_black.affiche(blackjack)
-                elif plat.ecran.get_actif():
-                    plat.affiche(0.45)
                 for ecran in self.ecrans:
                     assert isinstance(ecran, object), f"L'écran {ecran} est un {type(ecran)}, et non pas un écran !"
                     if ecran.ecran.get_actif():

@@ -153,9 +153,10 @@ class Ecran2:
         fenetre.blit(pileouface.get_image(),(170,140))
         if pileouface.get_actif():
             pileouface.update(0.20, joueur1)
-
+        # Petit Easter egg
         if joueur1.get_pseudo() == '666' or joueur1.get_pseudo() == 'Satan':
             fenetre.blit(diable, (100, 2))
+        # Affichage des boutons des jeux
         for btn in self.btns:
             btn.draw(fenetre,pygame.mouse.get_pos())
         # Affichage des boutons des choix du pile ou face
@@ -212,6 +213,9 @@ class EcranBoutique:
         self.frame = 0
 
     def affiche(self):
+        '''
+        Permet d'afficher l'écran de la boutique, ainsi que gérer les interactions avec les boutons.
+        '''
         fenetre.blit(self.fond, (0, 0))
         btn_fleche.draw(fenetre,pygame.mouse.get_pos())
         btn_alcool.draw(fenetre,pygame.mouse.get_pos())
@@ -247,6 +251,8 @@ class EcranAlcool:
         self.btns = [btn_whisky, btn_biere, btn_vodka, btn_fleche]
 
     def affiche(self):
+        '''
+        Permet d'afficher l'écran des alcools, ainsi que gérer les interactions avec les boutons pour l'achat de ceux-ci.'''
         fenetre.blit(self.fond, (0, 0))
         if btn_whisky.collision(pygame.mouse.get_pos()):
             self.whisky = True
@@ -271,6 +277,7 @@ class EcranAlcool:
         self.affiche_effets()
 
     def affiche_effets(self):
+        '''Permet d'afficher les effets des alcools lors du survol de la souris.'''
         if self.vodka:
             fenetre.blit(effet_vodka, (pygame.mouse.get_pos()[0]+40, pygame.mouse.get_pos()[1]-30))
         elif self.biere:
@@ -279,7 +286,7 @@ class EcranAlcool:
             fenetre.blit(effet_whisky, (pygame.mouse.get_pos()[0]-180, pygame.mouse.get_pos()[1]-30))
 
 class EcranSelection:
-    def __init__(self, c, liste, hero, y, x = 50):
+    def __init__(self, caracteristiques_hero, liste, hero, y, x = 50):
         self.police = pygame.font.Font('8-bitanco.ttf', 15)
         self.ecran = Ecran()
         self.fond = pygame.image.load('images/arene.png').convert_alpha()
@@ -291,12 +298,13 @@ class EcranSelection:
         self.y = y
         self.x = x
         self.infos = False
-        self.caracteristiques = c
+        self.caracteristiques = caracteristiques_hero
     def getinfos(self):
         return self.infos
     def setinfos(self,actif):
         self.infos = actif
     def affiche(self,speed):
+        '''Permet d'afficher l'écran de selection pour chaque heros.'''
         fenetre.blit(self.fond, (0, 0))
         fenetre.blit(pygame.image.load(self.anim[int(self.frame)]).convert_alpha(), (self.x, self.y))
         self.frame += speed
@@ -326,6 +334,7 @@ class EcranVodka:
         self.num_frame = 0
         self.musique_de_fond = vodkaaa
     def affiche(self,speed):
+        '''Permet d'afficher l'écran de Poutine.'''
         self.num_frame += speed
         self.frame = self.frames[int(self.num_frame)]
         # Si toutes les images ont été jouées :
@@ -345,6 +354,7 @@ class EcranRR:
         self.frame = 'RR/rickroll (1).png'
         self.num_frame = 0
     def affiche(self,speed):
+        '''Permet d'afficher l'écran de rickroll.'''
         self.num_frame += speed
         self.frame = self.frames[int(self.num_frame)]
         # Si toutes les images ont été jouées :
@@ -361,14 +371,6 @@ class EcranNiveaux:
         # Si toutes les images ont été jouées :
         fenetre.blit(voiture.get_sprites()[voiture.get_frame()],(voiture.get_x(),voiture.get_y()))
 
-class EcranPlatforme:
-    def __init__(self):
-        self.ecran = Ecran()
-        self.fond = pygame.image.load('images/arene.png').convert_alpha()
-    def affiche(self,speed):
-        babelrace.actif(True)
-        babelrace.lancer()
-
 class EcranChargement:
     def __init__(self):
         self.ecran = Ecran(True)
@@ -377,6 +379,7 @@ class EcranChargement:
         self.num_frame = 0
         self.stop = True
     def affiche(self,speed):
+        '''Permet d'afficher l'animation l'écran de chargement.'''
         if self.num_frame <= 73 or not self.stop:
             self.num_frame += speed
         if clic.get_clic() != (0,0) and self.num_frame >= 56:
@@ -400,7 +403,6 @@ ecran_black = EcranBlack()
 rr = EcranRR()
 alcool = EcranAlcool()
 niveaux = EcranNiveaux()
-plat = EcranPlatforme()
 assassin = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/NightHero.png').convert_alpha(), [f'images/Jeu de combat/Assassin/Droite/Attaque1/_a_frm{i},100.png' for i in range(10)] + [f'images/Jeu de combat/Assassin/Droite/Attaque2/_a_frm{i},100.png' for i in range(11,18)] + [f'images/Jeu de combat/Assassin/Droite/Marche/_a_frm{i},100.png' for i in range(8)] + [f'images/Jeu de combat/Assassin/Droite/Course/_a_frm{i},70.png' for i in range(8)] + [f'images/Jeu de combat/Assassin/Droite/Saut/_a_frm{i},100.png' for i in range(2,14)] + [f'images/Jeu de combat/Assassin/Mort/_a_frm{i},100.png' for i in range(16)],('Assassin',60000), 50)
 maehv = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Maehv.png').convert_alpha(),[f'images/Jeu de combat/Maehv/Droite/Inaction/_a_{i},80.png' for i in range(14)],('Maehv',450000),5)
 zendo = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Zendo.png').convert_alpha(),[f'images/Jeu de combat/Zendo/Droite/Inaction/_a_frm{i},60.png' for i in range(14)],('Zendo',125000),5)

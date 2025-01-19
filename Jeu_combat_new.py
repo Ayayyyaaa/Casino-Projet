@@ -5566,6 +5566,18 @@ class Pandora:
 
 class JeuCombat:
     def __init__(self,j1,j2):
+        '''Initialise les attributs du jeu de combat.
+        - self.fond : Image du fond du jeu
+        - self.fonds : dictionnaire des images des fond du jeu, avec les clés correspondant aux noms des fond du jeu et les valeurs correspondant au sol du fond
+        - self.run : booléen indiquant si le jeu est en cours
+        - self.vie_hero : Image du compteur de vie du héros
+        - self.vie_boss : Image du compteur de vie du boss
+        - self.police : police utilisée pour afficher les textes
+        - self.dmg : booléen indiquant si un dégât a été subi
+        - self.j1 : instance de la classe Hero, héros du joueur 1
+        - self.j2 : instance de la classe Boss, boss combattu par le heros du joueur 1
+        - self.reussi : booléen indiquant si le combat est réussi
+        - self.frame : compteur pour l'animation'''
         self.fond = j2.boss.get_fond()
         self.fonds = {'Temple':0,'Desert':50,'Eglise':15,'Chute':10,'Lave':50,'Pluie':25,'Dojo':20}
         self.run = False
@@ -5586,7 +5598,7 @@ class JeuCombat:
     def get_reussi(self):
         return self.reussi
     def multis(self, j1, j2):
-        # Définition de la matrice des multiplicateurs avec un dictionnaire de dictionnaires
+        '''Fonction qui permet de calculer les multiplicateurs de dégâts en fonction des éléments du boss et du héros.'''
         multis_elements = {
             'Feu': {
                 'FeuImmune' : 0,
@@ -5644,7 +5656,7 @@ class JeuCombat:
         el1 = j1.hero.get_type()
         el2 = j2.boss.get_type()
         
-        # Retourne le multiplicateur du dictionnaire, avec 1 comme valeur par défaut si la combinaison n'existe pas
+        # Return le multiplicateur du dictionnaire, avec 1 comme valeur par défaut si la combinaison n'existe pas
         return multis_elements.get(el1, {}).get(el2, 1.0)
 
     def lancer(self):
@@ -5652,6 +5664,7 @@ class JeuCombat:
         self.largeur, self.hauteur = 1200, 700
         self.fenetre = pygame.display.set_mode((self.largeur, self.hauteur))
         self.clock = pygame.time.Clock()
+        # On réinitialise tout
         self.j2.boss.modif_pv(-self.j2.boss.get_pv()+self.j2.boss.get_pv_base())
         self.j1.hero.modif_pv(-self.j1.hero.get_pv()+self.j1.hero.get_pv_base())
         self.j2.boss.modif_pos_x(-self.j2.boss.get_pos_x()+1000)
@@ -5663,6 +5676,7 @@ class JeuCombat:
         self.j1.hero.set_mort(False)
         while not self.j1.hero.get_victoire() and not self.j2.boss.get_victoire() and self.run:
             self.frame += 0.14
+            # Permet de détermnier les collisions entre le héros et le boss grace aux sprites de ceux-ci
             mask1 = pygame.mask.from_surface(self.j1.hero.image)
             mask2 = pygame.mask.from_surface(self.j2.boss.image)
             offset_x = self.j2.boss.get_pos_x() - self.j1.hero.get_pos_x()
@@ -5679,6 +5693,7 @@ class JeuCombat:
                 self.frame = 0
             fenetre.blit(self.fond[int(self.frame)],(0,0))
             multis = self.multis(self.j1,self.j2)
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.run = False
