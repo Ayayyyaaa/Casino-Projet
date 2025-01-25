@@ -2245,7 +2245,7 @@ class Suzumebachi:
 
 class Dusk:
     def __init__(self):
-        self.hero = Hero(180,440,5.5,0.18,0.14,5.3,3,'Foudre')
+        self.hero = Hero(180,440,5.5,0.18,0.14,5.3,1.5,'Foudre')
         self.atk1_d = [f'images/Jeu de combat/Dusk/Droite/Attaque1/_a_{i},60.png' for i in range(28)]
         self.atk1_g = [f'images/Jeu de combat/Dusk/Gauche/Attaque1/_a_{i},60.png' for i in range(28)]
         self.images_marche_d = [f'images/Jeu de combat/Dusk/Droite/Marche/_a_{i},60.png' for i in range(6)] 
@@ -2358,6 +2358,137 @@ class Dusk:
         else:
             self.hero.modif_img(self.inaction_g[int(self.frame)])
         self.frame += 0.2
+
+class MauriceTicket:
+    def __init__(self):
+        self.hero = Hero(250,480,5.75,0.18,0.1,1.8,0.5,'Neutre')
+        self.atk1_d = [f'images/Jeu de combat/MauriceTicket/Droite/Attaque1/_a_frm{i},70.png' for i in range(33,50)]
+        #self.atk2_d = [f'images/Jeu de combat/Assassin/Droite/Attaque2/_a_frm{i},100.png' for i in range(11,18)]
+        self.atk1_g = [f'images/Jeu de combat/MauriceTicket/Gauche/Attaque1/_a_frm{i},70.png' for i in range(33,50)]
+        #self.atk2_g = [f'images/Jeu de combat/Assassin/Gauche/Attaque2/_a_frm{i},100.png' for i in range(11,18)]
+        self.images_marche_d = [f'images/Jeu de combat/MauriceTicket/Droite/Marche/_a_frm{i},100.png' for i in range(10,18)] 
+        self.images_marche_g = [f'images/Jeu de combat/MauriceTicket/Gauche/Marche/_a_frm{i},100.png' for i in range(10,18)]
+        self.cp2_d = [f'images/Jeu de combat/MauriceTicket/Droite/Saut/_a_frm{i},120.png' for i in range(18,21)]
+        self.cp2_g = [f'images/Jeu de combat/MauriceTicket/Gauche/Saut/_a_frm{i},120.png' for i in range(18,21)]
+        self.inaction_g = [f'images/Jeu de combat/MauriceTicket/Gauche/Inaction/_a_frm{i},130.png' for i in range(10)]
+        self.inaction_d = [f'images/Jeu de combat/MauriceTicket/Droite/Inaction/_a_frm{i},130.png' for i in range(10)]
+        self.images_mort = [f'images/Jeu de combat/Assassin/Mort/_a_frm{i},100.png' for i in range(16)] 
+        self.image = 'images/Jeu de combat/Hero/Attaque/Attaque_Droite/Attaque1.png'
+        self.dgt5 = pygame.image.load("images/Jeu de combat/-5.png")
+        self.block = pygame.image.load("images/Jeu de combat/Block.png")
+        self.frame = 0
+        self.frame_mort = 0
+        self.frame_parade = 0
+        self.dgt1 = False
+        self.dgt2 = False
+        self.dgt3 = False
+
+    def attaque(self,speed:float,sens,j2,multis):
+        '''Permet de jouer l'animation d'attaque du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        if self.hero.get_pv() > 0:
+            if self.hero.get_collison() and int(self.frame) == 3 and not j2.boss.get_block():
+                if not self.dgt1:
+                    aie_boss.play()
+                    j2.boss.modif_pv(-12*multis)
+                    self.dgt1 = True
+            elif self.hero.get_collison() and int(self.frame) == 7 and not j2.boss.get_block():
+                if not self.dgt2:
+                    aie_boss.play()
+                    j2.boss.modif_pv(-12*multis)
+                    self.dgt2 = True
+            elif self.hero.get_collison() and int(self.frame) == 13 and not j2.boss.get_block():
+                if not self.dgt3:
+                    aie_boss.play()
+                    j2.boss.modif_pv(-24*multis)
+                    self.dgt3 = True    
+            if self.frame >= len(self.atk1_d)-1:
+                self.frame = 0
+                self.hero.set_attaque(False)
+                self.dgt1 = False
+                self.dgt2 = False
+                self.dgt3 = False
+            elif sens == 'Gauche':
+                self.hero.modif_img(self.atk1_g[int(self.frame)])
+            elif sens == 'Droite':
+                self.hero.modif_img(self.atk1_d[int(self.frame)])
+            self.frame += speed
+
+    def mort(self,speed:float,j2):
+        '''Permet de jouer l'animation de mort du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
+        if not self.hero.get_mort():
+            # Faire progresser les images pour l'animation
+            self.frame_mort += speed
+            self.hero.modif_img(self.images_mort[int(self.frame_mort)])
+            # Si toutes les images ont été jouées :
+            if int(self.frame_mort) == len(self.images_mort)-1:
+                # On déclare le boss vainqueur, le combat prend fin
+                self.hero.set_mort(True)
+                j2.boss.set_victoire(True)
+                self.frame_mort = 0
+
+    def marche(self,speed:float,sens,j2):
+        '''Permet de jouer l'animation de marche du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        # Si toutes les images ont été jouées :
+        if not self.hero.get_cp2():
+            self.frame += speed
+        if int(self.frame) >= len(self.images_marche_d)-1:
+            # On remet tout à 0
+            self.frame = 0
+        # Faire progresser les images pour l'animation
+        if sens == 'Gauche':
+            self.hero.modif_img(self.images_marche_g[int(self.frame)])
+        else:
+            self.hero.modif_img(self.images_marche_d[int(self.frame)])
+
+    def cp2(self, speed:float, sens, j2,multis):
+        '''Permet de jouer l'animation de parade du héros.
+        Paramètres :
+            - self
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+        '''
+        if self.hero.get_pv() > 0:
+            self.hero.set_block(True)
+            if self.frame < len(self.cp2_d)-1:
+                self.hero.modif_pos_y(-8)
+                self.frame += speed/1.5
+            elif self.frame >= len(self.cp2_d)-1:
+                if self.hero.get_pos_y() <= 480:
+                    self.hero.modif_pos_y(8)
+                else:
+                    self.frame = 0
+                    self.hero.set_cp2(False)
+                    self.hero.set_block(False)
+            if sens == 'Gauche':
+                self.hero.modif_img(self.cp2_g[int(self.frame)])
+            else:
+                self.hero.modif_img(self.cp2_d[int(self.frame)])
+            
+    
+    def reset_frame(self):
+        self.frame=0
+
+    def inaction(self,j2):
+        if int(self.frame) >= len(self.inaction_d)-1:
+            # On remet tout à 0
+            self.frame = 0
+        if distance(self,j2) < 0:
+            self.hero.modif_img(self.inaction_d[int(self.frame)])
+        else:
+            self.hero.modif_img(self.inaction_g[int(self.frame)])
+        self.frame += 0.1
 
 class Michel:
     def __init__(self):
@@ -5733,6 +5864,7 @@ class JeuCombat:
                         if self.j1.hero.get_pos_x() < 1000:
                             self.j1.hero.modif_pos_x(self.j1.hero.get_speed())
                         self.j1.marche(self.j1.hero.get_speed_anim()[1],'Droite',self.j2)
+            #assert 0 <= self.j1.hero.get_pos_x() <= 1000, "Position héros hors de la fenêtre"
 
             if self.j2.boss.get_poison() != False:
                 self.j2.boss.modif_pv(-0.02*multis)

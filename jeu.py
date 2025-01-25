@@ -16,6 +16,8 @@ from random import choice
 from classes import *
 from Jeu_platforme import *
 
+# https://babelcasino.fandom.com/fr/wiki/Wiki_Babel-Casino
+
 afficher_ecran_chargement(chargement[10])
 print("Chargement du jeu...")
 
@@ -41,7 +43,7 @@ class Jeu():
         - self.hero : hero sélectionné par la joueur pour le jeu de combat
         - self.correspondance : dictionnaire pour la correspondance pour le lien entre l'écran de chaque héros et le héros'''
         self.run = True
-        self.ecrans = [ecran_machine_a_sous,ecran_mort,ecran_victoire,ecran_boutique,alcool,hero,hero2,niveaux]
+        self.ecrans = [ecran_machine_a_sous,ecran_mort,ecran_victoire,ecran_boutique,alcool,hero,hero2,niveaux,inventaire]
         self.champ_joueur = pygame.Rect(135, 210, 140, 32)
         self.code_cb = pygame.Rect(130, 325, 140, 32)
         self.nb_cb = pygame.Rect(100, 275, 200, 32)
@@ -93,10 +95,12 @@ class Jeu():
         #self.pandora = Pandora()
         self.dusk = Dusk()
         self.prophet = Prophet()
+        self.benji = MauriceTicket()
         self.maskotte = False
         self.curseurabel = False
         self.combat = JeuCombat(self.nighthero,self.m)
         self.hero = self.nighthero
+        self.heros = [assassin,maehv,zendo,zukong,nighthero,lancier,spiritwarior,spirithero,hsuku,whistler,sanguinar,tethermancer,pureblade,aether,twilight,suzumebachi,yggdra,dusk]
         self.boss = [self.m,self.tb,self.c,self.dl,self.astral,self.ep,self.shidai,self.solfist,self.embla,self.lilithe,self.elyx,self.sun,self.skurge,self.noshrak,self.golem,self.purgatos,self.ciphyron,self.golem,self.soji]
         self.bosss = self.prophet
         self.correspondance = {nighthero:self.nighthero,
@@ -171,6 +175,7 @@ class Jeu():
                                 joueur1.set_pseudo(pseudo)
                                 joueur1.set_mdp(mdp)
                                 joueur1.set_cagnotte(recup_donnees(id_compte))
+                                joueur1.set_inventaire(det_objets(id_compte))
                                 joueur1.set_heros(det_heros(id_compte))
                                 ajouter_connexion(id_compte)
                                 print(f"Bienvenue {joueur1.get_pseudo()}! Solde: {int(joueur1.cagnotte)}")
@@ -191,7 +196,7 @@ class Jeu():
                                 pygame.mixer.music.load(musique_combat)
                                 pygame.mixer.music.set_volume(0.3)
                                 pygame.mixer.music.play(-1)
-                                self.combat = JeuCombat(self.hero,self.bosss) #choice(self.boss)
+                                self.combat = JeuCombat(self.hero,choice(self.boss)) #choice(self.boss)
                                 self.combat.actif(True)
                                 self.combat.lancer()
                             
@@ -213,7 +218,7 @@ class Jeu():
                             if btn_suivant.collision(clic.get_clic()):
                                 clic.set_clic((0,0))
                                 hero.ecran.set_actif(True),hero2.ecran.set_actif(False)
-                        for perso in [assassin,maehv,zendo,zukong,nighthero,lancier,spiritwarior,spirithero,hsuku,whistler,sanguinar,tethermancer,pureblade,aether,twilight,suzumebachi,yggdra,dusk]:
+                        for perso in self.heros:
                             if perso.ecran.get_actif():
                                 if btn_fleche.collision(clic.get_clic()):
                                     clic.set_clic((0,0))
@@ -249,6 +254,12 @@ class Jeu():
                                     self.mdp = self.mdp[:-1]
                                 elif len(self.mdp) <= 12:  # Limite de longueur du mot de passe
                                     self.mdp += event.unicode
+                        elif ecran2.ecran.get_actif() or inventaire.ecran.get_actif():
+                            if event.unicode == 'g':
+                                click.play()
+                                clic.set_clic((0,0))
+                                curseur_selection.set_actif(False)
+                                ecran2.ecran.set_actif(not(ecran2.ecran.get_actif())),inventaire.ecran.set_actif(not(inventaire.ecran.get_actif()))
                         # Gérer la saisie du numéro de carte bleue
                         if self.nb_cb_actif:
                             if event.key == pygame.K_BACKSPACE:
@@ -259,6 +270,7 @@ class Jeu():
                                     if len(self.txt_nbr_cb) == elem:
                                         self.txt_nbr_cb += ' '
                                 self.txt_nbr_cb += event.unicode
+                        
 
                         elif self.code_cb_actif:
                             # Gérer la saisie du code de carte bleue
@@ -348,7 +360,6 @@ class Jeu():
                     fenetre.blit(abel, (pygame.mouse.get_pos()[0]-25, pygame.mouse.get_pos()[1]-30))
                 else:
                     fenetre.blit(souris, pygame.mouse.get_pos())
-        
             mettre_a_jour_solde(joueur1.get_cagnotte(),det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()))
             clock.tick(60)
             pygame.mouse.set_visible(False)

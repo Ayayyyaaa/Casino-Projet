@@ -2,9 +2,7 @@ import sqlite3
 import pygame
 from objets_et_variables import joueur1
 from img import chargement
-from fonctions import afficher_ecran_chargement
 
-afficher_ecran_chargement(chargement[5])
 print("Chargement de SQL.py")
 
 def creer_table():
@@ -81,7 +79,7 @@ def creer_table():
     conn.commit()
     conn.close()
 
-def verifier_et_ajouter_pseudo(pseudo, mdp):
+def verifier_et_ajouter_pseudo(pseudo:str, mdp:str):
     """
     Vérifie si la combinaison pseudo et mdp existe déjà. Si non, l'ajoute.
     """
@@ -94,15 +92,28 @@ def verifier_et_ajouter_pseudo(pseudo, mdp):
         cursor.execute("INSERT INTO compte (pseudo, mdp,solde) VALUES (?, ?,?)", (pseudo, mdp,joueur1.get_cagnotte()))
         conn.commit()
         cursor.execute("SELECT id_compte FROM compte WHERE pseudo = ? AND mdp = ?", (pseudo, mdp))
+        joueur1.set_cagnotte(200000)
         id_ = cursor.fetchone()
+        mettre_a_jour_solde(joueur1.get_cagnotte(), id_[0])
         ajouter_hero_casier(id_[0],'Night_Hero')
         cursor.execute("INSERT INTO inventaire (id_compte) VALUES (?)", (id_[0],))
         conn.commit()
         print(f"Compte créé avec succès ! Bienvenue '{pseudo}' !")
+        
 
     conn.close()
 
-def det_id_compte(pseudo,mdp):
+def det_id_compte(pseudo:str,mdp:str) -> int:
+    '''
+    Récupère l'id du compte correspondant au pseudo et mot de passe fourni dans la base de données.
+    Paramètres :
+        - pseudo (str) : Le pseudo du joueur
+        - mdp (str) : Le mot de passe du joueur
+    Returns :
+        - L'id du compte correspondant ou None si aucun compte correspondant n'est trouvé
+    '''
+    assert type(pseudo) == str, "Le pseudo doit être une chaîne de caractères."
+    assert type(mdp) == str, "Le mot de passe doit être une chaîne de caractères."
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     cursor.execute("SELECT id_compte FROM compte WHERE pseudo = ? AND mdp = ?", (pseudo,mdp))
@@ -110,7 +121,7 @@ def det_id_compte(pseudo,mdp):
     conn.close()
     return id_compte[0] if id_compte else None
 
-def recup_donnees(id_compte):
+def recup_donnees(id_compte:int) -> float:
     """
     Récupère le solde du joueur dans la base de données.
     """
@@ -273,13 +284,29 @@ def ajouter_hero_casier(id_compte, nom_hero):
 
 def ajouter_objet_inventaire(quantite_objet, id_compte, nom_objet):
     """
-    Ajoute l'objet a l'inventaire du joueur
+    Met a jour la quantite d'un objet dans l'inventaire du joueur, et l'ajoute s'il n'existe pas.
     """
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
-    cursor.execute("UPDATE inventaire SET quantite_objet = ? WHERE id_compte = ? and nom_objet = ?", (quantite_objet, id_compte, nom_objet))
+    cursor.execute("SELECT quantite_objet FROM inventaire WHERE id_compte = ? AND nom_objet = ?", (id_compte, nom_objet))
+    resultat = cursor.fetchone()
+    if resultat:
+        nouvelle_quantite = resultat[0] + quantite_objet
+        cursor.execute("UPDATE inventaire SET quantite_objet = ? WHERE id_compte = ? AND nom_objet = ?", 
+                       (nouvelle_quantite, id_compte, nom_objet))
+    else:
+        cursor.execute("INSERT INTO inventaire VALUES (?, ?, ?)", (id_compte, nom_objet, quantite_objet))
+    
     conn.commit()
     conn.close()
+
+def recup_objet(id_compte,nom_objet):
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT quantite_objet FROM inventaire WHERE id_compte = ? AND nom_objet = ?",(id_compte,nom_objet))
+    dispo = cursor.fetchone()
+    conn.close()
+    return True if dispo else False
 
 def stats_boss_vaincu(victoires,id_compte, nom_boss):
     '''
@@ -345,8 +372,20 @@ def det_heros(id_compte):
     id_compte = cursor.fetchall()
     conn.close()
     liste_heros = [heros[0] for heros in id_compte]
-    print(id_compte,liste_heros)
     return liste_heros
+
+def det_objets(id_compte):
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT nom_objet, quantite_objet FROM inventaire WHERE id_compte = ?", (id_compte,))
+    obj = cursor.fetchall()
+    conn.close()
+    dico_objets = {}
+    for truc in obj:
+        if truc[0] is not None and truc[1] is not None:
+            dico_objets[truc[0]] = truc[1]
+    return dico_objets
+
 
 #supprimer_table()
 creer_table()

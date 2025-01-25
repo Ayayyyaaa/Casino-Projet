@@ -61,7 +61,7 @@ class Pile_ou_face:
                     joueur.modifier_cagnotte(100 + joueur.get_cagnotte()/20)
                     son_piece.play()
                 else:
-                    joueur.modifier_cagnotte(-100 - joueur.get_cagnotte()/20)
+                    joueur.modifier_cagnotte(-150 - joueur.get_cagnotte()/18)
                     son_faux.play()
                     print('def')
                     print(self.get_choix(), self.get_cote())

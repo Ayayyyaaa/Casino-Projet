@@ -171,6 +171,7 @@ class Blackjack:
             self.nettoyer_ecran()
             #la partie continue tant qu'au moins un des deux joueurs veut continuer
             while self.j_jouer == True and self.actif or self.c_jouer == True and self.actif:
+                pygame.mouse.set_visible(False)
                 fenetre.blit(souris, pygame.mouse.get_pos())
                 #fait jouer le joueur si il veut continuer
                 if self.j_jouer == True:

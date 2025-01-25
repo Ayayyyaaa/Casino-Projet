@@ -16,7 +16,12 @@ def obs_niveau1():
     pic1 = Pique(1600,625)
     pic2 = Pique(1600,450)
     pic3 = Pique(1600,625)
-    return {pic1:200, pic2:250, pic3:600}
+    pic4 = Pique(1600,625)
+    pic5 = Pique(1600,625)
+    pic6 = Pique(1600,625)
+    pic7 = Pique(1600,625)
+    pic8 = Pique(1600,625)
+    return {pic1:200, pic2:250, pic3:600, pic4:650, pic5:700, pic6:750, pic7:780, pic8:800}
 
 #---------Fin---------#
 
@@ -185,16 +190,15 @@ class BabelRace:
                     sys.exit()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        voiture.set_frame(0)
-                        voiture.set_saut(True)
+                        if not voiture.get_saut() and not voiture.get_cd():
+                            voiture.set_frame(0)
+                            voiture.set_saut(True)
             if voiture.get_saut():
                 voiture.set_y(voiture.get_y() - 7)
                 if voiture.get_y() < self.sol-240:
                     voiture.set_saut(False)
                     voiture.set_cd(True)
             elif voiture.get_y() <= self.sol:
-                if hauteur_surface:
-                    print(voiture.get_y(),hauteur_surface)
                 if plat and voiture.get_y() >= hauteur_surface - 5:  
                     voiture.set_cd(False)
                     voiture.set_y(hauteur_surface + 15) 

@@ -162,6 +162,8 @@ class Ecran2:
         # Affichage des boutons des choix du pile ou face
         if pileouface.get_actif():
             btn_pile.draw(fenetre,pygame.mouse.get_pos()),btn_face.draw(fenetre,pygame.mouse.get_pos())
+        if joueur1.get_pseudo().lower() == 'Le meilleur' and not self.benji in joueur1.get_heros():
+            joueur1.ajouter_hero(self.benji)
 
 class EcranMort:
     def __init__(self):
@@ -392,7 +394,32 @@ class EcranChargement:
         self.frame = self.frames[int(self.num_frame)]
         fenetre.blit(pygame.image.load(self.frame),(0,0))
 
+class EcranInventaire:
+    def __init__(self):
+        self.ecran = Ecran()
+        self.fond = pygame.image.load("images/Fonds d'ecran/inventaire.png").convert()
+        self.items = [item_biere, item_whisky]
+        self.alcools = {item_biere : 'Chope de Bière', item_whisky : 'Bouteille de Whisky'}
+        self.police = pygame.font.Font('babelcasino.ttf', 15)
+    def affiche(self):
+        fenetre.blit(self.fond,(0,0))
+        for item in self.items:
+            item.draw(fenetre,pygame.mouse.get_pos())
+            if self.alcools[item] in joueur1.get_inventaire().keys():
+                fenetre.blit(self.police.render(('x ' + str(joueur1.get_inventaire()[self.alcools[item]])), True, noir),(item.get_pos()[0]+15, item.get_pos()[1]+60))
+            else:
+                fenetre.blit(self.police.render(('x 0'), True, noir),(item.get_pos()[0]+15, item.get_pos()[1]+60))
+            if item.collision(clic.get_clic()):
+                curseur_selection.set_pos(item.get_pos())
+                curseur_selection.set_actif(True)
+                clic.set_clic((0,0))
+        if curseur_selection.get_actif():
+            curseur_selection.update(0.2)
+
+
+
 ecran0 = EcranChargement()
+inventaire = EcranInventaire()
 connexion = Ecran1()
 ecran2 = Ecran2()
 ecran_boutique = EcranBoutique()

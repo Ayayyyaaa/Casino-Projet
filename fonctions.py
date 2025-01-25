@@ -1,5 +1,6 @@
 import pygame
 from objets_et_variables import *
+from SQL import ajouter_objet_inventaire,det_id_compte
 
 print("Chargement de fonctions.py")
 
@@ -50,6 +51,7 @@ def achat(article:str) -> None:
     if joueur1.get_cagnotte() >= boutique[article]:
         joueur1.modifier_cagnotte(-boutique[article])
         joueur1.ajouter_inventaire(article)
+        ajouter_objet_inventaire(1, det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()), article)
         print("Achat effectué !")
     else:
         print("Solde insuffisant !")

@@ -86,5 +86,7 @@ info1 = pygame.image.load('images/Jeu de Combat/Infos/Info.png').convert_alpha()
 info2 = pygame.image.load('images/Jeu de Combat/Infos/Info2.png').convert_alpha()
 valider = pygame.image.load("images/Jeu de combat/valider.png").convert_alpha()
 img_hero = pygame.image.load('images/Btn_heros/_a_frm0,70.png').convert_alpha()
+item_img_biere = pygame.image.load('images/Inventaire/Biere.png').convert_alpha()
+item_img_whisky = pygame.image.load('images/Inventaire/Whisky.png').convert_alpha()
 
 pygame.display.set_icon(icone)

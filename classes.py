@@ -1,5 +1,6 @@
 # classes.py
 import pygame
+from img import fenetre
 
 print("Chargement de classes.py")
 
@@ -8,7 +9,7 @@ class Joueur:
         self.pseudo = pseudo
         self.cagnotte = 200000
         self.roulette_active = False
-        self.mdp = None
+        self.mdp = ' '
         self.code_cb = None
         self.num_cb = None
         self.inventaire = {'Chope de Bière' : 0, 'Bouteille de Whisky' : 0}
@@ -34,6 +35,9 @@ class Joueur:
     
     def get_heros(self):
         return self.heros
+
+    def get_inventaire(self):
+        return self.inventaire
     
     def set_pseudo(self, pseudo):
         self.pseudo = pseudo
@@ -59,11 +63,16 @@ class Joueur:
     def set_num_cb(self, num):
         self.num_cb = num
     def ajouter_inventaire(self,article):
-        self.inventaire[article] += 1
+        if article in self.inventaire.keys():
+            self.inventaire[article] += 1
+        else:
+            self.inventaire[article] = 1
     def set_heros(self,heros):
         self.heros = heros
     def ajouter_heros(self,heros):
         self.heros.append(heros)
+    def set_inventaire(self,inventaire):
+        self.inventaire = inventaire
 
 
 class Coin:
@@ -124,11 +133,11 @@ class Button:
         self.rect = self.image2.get_rect(topleft=(x, y))  # Rectangle pour la position
         self.mask = pygame.mask.from_surface(self.image2)  # Masque pour les collisions 
 
-    def collision(self, mouse_pos):
+    def collision(self, souris_pos):
         '''Permet de vérifier si le clic est dans la zone du bouton'''
         # Convertir la position du clic dans le référentiel de l'image du bouton
-        x = mouse_pos[0] - self.rect.x
-        y = mouse_pos[1] - self.rect.y
+        x = souris_pos[0] - self.rect.x
+        y = souris_pos[1] - self.rect.y
 
         # Vérifier si le clic est dans le rectangle et dans le masque
         if 0 <= x < self.rect.width and 0 <= y < self.rect.height:
@@ -142,6 +151,9 @@ class Button:
         else:
             surface.blit(self.image2, self.rect.topleft)
 
+    def get_pos(self):
+        return (self.rect.x, self.rect.y)
+
 class Clic:
     def __init__(self):
         self.clic = (0,0)
@@ -149,3 +161,27 @@ class Clic:
         return self.clic
     def set_clic(self,clic):
         self.clic = clic
+
+class Curseur:
+    def __init__(self):
+        self.actif = False
+        self.frames = [pygame.image.load(f'images/Inventaire/_a_UI_Flat_Select01a_{i}.png') for i in range(1,5)]
+        self.x = 0
+        self.y = 0
+        self.frame = 0
+    def get_actif(self):
+        return self.actif
+    def get_pos(self):
+        return (self.x, self.y)
+    def get_frame(self):
+        return int(self.frame)
+    def set_pos(self, pos):
+        self.frame = 0
+        self.x = pos[0]
+        self.y = pos[1]
+    def set_actif(self, actif):
+        self.actif = actif
+    def update(self, speed):
+        if int(self.frame) < len(self.frames)-1:
+            self.frame += speed
+        fenetre.blit(self.frames[int(self.frame)], (self.x, self.y))
