@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -94,7 +93,7 @@
             <h2>Nos Jeux</h2>
             <div class="jeux">
                 <div class="jeu">
-                    <h3>Babel Jack</h3>
+                    <h3><a href = "https://babelcasino.fandom.com/fr/wiki/Le_Babel_Jack">Babel Jack</a></h3>
                     <p>Affrontez le croupier maléfique du Babel Casino</p>
                 </div>
                 <div class="jeu">
@@ -102,15 +101,15 @@
                     <p>Tentez donc vos chances de survie!</p>
                 </div>
                 <div class="jeu">
-                    <h3>Babel Face</h3>
+                    <h3><a href = "https://babelcasino.fandom.com/fr/wiki/Babel_Face">Babel Face</a></h3>
                     <p>Ce Babel Coin sera la dernière chose que vous verrez de votre vie.</p>
                 </div>
                 <div class="jeu">
-                    <h3>Babel Gambling</h3>
+                    <h3><a href = "https://babelcasino.fandom.com/fr/wiki/Babel_Gambling">Babel Gambling</a></h3>
                     <p>Tentez donc votre chance...Le diable Maurice vous regarde</p>
                 </div>
                 <div class="jeu">
-                    <h3>Babel Fight</h3>
+                    <h3><a href = "https://babelcasino.fandom.com/fr/wiki/Babel_Arena">Babel Arena</a></h3>
                     <p>Affrontez les pêcheurs du Babel Casino</p>
                 </div>
                 <div class="jeu">
@@ -158,7 +157,7 @@
     </div>
 
     <footer>
-        <p>© 2025 Babel Casino - Jouez responsable</p>
+        <p>© 2025 Babel Casino - Jouez sans modération</p>
         <small>Interdit aux mineurs. Les gains ne sont pas garantis.</small>
     </footer>
 </body>
