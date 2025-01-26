@@ -1,5 +1,6 @@
 Lancer le fichier main.py
 Copyright © [2024] BabelCasino & TeamMaurille Inc. All rights reserved.
+Vous pouvez aussi regarder notre [wiki](https://babelcasino.fandom.com/fr/wiki/Wiki_Babel-Casino)
 
 Cher Monsieur Meaurrylleu,
 
@@ -22,3 +23,5 @@ En conclusion, mesdames et messieurs, Florian et Nils sont des exemples à suivr
 Merci pour votre attention et votre soutien dans cette décision importante.
 
 Ps : On aime les tickets et les pieces
+
+

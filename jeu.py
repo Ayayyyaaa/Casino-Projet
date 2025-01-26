@@ -98,10 +98,9 @@ class Jeu():
         self.benji = MauriceTicket()
         self.maskotte = False
         self.curseurabel = False
-        self.combat = JeuCombat(self.nighthero,self.m)
+        self.combat = JeuCombat(self.nighthero,self.m, 'Michel')
         self.hero = self.nighthero
         self.heros = [assassin,maehv,zendo,zukong,nighthero,lancier,spiritwarior,spirithero,hsuku,whistler,sanguinar,tethermancer,pureblade,aether,twilight,suzumebachi,yggdra,dusk]
-        self.boss = [self.m,self.tb,self.c,self.dl,self.astral,self.ep,self.shidai,self.solfist,self.embla,self.lilithe,self.elyx,self.sun,self.skurge,self.noshrak,self.golem,self.purgatos,self.ciphyron,self.golem,self.soji]
         self.bosss = self.prophet
         self.correspondance = {nighthero:self.nighthero,
                                spiritwarior:self.spiritwarior,
@@ -121,6 +120,7 @@ class Jeu():
                                suzumebachi:self.suzumebachi,
                                yggdra:self.yggdra,
                                dusk:self.dusk}
+        self.nom_boss = {self.m : 'Michel', self.tb : 'TankBoss', self.c : 'Cindera', self.dl : 'DarkLord', self.astral : 'Astral (il est nul)', self.ep : 'EternityPainter', self.shidai : 'Shidai', self.solfist : 'Solfist', self.embla : 'Embla', self.lilithe : 'Lilithe', self.elyx : 'Elyx', self.sun : 'Sun', self.skurge : 'Skurge', self.noshrak : 'Noshrak', self.golem : 'Golem', self.purgatos : 'Purgatos', self.ciphyron : 'Ciphyron', self.soji : 'Soji', self.prophet : 'Prophet'}
     def running(self):
         son_joue = False
         dernier_son = time.time()
@@ -196,7 +196,8 @@ class Jeu():
                                 pygame.mixer.music.load(musique_combat)
                                 pygame.mixer.music.set_volume(0.3)
                                 pygame.mixer.music.play(-1)
-                                self.combat = JeuCombat(self.hero,choice(self.boss)) #choice(self.boss)
+                                self.bosss = choice(list(self.nom_boss.keys()))
+                                self.combat = JeuCombat(self.hero,self.bosss,self.nom_boss[self.bosss]) #choice(self.boss)
                                 self.combat.actif(True)
                                 self.combat.lancer()
                             
@@ -226,7 +227,7 @@ class Jeu():
                                 elif btn_info.collision(clic.get_clic()):
                                     clic.set_clic((0,0))
                                     perso.setinfos(not perso.getinfos())
-                                elif btn_selection.collision(clic.get_clic()):
+                                elif btn_select.collision(clic.get_clic()):
                                     if perso.get_heros()[0] in joueur1.get_heros():
                                         clic.set_clic((0,0))
                                         self.hero = self.correspondance[perso]
@@ -254,12 +255,6 @@ class Jeu():
                                     self.mdp = self.mdp[:-1]
                                 elif len(self.mdp) <= 12:  # Limite de longueur du mot de passe
                                     self.mdp += event.unicode
-                        elif ecran2.ecran.get_actif() or inventaire.ecran.get_actif():
-                            if event.unicode == 'g':
-                                click.play()
-                                clic.set_clic((0,0))
-                                curseur_selection.set_actif(False)
-                                ecran2.ecran.set_actif(not(ecran2.ecran.get_actif())),inventaire.ecran.set_actif(not(inventaire.ecran.get_actif()))
                         # Gérer la saisie du numéro de carte bleue
                         if self.nb_cb_actif:
                             if event.key == pygame.K_BACKSPACE:

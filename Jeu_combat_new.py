@@ -5,6 +5,7 @@ from objets_et_variables import *
 from sons import son_epee,aie_boss,aie_hero
 from random import randint,choice
 from fonctions import afficher_ecran_chargement
+from SQL import maj_stats, det_id_compte
 
 afficher_ecran_chargement(chargement[8])
 print("Chargement du jeu de combat...")
@@ -2560,7 +2561,7 @@ class Michel:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float):
+    def inaction(self,speed:float,sens:str):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
             - self
@@ -2609,7 +2610,7 @@ class Michel:
             # Sinon, déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
         else:
-            self.inaction(0.12)
+            self.inaction(0.12,'Gauche')
         if -140 < distance(j1,self) < 50:
             if self.boss.get_attaque1_dispo() and not self.atk2:
                 if not self.atk1:
@@ -5696,7 +5697,7 @@ class Pandora:
 
 
 class JeuCombat:
-    def __init__(self,j1,j2):
+    def __init__(self,j1,j2,nom_boss):
         '''Initialise les attributs du jeu de combat.
         - self.fond : Image du fond du jeu
         - self.fonds : dictionnaire des images des fond du jeu, avec les clés correspondant aux noms des fond du jeu et les valeurs correspondant au sol du fond
@@ -5720,6 +5721,7 @@ class JeuCombat:
         self.j2 = j2
         self.reussi = False
         self.frame = 0
+        self.nom_boss = nom_boss
     def actif(self, etat):
         self.run = etat
     def get_actif(self):
@@ -5929,9 +5931,11 @@ class JeuCombat:
 
         if self.j2.boss.get_victoire():
             joueur1.set_cagnotte(0)
+            maj_stats(det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()),0,1,self.nom_boss)
         elif self.j1.hero.get_victoire():
             self.set_reussi()
             joueur1.modifier_cagnotte(joueur1.get_cagnotte()/4+15000)
+            maj_stats(det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()),1,0,self.nom_boss)
         else:
             pygame.quit()
 

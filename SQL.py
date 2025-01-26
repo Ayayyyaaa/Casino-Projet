@@ -228,9 +228,12 @@ def ajout_des_attributs():
     cursor.execute('''INSERT INTO heros VALUES ('Twilight', 180000, 'Créature légendaire', 'Feu', 4, 'blabla')''')
     #Yggdra
     cursor.execute('''INSERT INTO heros VALUES ('Yggdra', 450000, 'Abyss', 'Feu', 5, 'blabla')''')
+    #Dusk
+    cursor.execute('''INSERT INTO heros VALUES ('Dusk', 200000, 'Mercenaire', 'Foudre', 4, 'blabla')''')
+    #Suzumebachi
+    cursor.execute('''INSERT INTO heros VALUES ('Suzumebachi', 180000, 'Empire', 'Feu', 4, 'blabla')''')
 
     #Création des boss
-    """""
     #Michel
     cursor.execute('''INSERT INTO boss VALUES ('Michel', 'Neutre', 2, 'blabla')''')
     #TankBoss
@@ -266,8 +269,9 @@ def ajout_des_attributs():
     #Golem
     cursor.execute('''INSERT INTO boss VALUES ('Golem', 'Foudre', 4, 'blabla')''')
     #Soji
-    cursor.execute('''INSERT INTO boss VALUES ('Soji', 'Foudre', 5, 'blabla')''')"""
-    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    cursor.execute('''INSERT INTO boss VALUES ('Soji', 'Foudre', 5, 'blabla')''')
+    #Prophet
+    cursor.execute('''INSERT INTO boss VALUES ('Prophet', 'Nuit', 4, 'blabla')''')
     conn.commit()
     conn.close()
 
@@ -282,20 +286,32 @@ def ajouter_hero_casier(id_compte, nom_hero):
     conn.commit()
     conn.close()
 
-def ajouter_objet_inventaire(quantite_objet, id_compte, nom_objet):
+def ajouter_objet_inventaire(quantite_objet:int, id_compte:int, nom_objet:str):
     """
     Met a jour la quantite d'un objet dans l'inventaire du joueur, et l'ajoute s'il n'existe pas.
     """
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
+    # Vérifier si l'objet existe déjà pour ce compte
     cursor.execute("SELECT quantite_objet FROM inventaire WHERE id_compte = ? AND nom_objet = ?", (id_compte, nom_objet))
     resultat = cursor.fetchone()
+    # Vérifier si l'inventaire pour ce compte est NULL
+    cursor.execute("SELECT nom_objet, quantite_objet FROM inventaire WHERE id_compte = ?", (id_compte,))
+    inv = cursor.fetchone()
     if resultat:
+        # Si l'objet existe déjà on met a jour la qte
         nouvelle_quantite = resultat[0] + quantite_objet
         cursor.execute("UPDATE inventaire SET quantite_objet = ? WHERE id_compte = ? AND nom_objet = ?", 
                        (nouvelle_quantite, id_compte, nom_objet))
     else:
-        cursor.execute("INSERT INTO inventaire VALUES (?, ?, ?)", (id_compte, nom_objet, quantite_objet))
+        if inv and inv[0] is None and inv[1] is None:
+            # Si l'inventaire est NULL on remplace
+            cursor.execute("UPDATE inventaire SET nom_objet = ?, quantite_objet = ? WHERE id_compte = ?", 
+                       (nom_objet, quantite_objet, id_compte))
+        else:
+            # Sinon, on insere la nouvelle valeur
+            cursor.execute("INSERT INTO inventaire (id_compte, nom_objet, quantite_objet) VALUES (?, ?, ?)", 
+                           (id_compte, nom_objet, quantite_objet))
     
     conn.commit()
     conn.close()
@@ -361,6 +377,8 @@ def supprimer_table():
     cursor.execute("DROP TABLE stats")
     cursor.execute("DROP TABLE compte")
     cursor.execute("DROP TABLE casier")
+    cursor.execute("DROP TABLE boss")
+    cursor.execute("DROP TABLE heros")
     conn.commit()
     conn.close()
 
@@ -384,10 +402,41 @@ def det_objets(id_compte):
     for truc in obj:
         if truc[0] is not None and truc[1] is not None:
             dico_objets[truc[0]] = truc[1]
+    print(dico_objets)
     return dico_objets
+
+def maj_stats(id_compte,victoire,defaite,boss):
+    """
+    Met a jour les stats d'un joueur apres un combat.
+    """
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    # Vérifier le joueur a deja combattu ce boss
+    cursor.execute("SELECT victoires, defaites FROM stats WHERE id_compte = ? AND nom_boss = ?", (id_compte, boss))
+    resultat = cursor.fetchone()
+    # Vérifier si le joueur a deja combattu un boss
+    cursor.execute("SELECT victoires, defaites FROM stats WHERE id_compte = ?", (id_compte,))
+    inv = cursor.fetchone()
+    if resultat:
+        # Si le boss a déja ete combattu
+        victoires = resultat[0] + victoire
+        defaites = resultat[1] + defaite
+        cursor.execute("UPDATE stats SET victoires = ?, defaites = ? WHERE id_compte = ? AND nom_boss = ?", 
+                       (victoires, defaites, id_compte, boss))
+    else:
+        if inv and inv[0] is None and inv[1] is None:
+            # Si le joueur n'a jamais combattu de boss
+            cursor.execute("UPDATE stats SET victoires = ?, defaites = ? WHERE id_compte = ? AND nom_boss = ?", 
+                       (victoires, defaites, id_compte, boss))
+        else:
+            # Sinon, on insere la nouvelle valeur
+            cursor.execute("INSERT INTO stats (id_compte, victoires, defaites, nom_boss) VALUES (?, ?, ?, ?)", 
+                           (id_compte, victoire, defaite, boss))
+    
+    conn.commit()
+    conn.close()
 
 
 #supprimer_table()
 creer_table()
-
 #ajout_des_attributs()

@@ -177,10 +177,8 @@ class BabelRace:
         self.x_simule = 0
         plat = False
         hauteur_surface = None
-        for decor in self.pentes.keys():
-            decor.set_actif(False)
-        for obs in self.obs.keys():
-            obs.set_actif(False)
+        self.pentes = decor_niveau1()
+        self.obs = obs_niveau1()
         while self.run:
             fenetre.fill((0, 0, 0))
             self.x_simule += 1
@@ -267,7 +265,7 @@ class BabelRace:
             clock.tick(60)
             fenetre.blit(souris, pygame.mouse.get_pos())
             pygame.display.flip()
-        joueur1.set_cagnotte(joueur1.get_cagnotte()/4)
+        joueur1.set_cagnotte(joueur1.get_cagnotte()/4-100)
         pygame.display.set_mode((400,400))
         self.actif(False)
         
