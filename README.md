@@ -72,8 +72,8 @@
 </head>
 <body>
     <header>
-        <h1>🎲 Babel Casino 🃏</h1>
-        <p>Le Casino où tous les défis deviennent réalité !</p>
+        <h1>🎲 <a href="https://babelcasino.fandom.com/fr/wiki/Wiki_Babel-Casino">Babel Casino</a> 🃏</h1>
+        <p>Le Casino du Diable Maurice dont vous ne ressortirez jamais vivant !</p>
     </header>
 
     <nav>
@@ -87,34 +87,42 @@
     <div class="container">
         <section id="accueil">
             <h2>Bienvenue au Babel Casino</h2>
-            <p>Découvrez l'expérience ultime des jeux en ligne. Chaque partie est un nouveau défi !</p>
+            <p>Découvrez l'expérience ultime des jeux en ligne. Chaque partie est un nouveau défi...ou la possibilité d'un mort lente et douloureuse !</p>
         </section>
 
         <section id="jeux">
             <h2>Nos Jeux</h2>
             <div class="jeux">
                 <div class="jeu">
-                    <h3>Poker</h3>
-                    <p>Affrontez les meilleurs joueurs</p>
+                    <h3>Babel Jack</h3>
+                    <p>Affrontez le croupier maléfique du Babel Casino</p>
                 </div>
                 <div class="jeu">
-                    <h3>Blackjack</h3>
-                    <p>21 ou rien !</p>
+                    <h3><a href = "https://babelcasino.fandom.com/fr/wiki/La_Babel_Roulette">Babel Roulette</a></h3>
+                    <p>Tentez donc vos chances de survie!</p>
                 </div>
                 <div class="jeu">
-                    <h3>Roulette</h3>
-                    <p>La roue de la fortune tourne</p>
+                    <h3>Babel Face</h3>
+                    <p>Ce Babel Coin sera la dernière chose que vous verrez de votre vie.</p>
                 </div>
                 <div class="jeu">
-                    <h3>Machines à Sous</h3>
-                    <p>Tentez votre chance</p>
+                    <h3>Babel Gambling</h3>
+                    <p>Tentez donc votre chance...Le diable Maurice vous regarde</p>
+                </div>
+                <div class="jeu">
+                    <h3>Babel Fight</h3>
+                    <p>Affrontez les pêcheurs du Babel Casino</p>
+                </div>
+                <div class="jeu">
+                    <h3>Babel Race</h3>
+                    <p>Affrontez le diable Maurice dans une course effrénée...tout accident entrainant de graves lésions ou la mort serait totalement fortuit.</p>
                 </div>
             </div>
         </section>
 
         <section id="bonus">
             <h2>Bonus de Bienvenue</h2>
-            <p>🎁 200€ offerts pour votre première inscription !</p>
+            <p>🎁 2000 Babel Coin offerts pour votre première inscription !</p>
         </section>
 
         <section id="document" class="document">
@@ -150,7 +158,7 @@
     </div>
 
     <footer>
-        <p>© 2024 Babel Casino - Jouez responsable</p>
+        <p>© 2025 Babel Casino - Jouez responsable</p>
         <small>Interdit aux mineurs. Les gains ne sont pas garantis.</small>
     </footer>
 </body>
