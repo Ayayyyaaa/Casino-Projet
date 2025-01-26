@@ -55,18 +55,18 @@
             border-radius: 10px;
         }
         footer {
-            background-color: #0f3460;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+        text-align: center;  /* Ensures horizontal text centering */
+        display: flex;       /* Creates a flex container */
+        flex-direction: column;  /* Stacks content vertically */
+        align-items: center;     /* Centers content horizontally */
+        justify-content: center; /* Centers content vertically */
+        width: 100%;
+        padding: 1rem;
+        background-color: #0f3460;
+        color: white;
+        position: fixed;
+        bottom: 0;
+    }
     </style>
 </head>
 <body>
