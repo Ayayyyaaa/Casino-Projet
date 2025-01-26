@@ -57,6 +57,7 @@ btn_inventaire = Button(backpack2, backpack1, 10, 150)
 btn_valider = Button(valider2, valider1, 152, 330)
 btn_select = Button(select2, select1, 152, 330)
 btn_flecheretour = Button(flecheretour2, flecheretour1, 360, 60)
+biere = Biere()
 
 coin = Coin(100, -7)
 

@@ -14,50 +14,42 @@ class Joueur:
         self.num_cb = None
         self.inventaire = {'Chope de Bière' : 0, 'Bouteille de Whisky' : 0}
         self.heros = ['Night Hero']
-
+        self.gains = {'Roulette': 1.0, 'Blackjack': 1.0, 'Pile ou Face': 1.0}
+        self.probas = {'Roulette':0,'Blackjack':1.0,'Pile ou Face': 1.0}
     def get_pseudo(self):
         return self.pseudo
-
     def get_cagnotte(self):
         return self.cagnotte
-
     def get_roulette_active(self):
         return self.roulette_active
-    
     def get_mdp(self):
         return self.mdp
-    
     def get_code_cb(self):
         return self.code_cb
-    
     def get_num_cb(self):
         return self.num_cb
-    
     def get_heros(self):
         return self.heros
-
     def get_inventaire(self):
         return self.inventaire
-    
+    def get_gains(self):
+        return self.gains
+    def get_probas(self):
+        return self.probas
     def set_pseudo(self, pseudo):
         self.pseudo = pseudo
-
     def set_cagnotte(self, cagnotte):
         self.cagnotte = cagnotte
-
     def modifier_cagnotte(self, montant):   
         """
         Permet de modifier la cagnotte à partir d'un montant
         montant(int) : le montant qu'on ajoute à la cagnotte
         """
         self.cagnotte += montant
-
     def set_roulette_active(self, actif):
         self.roulette_active = actif
-
     def set_mdp(self, mdp):
         self.mdp = mdp
-
     def set_code_cb(self, code):
         self.code_cb = code
     def set_num_cb(self, num):
@@ -73,6 +65,10 @@ class Joueur:
         self.heros.append(heros)
     def set_inventaire(self,inventaire):
         self.inventaire = inventaire
+    def set_gains(self,jeu,gains):
+        self.gains[jeu] = gains
+    def set_probas(self,jeu,probas):
+        self.probas[jeu] = probas
 
 
 class Coin:
@@ -185,3 +181,10 @@ class Curseur:
         if int(self.frame) < len(self.frames)-1:
             self.frame += speed
         fenetre.blit(self.frames[int(self.frame)], (self.x, self.y))
+
+class Biere:
+    def __init__(self):
+        self.nom = 'Bière'
+    def boire(self,joueur1):
+        joueur1.set_gains('Roulette',0.9)
+        joueur1.set_probas('Roulette',-1)

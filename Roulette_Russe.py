@@ -64,11 +64,12 @@ class RouletteRusse:
             else:
                 proba = 1
             balle = randint(1, 6)
-            print(proba)
+            proba += joueur1.get_probas()['Roulette']
             if balle <= proba: 
                 self.activer_rotation_def()
             else:  
                 self.activer_rotation_vict()
+            joueur1.set_probas('Roulette',0)
 
 
     def activer_rotation_vict(self):
@@ -109,7 +110,8 @@ class RouletteRusse:
             if int(self.actuel_sprite) >= len(self.sprites_vict):
                 self.actuel_sprite = 0
                 self.tir_joue = False
-                joueur.modifier_cagnotte(joueur.get_cagnotte()//2)
+                joueur.modifier_cagnotte((joueur.get_cagnotte()//2)*joueur.get_gains()['Roulette'])
+                joueur.set_gains('Roulette',1.0)
                 self.tourne_animation_vict = False
             self.image = self.sprites_vict[int(self.actuel_sprite)]
         

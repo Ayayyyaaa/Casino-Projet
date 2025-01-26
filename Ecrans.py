@@ -407,6 +407,10 @@ class EcranInventaire:
         self.police = pygame.font.Font('babelcasino.ttf', 15)
         self.selectione = None
     def affiche(self):
+        '''Permet d'afficher l'écran de l'inventaire du joueur.
+        Pour chaque alcool dispo, on affiche le bouton correspondant avec la qté en dessous.
+        Si le bouton est cliqué, l'alcool est sélectionné et peut être utilisé.
+        '''
         fenetre.blit(self.fond,(0,0))
         btn_valider.draw(fenetre,pygame.mouse.get_pos())
         btn_flecheretour.draw(fenetre,pygame.mouse.get_pos())
@@ -426,6 +430,7 @@ class EcranInventaire:
                 if self.selectione in joueur1.get_inventaire().keys() and joueur1.get_inventaire()[self.selectione] > 0:
                     joueur1.get_inventaire()[self.selectione] -= 1
                     ajouter_objet_inventaire(-1, det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()), self.selectione)
+                    biere.boire(joueur1)
                 curseur_selection.set_actif(False)
                 clic.set_clic((0,0))
             elif clic.get_clic() != (0,0):
