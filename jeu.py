@@ -310,16 +310,6 @@ class Jeu():
                 if not ecran2.ecran.get_actif():
                     pileouface.set_actif(False)
 
-                # Conditions de défaite
-                if joueur1.get_cagnotte() <= 0:
-                    connexion.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_black.ecran.set_actif(False),ecran_boutique.ecran.set_actif(False),alcool.ecran.set_actif(False),ecran_mort.ecran.set_actif(True) 
-                    if son_joue is False:
-                        son_fall.play()
-                        son_joue = True
-                # Conditions de victoire
-                elif joueur1.get_cagnotte() >= 10000000 and not self.victoire:
-                    connexion.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_victoire.ecran.set_actif(True)
-                    self.victoire = True 
 
                 if ecran0.ecran.get_actif():
                     ecran0.affiche(0.45)
@@ -357,7 +347,19 @@ class Jeu():
                     fenetre.blit(abel, (pygame.mouse.get_pos()[0]-25, pygame.mouse.get_pos()[1]-30))
                 else:
                     fenetre.blit(souris, pygame.mouse.get_pos())
+                # Conditions de défaite
+                if joueur1.get_cagnotte() <= 0:
+                    connexion.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_black.ecran.set_actif(False),ecran_boutique.ecran.set_actif(False),alcool.ecran.set_actif(False),ecran_mort.ecran.set_actif(True) 
+                    if son_joue is False:
+                        son_fall.play()
+                        son_joue = True
+                # Conditions de victoire
+                elif joueur1.get_cagnotte() >= 10000000 and not self.victoire:
+                    connexion.ecran.set_actif(False), ecran2.ecran.set_actif(False), ecran_machine_a_sous.ecran.set_actif(False), ecran_victoire.ecran.set_actif(True)
+                    self.victoire = True 
             mettre_a_jour_solde(joueur1.get_cagnotte(),det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()))
+            if not ecran_mort.ecran.get_actif():
+                assert joueur1.get_cagnotte() < 0, "Le joueur n'a plus d'argent mais n'est pas mort !"
             clock.tick(60)
             pygame.mouse.set_visible(False)
             pygame.display.flip()

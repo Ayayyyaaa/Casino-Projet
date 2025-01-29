@@ -144,10 +144,10 @@ class Michel:
         self.atk1 = False
         self.atk2 = False
     def attaque1(self,speed:float,j1):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         self.atk1 = True
@@ -183,11 +183,10 @@ class Michel:
         self.boss.modif_img(self.images_attaque1[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -321,11 +320,10 @@ class TankBoss:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -419,10 +417,10 @@ class Cindera:
         self.atk2 = False
         self.ralenti = False
     def attaque1(self,speed:float,j1):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         self.atk1 = True
@@ -461,11 +459,10 @@ class Cindera:
         self.boss.modif_img(self.images_attaque1[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -550,10 +547,10 @@ class DarkLord:
         self.atk2 = False
         self.sens = 'Droite'
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -582,11 +579,10 @@ class DarkLord:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -680,10 +676,10 @@ class Astral:
         self.atk2 = False
         self.sens = 'Droite'
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -717,11 +713,10 @@ class Astral:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -818,10 +813,10 @@ class EternityPainter:
         self.dgt2 = False
         self.dgt3 = False
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -864,11 +859,10 @@ class EternityPainter:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -969,10 +963,10 @@ class Shidai:
         self.bonus = 0
         self.pv_actuels = self.boss.get_pv()
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1040,11 +1034,10 @@ class Shidai:
             print(self.bonus)
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -1159,10 +1152,10 @@ class Lilithe:
         self.pv_actuels = 160
 
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1188,10 +1181,10 @@ class Lilithe:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def attaque2(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1251,11 +1244,10 @@ class Lilithe:
             self.bonus += 0.21
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if not self.atk3:
             if int(self.frame) >= len(self.images_marche_d)-1:
                 self.frame = 0
@@ -1377,10 +1369,10 @@ class Solfist:
         self.dgt2 = False
         self.dgt3 = False
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1415,11 +1407,10 @@ class Solfist:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -1517,10 +1508,10 @@ class Elyx:
         self.dgt2 = False
         self.dgt3 = False
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1551,11 +1542,10 @@ class Elyx:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens,j1):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -1665,10 +1655,10 @@ class Embla:
         self.dgt3 = False
         self.pv_actuels = self.boss.get_pv()
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1711,11 +1701,10 @@ class Embla:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -1812,10 +1801,10 @@ class Sun:
         self.dgt2 = False
         self.dgt3 = False
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1853,11 +1842,10 @@ class Sun:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -1955,10 +1943,10 @@ class Skurge:
         self.versladroite = False
         self.verslagauche = False
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1989,11 +1977,10 @@ class Skurge:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -2105,10 +2092,10 @@ class NoshRak:
         self.dgt3 = False
         self.pv_actuels = self.boss.get_pv()
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -2154,11 +2141,10 @@ class NoshRak:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -2256,10 +2242,10 @@ class Purgatos:
         self.dgt3 = False
         self.pv_actuels = self.boss.get_pv()
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -2293,11 +2279,10 @@ class Purgatos:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -2396,10 +2381,10 @@ class Ciphyron:
         self.dgt4 = False
         self.pv_actuels = self.boss.get_pv()
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -2451,11 +2436,10 @@ class Ciphyron:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -2609,11 +2593,10 @@ class Golem:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -2718,10 +2701,10 @@ class Soji:
         self.pv_actuels = 160
 
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -2758,10 +2741,10 @@ class Soji:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def attaque2(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -2828,11 +2811,10 @@ class Soji:
             self.bonus += 0.18
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -2953,10 +2935,10 @@ class Prophet:
         self.dgt3 = False
         self.pv_actuels = self.boss.get_pv()
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -2993,11 +2975,10 @@ class Prophet:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -3088,10 +3069,10 @@ class Prophet:
         self.dgt1 = False
         self.sens = 'Droite'
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -3121,11 +3102,10 @@ class Prophet:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -3202,10 +3182,10 @@ class Pandora:
         self.minion_spawn_x = 0
         self.minion_spawn_y = 0
     def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - j1 : la héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -3247,11 +3227,10 @@ class Pandora:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
     def marche(self,speed:float,sens):
-        '''Permet de jouer l'animation de marche (vers la gauche) du Boss.
+        '''Permet de jouer l'animation de marche du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-        '''
+            - sens (str) : le sens de la marche du boss'''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed

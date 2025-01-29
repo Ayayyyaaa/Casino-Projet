@@ -8,16 +8,27 @@ from fonctions import afficher_ecran_chargement, distance
 
 class Hero:
     def __init__(self,pv:int,y:int,speed:float,spanim1:float,marche:int,cd1:float,cd2:float,element:str):
+        '''Permet d'initialiser la classe héros.
+        Paramètres :
+            - pv (int) : la vie du héros
+            - y (int) : la position y du héros
+            - speed (float) : la vitesse du héros
+            - spanim1 (float) : la vitesse de l'animation du héros
+            - marche (int) : la vitesse de marche du héros
+            - cd1 (float) : le temps de rechargement de la compétence 1
+            - cd2 (float) : le temps de rechargement de la compétence 2
+            - element (str) : l'élément du héros
+        '''
         self.image = None
         self.pv = pv
-        self.pv_base = pv
+        self.pv_base = pv   # Pv max du héros
         self.pos_x = 50
         self.pos_y = y
         self.cd_img = 0
-        self.attaque = False
-        self.victoire = False
+        self.attaque = False    # Bool qui indique si les héros est en train de joueur l'attaque
+        self.victoire = False   #Bool qui indique si le héros a gagné le combat
         self.cp2 = False
-        self.block = False
+        self.block = False  # Bool qui indique si le héros est en train de bloquer les attaques
         self.cd_cp2 = time.time()
         self.cd_atk = time.time()
         self.mort = False
@@ -28,9 +39,9 @@ class Hero:
         self.combo = False
         self.cd = (cd1,cd2)
         self.poison = False
-        self.stun = False
-        self.type = element
-        self.collision = False
+        self.stun = False   # Bool qui indique si le héros est stun
+        self.type = element  # Type du héros (pour les réactions élémentaire)
+        self.collision = False  # Bool qui indique si le héros est en collision avec le boss
     def get_collison(self):
         return self.colision 
     def get_img(self):
@@ -50,9 +61,9 @@ class Hero:
     def get_cp2(self):
         return self.cp2
     def get_cd_cp2(self):
-        return time.time() - self.cd_cp2
+        return time.time() - self.cd_cp2    # Temps depuis la dernière compétence
     def get_cd_atk(self):
-        return time.time() - self.cd_atk
+        return time.time() - self.cd_atk    # Temps depuis la dernière compétence
     def get_mort(self):
         return self.mort
     def get_speed(self):
@@ -131,11 +142,13 @@ class Night_Hero:
     def inaction(self,sens):
         return None
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if self.frame >= len(self.images_coup_depee_d)-1:
@@ -160,8 +173,8 @@ class Night_Hero:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -178,8 +191,9 @@ class Night_Hero:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -194,10 +208,12 @@ class Night_Hero:
         
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         self.hero.set_block(True)
         # On ne joue l'animation que si le héros n'est pas en train d'attaquer
@@ -229,8 +245,6 @@ class Spirit_Hero:
         self.cp2_g = [f'images/Jeu de combat/Spirit_Hero/Gauche/Attaque3/_a_frm{i},100.png' for i in range(21,42)]
         self.images_mort = [f'images/Jeu de combat/Spirit_Hero/Mort/_a_frm{i},100.png' for i in range(20)] 
         self.image = 'images/Jeu de combat/Hero/Attaque/Attaque_Droite/Attaque1.png'
-        self.dgt5 = pygame.image.load("images/Jeu de combat/-5.png")
-        self.block = pygame.image.load("images/Jeu de combat/Block.png")
         self.frame = 0
         self.frame_mort = 0
         self.frame_parade = 0
@@ -251,8 +265,10 @@ class Spirit_Hero:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if not self.atk2:
@@ -302,8 +318,8 @@ class Spirit_Hero:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -320,8 +336,9 @@ class Spirit_Hero:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -335,10 +352,12 @@ class Spirit_Hero:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if self.frame >= len(self.cp2_d)-1:
@@ -391,8 +410,10 @@ class Spirit_Warrior:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if not self.atk2:
@@ -443,8 +464,8 @@ class Spirit_Warrior:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -461,8 +482,9 @@ class Spirit_Warrior:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -476,10 +498,12 @@ class Spirit_Warrior:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if self.frame >= len(self.cp2_d)-1:
@@ -531,8 +555,10 @@ class Lancier:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if self.frame >= len(self.atk1_d)-1:
@@ -557,8 +583,8 @@ class Lancier:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -575,8 +601,9 @@ class Lancier:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -610,10 +637,12 @@ class Lancier:
                 self.hero.modif_img(self.cp2_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             self.charge = True
@@ -653,8 +682,10 @@ class Assassin:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if not self.atk2:
@@ -704,8 +735,8 @@ class Assassin:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -722,8 +753,9 @@ class Assassin:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         if not self.hero.get_cp2():
             # Si toutes les images ont été jouées :
@@ -748,10 +780,12 @@ class Assassin:
                     self.hero.set_speed(6)
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             self.hero.set_block(True)
@@ -797,8 +831,10 @@ class Zukong:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if self.hero.get_collison() and 5 <= self.frame <= 11 and not j2.boss.get_block():
@@ -822,8 +858,8 @@ class Zukong:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -840,8 +876,9 @@ class Zukong:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -855,10 +892,12 @@ class Zukong:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0 :
             if self.frame >= len(self.cp2_d)-1:
@@ -917,8 +956,10 @@ class Maehv:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if self.hero.get_collison() and int(self.frame) == 4 and not j2.boss.get_block():
@@ -952,8 +993,8 @@ class Maehv:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -970,8 +1011,9 @@ class Maehv:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -985,10 +1027,12 @@ class Maehv:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         keys = pygame.key.get_pressed()
         if self.hero.get_pv() > 0:
@@ -1047,8 +1091,10 @@ class Zendo:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if self.hero.get_collison() and int(self.frame) == 12 and not j2.boss.get_block():
@@ -1089,8 +1135,8 @@ class Zendo:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -1107,8 +1153,9 @@ class Zendo:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -1122,10 +1169,12 @@ class Zendo:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         self.hero.set_cp2(False)
         return None
@@ -1171,8 +1220,10 @@ class Pureblade:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if self.hero.get_collison() and 5 <= int(self.frame) <= 13 and not j2.boss.get_block():
@@ -1197,8 +1248,8 @@ class Pureblade:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -1215,8 +1266,9 @@ class Pureblade:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -1230,10 +1282,12 @@ class Pureblade:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         self.hero.set_cp2(False)
         return None
@@ -1279,8 +1333,10 @@ class Hsuku:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if self.hero.get_collison() and int(self.frame) == 2 and not j2.boss.get_block():
@@ -1319,8 +1375,8 @@ class Hsuku:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -1337,8 +1393,9 @@ class Hsuku:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -1352,10 +1409,12 @@ class Hsuku:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         self.hero.set_cp2(False)
         return None
@@ -1401,8 +1460,10 @@ class Sanguinar:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if self.hero.get_collison() and 5 <= int(self.frame) <= 11 and not j2.boss.get_block():
@@ -1437,8 +1498,8 @@ class Sanguinar:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -1455,8 +1516,9 @@ class Sanguinar:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -1470,10 +1532,12 @@ class Sanguinar:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         self.hero.set_cp2(False)
         return None
@@ -1519,8 +1583,10 @@ class Whistler:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if int(self.frame) == 12 and not j2.boss.get_block():
@@ -1544,8 +1610,8 @@ class Whistler:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -1562,8 +1628,9 @@ class Whistler:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -1577,10 +1644,12 @@ class Whistler:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         self.hero.set_cp2(False)
         return None
@@ -1626,8 +1695,10 @@ class Tethermancer:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if int(self.frame) == 6:
@@ -1652,8 +1723,8 @@ class Tethermancer:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -1670,8 +1741,9 @@ class Tethermancer:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -1685,10 +1757,12 @@ class Tethermancer:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         self.hero.set_cp2(False)
         return None
@@ -1733,8 +1807,10 @@ class Aether:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if self.hero.get_collison() and int(self.frame) == 12 and not j2.boss.get_block():
@@ -1757,8 +1833,8 @@ class Aether:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -1775,8 +1851,9 @@ class Aether:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         self.bonus = 0
         # Si toutes les images ont été jouées :
@@ -1791,10 +1868,12 @@ class Aether:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         self.hero.set_cp2(False)
         return None
@@ -1842,8 +1921,10 @@ class Twilight:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if self.hero.get_collison() and 9 <= int(self.frame) <= 16 and not j2.boss.get_block():
@@ -1862,8 +1943,8 @@ class Twilight:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -1880,8 +1961,9 @@ class Twilight:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -1895,10 +1977,12 @@ class Twilight:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         self.hero.set_cp2(False)
         return None
@@ -1941,8 +2025,10 @@ class Yggdra:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if self.hero.get_collison() and int(self.frame) == 9 and not j2.boss.get_block():
@@ -1963,8 +2049,8 @@ class Yggdra:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -1981,8 +2067,9 @@ class Yggdra:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -1996,10 +2083,12 @@ class Yggdra:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         self.hero.set_cp2(False)
         return None
@@ -2042,8 +2131,10 @@ class Suzumebachi:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if j2.boss.get_pv() <= 0:
             self.coups = 0
@@ -2073,8 +2164,8 @@ class Suzumebachi:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -2092,8 +2183,9 @@ class Suzumebachi:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -2107,10 +2199,12 @@ class Suzumebachi:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         self.hero.set_cp2(False)
         return None
@@ -2156,8 +2250,10 @@ class Dusk:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if self.hero.get_collison() and int(self.frame) == 4 and not j2.boss.get_block():
@@ -2190,8 +2286,8 @@ class Dusk:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -2208,8 +2304,9 @@ class Dusk:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         self.frame += speed
@@ -2223,10 +2320,12 @@ class Dusk:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         self.hero.set_cp2(False)
         return None
@@ -2271,8 +2370,10 @@ class MauriceTicket:
     def attaque(self,speed:float,sens,j2,multis):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             if self.hero.get_collison() and int(self.frame) == 3 and not j2.boss.get_block():
@@ -2305,8 +2406,8 @@ class MauriceTicket:
     def mort(self,speed:float,j2):
         '''Permet de jouer l'animation de mort du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.hero.get_mort():
@@ -2323,8 +2424,9 @@ class MauriceTicket:
     def marche(self,speed:float,sens,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
         '''
         # Si toutes les images ont été jouées :
         if not self.hero.get_cp2():
@@ -2339,10 +2441,12 @@ class MauriceTicket:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
     def cp2(self, speed:float, sens, j2,multis):
-        '''Permet de jouer l'animation de parade du héros.
+        '''Permet de jouer la compétence 2 du héros.
         Paramètres :
-            - self
-            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
             self.hero.set_block(True)
