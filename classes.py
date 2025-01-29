@@ -12,7 +12,7 @@ class Joueur:
         self.mdp = ' '
         self.code_cb = None
         self.num_cb = None
-        self.inventaire = {'Chope de Bière' : 0, 'Bouteille de Whisky' : 0}
+        self.inventaire = {'Biere' : 0, 'Whisky' : 0}
         self.heros = ['Night Hero']
         self.gains = {'Roulette': 1.0, 'Blackjack': 1.0, 'Pile ou Face': 1.0}
         self.probas = {'Roulette':0,'Blackjack':1.0,'Pile ou Face': 1.0}
@@ -184,7 +184,17 @@ class Curseur:
 
 class Biere:
     def __init__(self):
-        self.nom = 'Bière'
+        self.nom = 'Biere'
+    def get_nom(self):
+        return self.nom
     def boire(self,joueur1):
         joueur1.set_gains('Roulette',0.9)
         joueur1.set_probas('Roulette',-1)
+
+class Whisky:
+    def __init__(self):
+        self.nom = 'Whisky'
+    def get_nom(self):
+        return self.nom
+    def boire(self,joueur1):
+        joueur1.set_gains('Blackjack',1.1)

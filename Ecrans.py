@@ -13,12 +13,10 @@ afficher_ecran_chargement(chargement[6])
 print("Chargement de Ecrans.py")
 
 class Ecran:
-    def __init__(self, actif=False):
+    def __init__(self, actif:bool = False):
         self.actif = actif
-
     def get_actif(self):
         return self.actif
-
     def set_actif(self, actif):
         self.actif = actif
 
@@ -28,13 +26,15 @@ class Ecran1:
         self.ancien_pseudo = joueur1.get_pseudo()
         self.fin_combat = False
     def affiche(self):
-        if self.ecran.get_actif():
-            fenetre.blit(fond, (0, 0))
+        '''Permet d'afficher l'écran de connexion et de passer à l'écran principal.
+        '''
+        if self.ecran.get_actif():          #Si l'écran est actif
+            fenetre.blit(fond, (0, 0))          #On dessine tous les éléments
             btn_entrer.draw(fenetre,pygame.mouse.get_pos())
-            if btn_entrer.collision(clic.get_clic()):
+            if btn_entrer.collision(clic.get_clic()):           #Si on clique sur le bouton entrer
                 click.play()
-                if joueur1.get_pseudo() != '':
-                    connexion.ecran.set_actif(False)
+                if joueur1.get_pseudo() != '':          #Si le joueur a entré ses identifiants
+                    connexion.ecran.set_actif(False)            #On passe à l'écran suivant, en mettant a jour la musique
                     ecran2.ecran.set_actif(True)
                     clic.set_clic((0,0))
                     self.choisir_musique()
@@ -275,9 +275,9 @@ class EcranAlcool:
             alcool.ecran.set_actif(False),vodka.ecran.set_actif(True)
             pygame.mixer.music.unload()
         elif btn_biere.collision(clic.get_clic()):
-            achat('Chope de Bière')
+            achat('Biere')
         elif btn_whisky.collision(clic.get_clic()):
-            achat('Bouteille de Whisky')
+            achat('Whisky')
         for btn in self.btns:
             btn.draw(fenetre,pygame.mouse.get_pos())
         self.affiche_effets()
@@ -359,8 +359,10 @@ class EcranRR:
         self.frames = [f'RR/rickroll ({i}).png' for i in range(1,148)]
         self.frame = 'RR/rickroll (1).png'
         self.num_frame = 0
-    def affiche(self,speed):
-        '''Permet d'afficher l'écran de rickroll.'''
+    def affiche(self,speed:float):
+        '''Permet d'afficher l'écran de rickroll.
+        Paramètres :
+            - speed (float) : la vitesse de l'animation.'''
         self.num_frame += speed
         self.frame = self.frames[int(self.num_frame)]
         # Si toutes les images ont été jouées :
@@ -403,8 +405,10 @@ class EcranInventaire:
         self.ecran = Ecran()
         self.fond = pygame.image.load("images/Fonds d'ecran/inventaire.png").convert()
         self.items = [item_biere, item_whisky]
-        self.alcools = {item_biere : 'Chope de Bière', item_whisky : 'Bouteille de Whisky'}
+        self.alcools = {item_biere : 'Biere', item_whisky : 'Whisky'}
+        self.alcools_effets = {'Biere' : biere, 'Whisky' : whisky}
         self.police = pygame.font.Font('babelcasino.ttf', 15)
+        self.police2 = pygame.font.Font('babelcasino.ttf', 12)
         self.selectione = None
     def affiche(self):
         '''Permet d'afficher l'écran de l'inventaire du joueur.
@@ -430,11 +434,16 @@ class EcranInventaire:
                 if self.selectione in joueur1.get_inventaire().keys() and joueur1.get_inventaire()[self.selectione] > 0:
                     joueur1.get_inventaire()[self.selectione] -= 1
                     ajouter_objet_inventaire(-1, det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()), self.selectione)
-                    biere.boire(joueur1)
+                    self.alcools_effets[self.selectione].boire(joueur1)
+                    print(self.selectione, self.alcools_effets[self.selectione].get_nom(),joueur1.get_probas(),joueur1.get_gains())
                 curseur_selection.set_actif(False)
                 clic.set_clic((0,0))
             elif clic.get_clic() != (0,0):
                 curseur_selection.set_actif(False)
+                self.selectione = None
+            if self.selectione:
+                texte = self.police2.render((self.selectione), True, noir)
+                fenetre.blit(texte,(136 + (128 - texte.get_width()) // 2, 299))
         if btn_flecheretour.collision(clic.get_clic()):
             click.play()
             clic.set_clic((0,0))

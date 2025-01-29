@@ -47,6 +47,8 @@ class Blackjack:
         
     
     def tirer_carte_joueur(self):
+
+        """Cette fonction permet de faire tirer une carte du côté du joueur"""
         if self.actif:
             #empêche le croupier de sauter le tour du joueur (le tricheur)
             self.c_block = True
@@ -59,6 +61,7 @@ class Blackjack:
                 # créer le bouton pour mettre la valeur de la carte à 11
                 dessiner_bouton(fenetre, "le joker prend la valeur 11", self.bouton_val11.x, self.bouton_val11.y, self.bouton_val11[2], self.bouton_val11[3], blanc, noir, 20)
                 fenetre.blit(self.img_joker, (171, 287))
+                fenetre.blit(souris, pygame.mouse.get_pos())
                 # Mettre à jour l'affichage pour que les boutons soient visibles
                 pygame.display.update()  
                 
@@ -66,6 +69,7 @@ class Blackjack:
                 val_j = 0 
                 
                 while val_j != 1 and val_j != 11:   
+                    fenetre.blit(souris, pygame.mouse.get_pos())
                     #permettre au joueur de quitter le jeux sans qu'il plante
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
@@ -101,6 +105,7 @@ class Blackjack:
 
     
     def tirer_carte_croupier(self):
+        """Cette fonction permet de faire tirer une carte du côté du croupier"""
         if self.actif:
             #tirer une carte
             val_c = randint(1, 10)
@@ -116,6 +121,7 @@ class Blackjack:
 
     
     def tour_joueur(self):
+        """Cette fonction permet de jouer le tour du joueur"""
         if self.actif:
             # Mettre à jour l'affichage
             self.nettoyer_ecran()
@@ -142,6 +148,7 @@ class Blackjack:
 
     
     def tour_croupier(self):
+        """Cette fonction permet de jouer le tour du croupier"""
         if self.actif:
             #permet au croupier de jouer autant qu'il veut si le joueur arrête
             if self.j_jouer == False:
@@ -184,15 +191,18 @@ class Blackjack:
             print("arrêt")
             #conditions de victoire
             if self.valeur_joueur > self.valeur_croupier and self.valeur_joueur <= 21 or self.valeur_joueur <= 21 and self.valeur_croupier > 21:
-                joueur1.modifier_cagnotte(joueur1.get_cagnotte()/8 + 200)
+                print((-joueur1.get_cagnotte()/12 - 150)*joueur1.get_gains()['Blackjack'],joueur1.get_gains()['Blackjack'])
+                joueur1.modifier_cagnotte((joueur1.get_cagnotte()/8 + 200)*joueur1.get_gains()['Blackjack'])
                 print("le joueur gagne")
             #condition d'égalité
             elif self.valeur_joueur == self.valeur_croupier:
-                joueur1.modifier_cagnotte(-100)
+                print((-joueur1.get_cagnotte()/12 - 150)*joueur1.get_gains()['Blackjack'],joueur1.get_gains()['Blackjack'])
+                joueur1.modifier_cagnotte(-100*joueur1.get_gains()['Blackjack'])
                 print("égalité")
             #conditions de défaite
             else:
-                joueur1.modifier_cagnotte(-joueur1.get_cagnotte()/12 - 150)
+                print((-joueur1.get_cagnotte()/12 - 150)*joueur1.get_gains()['Blackjack'],joueur1.get_gains()['Blackjack'])
+                joueur1.modifier_cagnotte((-joueur1.get_cagnotte()/12 - 150)*joueur1.get_gains()['Blackjack'])
                 print("le croupier gagne")
             
             #lance la fonction qui permet de rejouer
@@ -201,6 +211,7 @@ class Blackjack:
           
             
     def rejouer(self): 
+        """cette fonction permet au joueur de rejouer"""
         #créer une boucle pour permettre au joueur de rejouer autant qu'il veut
         while self.actif:
             self.fin = True
@@ -239,6 +250,7 @@ class Blackjack:
         self.c_jouer = True
 
     def nettoyer_ecran(self):
+        """cette fonction permet netoyer l'ecran"""
         # Efface l’écran en remplissant avec une couleur de fond
         fenetre.blit(fondbj, (0, 0))
         # Redessiner les éléments permanents

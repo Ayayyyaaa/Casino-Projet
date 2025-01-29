@@ -8,6 +8,8 @@ from Machine_a_sous import ecran_machine_a_sous
 from PileouFace import *
 from Roulette_Russe import pistolet
 from Jeu_combat_new import *
+from boss import *
+from heros import *
 from blackjack import *
 from SQL import *
 import time

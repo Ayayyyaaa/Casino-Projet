@@ -80,7 +80,5 @@ def valider_numero_carte_bancaire(numero:str) -> bool:
         somme += n
     return somme % 10 == 0
 
-
-
-
-
+def distance(j1,j2):
+    return j1.hero.get_pos_x()-j2.boss.get_pos_x()

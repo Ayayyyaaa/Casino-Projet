@@ -6,6 +6,7 @@ from img import chargement
 print("Chargement de SQL.py")
 
 def creer_table():
+    '''Permet de créer les tables de la base de données si elles n'y sont pas présentes.'''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     cursor.execute("""
@@ -24,7 +25,6 @@ def creer_table():
         CREATE TABLE IF NOT EXISTS objets(
             nom_objet TEXT PRIMARY KEY,
             prix INTEGER,
-            duree INTEGER,
             effet TEXT
         )
     """)
@@ -80,9 +80,9 @@ def creer_table():
     conn.close()
 
 def verifier_et_ajouter_pseudo(pseudo:str, mdp:str):
-    """
+    '''
     Vérifie si la combinaison pseudo et mdp existe déjà. Si non, l'ajoute.
-    """
+    '''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM compte WHERE pseudo = ? AND mdp = ?", (pseudo, mdp))
@@ -122,9 +122,9 @@ def det_id_compte(pseudo:str,mdp:str) -> int:
     return id_compte[0] if id_compte else None
 
 def recup_donnees(id_compte:int) -> float:
-    """
+    '''
     Récupère le solde du joueur dans la base de données.
-    """
+    '''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     cursor.execute("SELECT solde FROM compte WHERE id_compte = ?", (id_compte,))
@@ -132,39 +132,39 @@ def recup_donnees(id_compte:int) -> float:
     conn.close()
     return solde[0] if solde else 200000
 
-def ajouter_connexion(id_compte):
-    """
-    Met à jour la date de dernière connexion.
-    """
+def ajouter_connexion(id_compte:int):
+    '''
+    Met à jour la date de dernière connexion dans la base de données.
+    '''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     cursor.execute("UPDATE compte SET derniere_connexion = CURRENT_TIMESTAMP WHERE id_compte = ?", (id_compte,))
     conn.commit()
     conn.close()
 
-def mettre_a_jour_solde(solde, id_compte):
-    """
+def mettre_a_jour_solde(solde:int, id_compte:int):
+    '''
     Met à jour le solde du joueur dans la base de données.
-    """
+    '''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     cursor.execute("UPDATE compte SET solde = ? WHERE id_compte = ?", (solde, id_compte))
     conn.commit()
     conn.close()
 
-def verifier_et_ajouter_cb(id, num, code):
-    """
+def verifier_et_ajouter_cb(id_compte:int, num:str, code:str) -> bool:
+    '''
     Vérifie si la combinaison id est associée au numéro de code de cb. Si non, l'ajoute.
-    """
+    '''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT code_cb,numero_cb FROM compte WHERE id_compte = ?", (id,))
+    cursor.execute("SELECT code_cb,numero_cb FROM compte WHERE id_compte = ?", (id_compte,))
     compte = cursor.fetchone()
     if compte == (None,None):
-        # Ajouter le compte à la base
-        cursor.execute("UPDATE compte SET code_cb = ?, numero_cb = ? WHERE id_compte = ?", (code,num,id))
+        # Ajouter le compte à la base de données
+        cursor.execute("UPDATE compte SET code_cb = ?, numero_cb = ? WHERE id_compte = ?", (code,num,id_compte))
         conn.commit()
-        cursor.execute("SELECT code_cb,numero_cb FROM compte WHERE id_compte = ?", (id,))
+        cursor.execute("SELECT code_cb,numero_cb FROM compte WHERE id_compte = ?", (id_compte,))
         coordonnes = cursor.fetchone()
         conn.commit()
         if coordonnes:
@@ -174,26 +174,26 @@ def verifier_et_ajouter_cb(id, num, code):
 
 def ajout_des_attributs():
     '''
-    ajoute les attributs dans la base de donnée
+    Permet d'ajouter tous les attributs de référence dans la base de données.
     '''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
 
     #Création des objets 
  
-    """#Vodka
-    cursor.execute('''INSERT INTO objets VALUES ('Vodka', 1000, 1, 'Augmente les gains de la Roulette Russe de 10% (n est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
+    #Vodka
+    cursor.execute('''INSERT INTO objets VALUES ('Vodka', 1000, 'Augmente les gains de la Roulette Russe de 10% (n est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
     #Biere
-    cursor.execute('''INSERT INTO objets VALUES ('Biere', 100000, 2, 'Enlève une balle dans la roulette russe et diminue les gains de 10% (n est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
+    cursor.execute('''INSERT INTO objets VALUES ('Biere', 100000, 'Enlève une balle dans la roulette russe et diminue les gains de 10% (n est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
     #Vin
-    cursor.execute('''INSERT INTO objets VALUES ('Vin', 10000, 1, 'Augmente les gains et les pertes du Blackjack de 10% (n est pas compatible avec un autre alcool qui affecte le Blackjack)')''')
+    cursor.execute('''INSERT INTO objets VALUES ('Vin', 10000, 'Augmente les chances de gagner au pile ou face de 10% et diminue les chances d obtenir 3 fruits dans la machine à sous (n est pas compatible avec un autre alcool qui affecte la machine à sous ou le pile ou face)')''')
     #Rhum
-    cursor.execute('''INSERT INTO objets VALUES ('Rhum', 50000, 1, 'Ajoute une balle à la Roulette Russe et augmente les gains de 30%(n est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
+    cursor.execute('''INSERT INTO objets VALUES ('Rhum', 50000, 'Sélectionne aléatoirement deux fruits et augmente les chances de les obtenir de 10% (n est pas compatible avec un autre alcool qui affecte la machine à sous)')''')
     #Whisky
-    cursor.execute('''INSERT INTO objets VALUES ('Whisky', 35000, 5, 'Augmente les chances de gagner au pile ou face de 10% et diminue les chances d obtenir 3 fruits dans la machine à sous (n est pas compatible avec un autre alcool qui affecte la machine à sous ou le pile ou face)')''')
+    cursor.execute('''INSERT INTO objets VALUES ('Whisky', 35000, 'Augmente les gains et les pertes du Blackjack de 10% (n est pas compatible avec un autre alcool qui affecte le Blackjack)')''')
     #Mojito
-    cursor.execute('''INSERT INTO objets VALUES ('Mojito', 35000, 7, 'Sélectionne aléatoirement deux fruits et augmente les chances de les obtenir de 10% (n est pas compatible avec un autre alcool qui affecte la machine à sous)')''')
-    """
+    cursor.execute('''INSERT INTO objets VALUES ('Mojito', 35000, 'Ajoute une balle à la Roulette Russe et augmente les gains de 30%(n est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
+    
     #Création des heros
 
     #Night_Hero
@@ -276,10 +276,13 @@ def ajout_des_attributs():
     conn.close()
 
 
-def ajouter_hero_casier(id_compte, nom_hero):
-    """
+def ajouter_hero_casier(id_compte:int, nom_hero:str):
+    '''
     Ajoute le hero au casier du joueur
-    """
+    Paramètres:
+        - id_compte (int) : l'id du compte auquel il faut rajouter le héros
+        - nom_hero (str) : le nom du héros à rajouter dans la base de données
+    '''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     cursor.execute("INSERT INTO casier VALUES (?,?)", (id_compte, nom_hero))
@@ -287,9 +290,13 @@ def ajouter_hero_casier(id_compte, nom_hero):
     conn.close()
 
 def ajouter_objet_inventaire(quantite_objet:int, id_compte:int, nom_objet:str):
-    """
+    '''
     Met a jour la quantite d'un objet dans l'inventaire du joueur, et l'ajoute s'il n'existe pas.
-    """
+    Paramètres:
+        - quantite_objet (int): la quantité de l'objet
+        - id_compte (int): l'id du compte que l'on souhaite modifier
+        - nom_objet (str) : le nom de l'objet que l'on souhaite ajouter à l'inventaire
+    '''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     # Vérifier si l'objet existe déjà pour ce compte
@@ -316,7 +323,14 @@ def ajouter_objet_inventaire(quantite_objet:int, id_compte:int, nom_objet:str):
     conn.commit()
     conn.close()
 
-def recup_objet(id_compte,nom_objet):
+def recup_objet(id_compte:int,nom_objet:str) -> bool:
+    '''Permet de vérifier la présence d'un objet dans l'inventaire d'un joueur.
+    Paramètres :
+        - id_compte (int) : l'id du compte que l'on souhaite vérifier
+        - nom_objet (str) : le nom de l'objet dont l'on souhaite vérfifier la présence
+    Returns :
+        - True si l'objet est présent dans l'inventaire du joueur
+        - False si il n'y est pas'''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     cursor.execute("SELECT quantite_objet FROM inventaire WHERE id_compte = ? AND nom_objet = ?",(id_compte,nom_objet))
@@ -324,53 +338,8 @@ def recup_objet(id_compte,nom_objet):
     conn.close()
     return True if dispo else False
 
-def stats_boss_vaincu(victoires,id_compte, nom_boss):
-    '''
-    Change la stat du nombre de victoire contre un boss
-    '''
-    conn = sqlite3.connect("base_de_donnee2.db")
-    cursor = conn.cursor()
-    cursor.execute("UPDATE stats SET victoires = ? WHERE id_compte = ? and nom_boss = ?", (victoires, id_compte, nom_boss))
-    conn.commit()
-    conn.close()
-
-def stats_boss_defaite(defaites,id_compte, nom_boss):
-    '''
-    Change la stat du nombre de défaite contre un boss
-    '''
-    conn = sqlite3.connect("base_de_donnee2.db")
-    cursor = conn.cursor()
-    cursor.execute("UPDATE stats SET defaites = ? WHERE id_compte = ? and nom_boss = ?", (defaites, id_compte, nom_boss))
-    conn.commit()
-    conn.close()
-
-def defaites_total(id_compte,):
-    '''
-    renvoie le nombre de defaites total
-    '''
-    conn = sqlite3.connect("base_de_donnee2.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT defaites FROM stats WHERE id_compte = ?", (id_compte,))
-    toutes_defaites = cursor.fetchone()
-    defaite = 0
-    for i in range(len(toutes_defaites)):
-        defaite += toutes_defaites[i][0]
-    return defaite
-
-def victoires_total(id_compte):
-    '''
-    renvoie le nombre de defaites total
-    '''
-    conn = sqlite3.connect("base_de_donnee2.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT victoires FROM stats WHERE id_compte = ?", (id_compte,))
-    toutes_victoires = cursor.fetchone()
-    victoire = 0
-    for i in range(len(toutes_victoires)):
-        victoire += toutes_victoires[i][0]
-    return victoire
-
 def supprimer_table():
+    '''Permet du supprimer des tables de la base de données.'''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     cursor.execute("DROP TABLE inventaire")
@@ -379,11 +348,17 @@ def supprimer_table():
     cursor.execute("DROP TABLE casier")
     cursor.execute("DROP TABLE boss")
     cursor.execute("DROP TABLE heros")
+    cursor.execute("DROP TABLE objets")
     conn.commit()
     conn.close()
 
-def det_heros(id_compte):
-    print(id_compte)
+def det_heros(id_compte:int) -> list:
+    '''Permet de déterminer les héros possédés par un joueur.
+    Paramètres :
+        - id_compte (int) : L'identifiant du compte du joueur voulu
+    Returns :
+        - liste_heros (list) : la liste des héros possédés par le joueur
+    '''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     cursor.execute("SELECT nom_heros FROM casier WHERE id_compte = ?", (id_compte,))
@@ -392,23 +367,36 @@ def det_heros(id_compte):
     liste_heros = [heros[0] for heros in id_compte]
     return liste_heros
 
-def det_objets(id_compte):
+def det_objets(id_compte:int):
+    '''Permet d'obtenir les données de l'inventaire du joueur voulu
+    Paramètres :
+        - id_compte (int) : L'identifiant du compte duquel on veut récupérer l'inventaire
+    Returns :
+        - dico_objets (dict) : Le dictionnaire ayant pour clef les noms des objets possédés par la joueur, et pour valeur leur quantités.
+    '''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     cursor.execute("SELECT nom_objet, quantite_objet FROM inventaire WHERE id_compte = ?", (id_compte,))
-    obj = cursor.fetchall()
+    objets = cursor.fetchall()
     conn.close()
     dico_objets = {}
-    for truc in obj:
-        if truc[0] is not None and truc[1] is not None:
-            dico_objets[truc[0]] = truc[1]
-    print(dico_objets)
+    for objet in objets:
+        if objet[0] is not None and objet[1] is not None:
+            dico_objets[objet[0]] = objet[1]
     return dico_objets
 
-def maj_stats(id_compte,victoire,defaite,boss):
-    """
+def maj_stats(id_compte:int,victoire:int,defaite:int,boss:str):
+    '''
     Met a jour les stats d'un joueur apres un combat.
-    """
+    Paramètres :
+        - id_compte (int) : L'identifiant du compte duquel on veut récupérer l'inventaire
+        - victoire (int) : Le nombre de victoires à ajouter
+        - defaite (int) : Le nombre de défaites à rajouter
+        - boss (str) : Le nom du boss combattu
+    Si le boss a déjà été combattu, on ajoute le nombre de victoires ou de défaites déjà obtenues au nombre mis en paramètre, et on le met a jour dans la base de données.
+    Sinon, si le joueur n'a jamais combattu dans le jeu de combat, on met à jour ses stats (auparavant NULL,NULL,NULL) par celles mises en paramètres.
+    Sinon, on ajoute le boss dans les stats du joueur en mettant les données mises en paramètres.
+    '''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     # Vérifier le joueur a deja combattu ce boss

@@ -14,7 +14,7 @@ bouton3 = Bouton(160, 25, 0, 25)
 clock = pygame.time.Clock()
 clic = Clic()
 curseur_selection = Curseur()
-boutique = {'Chope de Bière' : 100000, 'Bouteille de Whisky' : 5000}
+boutique = {'Biere' : 100000, 'Whisky' : 35000}
 btn_entrer = Button(entrer2, entrer, 108, 240)
 btn_retour = Button(retour2, retour, 108, 240)
 btn_boutique = Button(boutique2, boutique1, 10, 65)
@@ -58,6 +58,7 @@ btn_valider = Button(valider2, valider1, 152, 330)
 btn_select = Button(select2, select1, 152, 330)
 btn_flecheretour = Button(flecheretour2, flecheretour1, 360, 60)
 biere = Biere()
+whisky = Whisky()
 
 coin = Coin(100, -7)
 
