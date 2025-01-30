@@ -128,6 +128,7 @@ class Jeu():
         dernier_son = time.time()
         id_compte = det_id_compte(joueur1.get_pseudo(),self.mdp)
         ajouter_connexion(id_compte)
+        joueur1.set_cagnotte(2000)
         while self.run:
             clic.set_clic((0,0))
             if not self.combat.get_actif():
@@ -359,7 +360,7 @@ class Jeu():
                     self.victoire = True 
             mettre_a_jour_solde(joueur1.get_cagnotte(),det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()))
             if not ecran_mort.ecran.get_actif():
-                assert joueur1.get_cagnotte() < 0, "Le joueur n'a plus d'argent mais n'est pas mort !"
+                assert joueur1.get_cagnotte() > 0, "Le joueur n'a plus d'argent mais n'est pas mort !"
             clock.tick(60)
             pygame.mouse.set_visible(False)
             pygame.display.flip()

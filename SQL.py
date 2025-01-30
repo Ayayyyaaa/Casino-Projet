@@ -184,7 +184,7 @@ def ajout_des_attributs():
     #Vodka
     cursor.execute('''INSERT INTO objets VALUES ('Vodka', 1000, 'Augmente les gains de la Roulette Russe de 10% (n est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
     #Biere
-    cursor.execute('''INSERT INTO objets VALUES ('Biere', 100000, 'Enlève une balle dans la roulette russe et diminue les gains de 10% (n est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
+    cursor.execute('''INSERT INTO objets VALUES ('Biere', 40000, 'Enlève une balle dans la roulette russe et diminue les gains de 10% (n est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
     #Vin
     cursor.execute('''INSERT INTO objets VALUES ('Vin', 10000, 'Augmente les chances de gagner au pile ou face de 10% et diminue les chances d obtenir 3 fruits dans la machine à sous (n est pas compatible avec un autre alcool qui affecte la machine à sous ou le pile ou face)')''')
     #Rhum
@@ -192,7 +192,7 @@ def ajout_des_attributs():
     #Whisky
     cursor.execute('''INSERT INTO objets VALUES ('Whisky', 35000, 'Augmente les gains et les pertes du Blackjack de 10% (n est pas compatible avec un autre alcool qui affecte le Blackjack)')''')
     #Mojito
-    cursor.execute('''INSERT INTO objets VALUES ('Mojito', 35000, 'Ajoute une balle à la Roulette Russe et augmente les gains de 30%(n est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
+    cursor.execute('''INSERT INTO objets VALUES ('Mojito', 42000, 'Ajoute une balle à la Roulette Russe et augmente les gains de 30%(n est pas compatible avec un autre alcool qui affecte la Roulette Russe)')''')
     
     #Création des heros
 
@@ -323,17 +323,17 @@ def ajouter_objet_inventaire(quantite_objet:int, id_compte:int, nom_objet:str):
     conn.commit()
     conn.close()
 
-def recup_objet(id_compte:int,nom_objet:str) -> bool:
+def recup_objet(nom_objet:str) -> bool:
     '''Permet de vérifier la présence d'un objet dans l'inventaire d'un joueur.
     Paramètres :
-        - id_compte (int) : l'id du compte que l'on souhaite vérifier
         - nom_objet (str) : le nom de l'objet dont l'on souhaite vérfifier la présence
     Returns :
         - True si l'objet est présent dans l'inventaire du joueur
         - False si il n'y est pas'''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT quantite_objet FROM inventaire WHERE id_compte = ? AND nom_objet = ?",(id_compte,nom_objet))
+    cursor.execute("SELECT inventaire.quantite_objet FROM inventaire JOIN compte ON compte.id_compte = inventaire.id_compte WHERE compte.pseudo = ? AND compte.mdp = ? AND inventaire.nom_objet = ?",
+                   (joueur1.get_pseudo(),joueur1.get_mdp(),nom_objet))
     dispo = cursor.fetchone()
     conn.close()
     return True if dispo else False

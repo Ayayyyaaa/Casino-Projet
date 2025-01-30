@@ -198,3 +198,12 @@ class Whisky:
         return self.nom
     def boire(self,joueur1):
         joueur1.set_gains('Blackjack',1.1)
+
+class Mojito:
+    def __init__(self):
+        self.nom = 'Mojito'
+    def get_nom(self):
+        return self.nom
+    def boire(self,joueur1):
+        joueur1.set_gains('Roulette',1.3)
+        joueur1.set_probas('Roulette',1)

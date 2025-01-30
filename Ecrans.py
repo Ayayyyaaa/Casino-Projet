@@ -105,9 +105,11 @@ class Ecran2:
         coin.activer_rotation()
         dessiner_bouton(fenetre, joueur1.get_pseudo(), bouton2.get_x(), bouton2.get_y(), bouton2.get_largeur(), bouton2.get_hauteur(), blanc, noir, 20)
         dessiner_bouton(fenetre, f"Solde : {int(joueur1.get_cagnotte())}", bouton3.get_x(), bouton3.get_y(), bouton3.get_largeur(), bouton3.get_hauteur(), blanc, noir, 25)
+        # Si on clique sur le bouton pour accéder à la boutique
         if btn_boutique.collision(clic.get_clic()):
             ecran_boutique.ecran.set_actif(True),ecran2.ecran.set_actif(False)
             clic.set_clic((0,0))
+        # Si on clique sur le bouton pour lancer la roulette russe
         elif btn_roulette.collision(clic.get_clic()):
             click.play()
             joueur1.set_roulette_active(True)
@@ -115,24 +117,28 @@ class Ecran2:
             pistolet.rouletterusse(joueur1)
             joueur1.set_roulette_active(False)
             clic.set_clic((0,0))
+        # Si on clique sur le bouton pour lancer la pile ou face
         elif btn_pile_ou_face.collision(clic.get_clic()):
             click.play()
             clic.set_clic((0,0))
             pileouface.set_actif(not pileouface.get_actif())
             pileouface.set_cote(None)
+        # Si on clique sur le bouton pour lancer le blackjack de mort d'abel plus ramais je touche à ça vraiment c'est une horreur en plus la doc est inexistante c'est juste des commentaires et des commentaires vraiment je suis traumatisé aled
         elif btn_blackjack.collision(clic.get_clic()):
             click.play()
             clic.set_clic((0,0))
             ecran2.ecran.set_actif(False), ecran_black.ecran.set_actif(True)
+        # Si on clique sur le bouton pour retourner à l'écran de connexion
         elif btn_retour.collision(clic.get_clic()):
             click.play()
             clic.set_clic((0,0))
             connexion.ecran.set_actif(True)
             ecran2.ecran.set_actif(False)
+        # Si on ouvre l'inventaire
         elif btn_inventaire.collision(clic.get_clic()):
             click.play()
             clic.set_clic((0,0))
-            ecran2.ecran.set_actif(False), inventaire.ecran.set_actif(True)
+            ecran2.ecran.set_actif(False), inventaire.ecran.set_actif(True) # On définit l'inventaire comme ecran actif
         elif pileouface.get_actif():
             # Pari sur le côté Face de la piece
             if btn_face.collision(clic.get_clic()):
@@ -240,7 +246,7 @@ class EcranBoutique:
             btn_hero.draw(fenetre,pygame.mouse.get_pos())
             self.frame = 0
 
-    def anim(self,speed):
+    def anim(self,speed:float):
         self.frame += speed
         if self.frame >= len(self.btn_heros)-1:
             self.frame = 0
@@ -254,7 +260,8 @@ class EcranAlcool:
         self.vodka = False
         self.biere = False
         self.whisky = False
-        self.btns = [btn_whisky, btn_biere, btn_vodka, btn_fleche]
+        self.mojito = False
+        self.btns = [btn_whisky, btn_biere, btn_vodka, btn_mojito, btn_fleche]
 
     def affiche(self):
         '''
@@ -266,8 +273,10 @@ class EcranAlcool:
             self.biere = True
         elif btn_vodka.collision(pygame.mouse.get_pos()):
             self.vodka = True
+        elif btn_mojito.collision(pygame.mouse.get_pos()):
+            self.mojito = True
         else:
-            self.vodka,self.biere,self.whisky = False,False,False
+            self.vodka,self.biere,self.whisky,self.mojito = False,False,False,False
         if btn_fleche.collision(clic.get_clic()):
             clic.set_clic((0,0))
             alcool.ecran.set_actif(False),ecran_boutique.ecran.set_actif(True)
@@ -278,6 +287,8 @@ class EcranAlcool:
             achat('Biere')
         elif btn_whisky.collision(clic.get_clic()):
             achat('Whisky')
+        elif btn_mojito.collision(clic.get_clic()):
+            achat('Mojito')
         for btn in self.btns:
             btn.draw(fenetre,pygame.mouse.get_pos())
         self.affiche_effets()
@@ -290,9 +301,11 @@ class EcranAlcool:
             fenetre.blit(effet_biere, (pygame.mouse.get_pos()[0]+40, pygame.mouse.get_pos()[1]-30))
         elif self.whisky:
             fenetre.blit(effet_whisky, (pygame.mouse.get_pos()[0]-180, pygame.mouse.get_pos()[1]-30))
+        elif self.mojito:
+            fenetre.blit(effet_mojito, (pygame.mouse.get_pos()[0]-180, pygame.mouse.get_pos()[1]-30))
 
 class EcranSelection:
-    def __init__(self, caracteristiques_hero, liste, hero, y, x = 50):
+    def __init__(self, caracteristiques_hero, liste, hero:tuple, y:int, x:int = 50):
         self.police = pygame.font.Font('babelcasino.ttf', 8)
         self.ecran = Ecran()
         self.fond = pygame.image.load('images/arene.png').convert_alpha()
@@ -309,8 +322,13 @@ class EcranSelection:
         return self.infos
     def setinfos(self,actif):
         self.infos = actif
-    def affiche(self,speed):
-        '''Permet d'afficher l'écran de selection pour chaque heros.'''
+    def affiche(self,speed:float):
+        '''Permet d'afficher l'écran de selection pour chaque heros, avec :
+            - Les infos et caractéristiques du personnages
+            - Un bouton pour selectionner/acheter le personnage
+            - Un bouton pour afficher les informations du personnage
+            - Un bouton pour revenir en arrière
+        '''
         fenetre.blit(self.fond, (0, 0))
         fenetre.blit(pygame.image.load(self.anim[int(self.frame)]).convert_alpha(), (self.x, self.y))
         self.frame += speed
@@ -404,9 +422,9 @@ class EcranInventaire:
     def __init__(self):
         self.ecran = Ecran()
         self.fond = pygame.image.load("images/Fonds d'ecran/inventaire.png").convert()
-        self.items = [item_biere, item_whisky]
-        self.alcools = {item_biere : 'Biere', item_whisky : 'Whisky'}
-        self.alcools_effets = {'Biere' : biere, 'Whisky' : whisky}
+        self.items = [item_biere, item_whisky, item_mojito]
+        self.alcools = {item_biere : 'Biere', item_whisky : 'Whisky', item_mojito : 'Mojito'}
+        self.alcools_effets = {'Biere' : biere, 'Whisky' : whisky, 'Mojito' : mojito}
         self.police = pygame.font.Font('babelcasino.ttf', 15)
         self.police2 = pygame.font.Font('babelcasino.ttf', 12)
         self.selectione = None
@@ -435,7 +453,6 @@ class EcranInventaire:
                     joueur1.get_inventaire()[self.selectione] -= 1
                     ajouter_objet_inventaire(-1, det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()), self.selectione)
                     self.alcools_effets[self.selectione].boire(joueur1)
-                    print(self.selectione, self.alcools_effets[self.selectione].get_nom(),joueur1.get_probas(),joueur1.get_gains())
                 curseur_selection.set_actif(False)
                 clic.set_clic((0,0))
             elif clic.get_clic() != (0,0):
