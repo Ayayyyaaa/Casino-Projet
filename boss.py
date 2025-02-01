@@ -1,13 +1,14 @@
 import pygame
 import time
-import sys
 from objets_et_variables import *
-from sons import son_epee,aie_boss,aie_hero
+from sons import aie_hero
 from random import randint,choice
-from fonctions import afficher_ecran_chargement, distance
+from fonctions import distance
+
+print("Chargement des boss...")
 
 class Boss:
-    def __init__(self,pv:int,y:int,speed:float,speedanim:float,cd1:float,cd2:float,cd3:float,element:str,fond,nom_fond:str):
+    def __init__(self,pv:int,y:int,speed:float,speedanim:float,cd1:float,cd2:float,cd3:float,element:str,fond,nom_fond:str) -> 'Boss':
         '''Initialise toutes les caractéristiques de base du boss.
         Paramètres : 
             - pv (int) : le nombre de pv du boss
@@ -45,57 +46,57 @@ class Boss:
         self.fond = fond
         self.nom_fond = nom_fond
         self.collision = False
-    def get_collison(self):
+    def get_collison(self) -> bool:
         return self.collision 
-    def get_pv(self):
+    def get_pv(self) -> float:
         return self.pv
-    def get_pv_base(self):
+    def get_pv_base(self) -> float:
         return self.pv_base
-    def get_pos_x(self):
+    def get_pos_x(self) -> float:
         return self.pos_x
-    def get_pos_y(self):
+    def get_pos_y(self) -> float:
         return self.pos_y
-    def get_cd_attaque1(self):
+    def get_cd_attaque1(self) -> float:
         return time.time() - self.cd_attaque1
-    def get_attaque1_dispo(self):
+    def get_attaque1_dispo(self) -> bool:
         return self.attaque1_dispo
-    def get_cd_attaque2(self):
+    def get_cd_attaque2(self) -> float:
         return time.time() - self.cd_attaque2
-    def get_attaque2_dispo(self):
+    def get_attaque2_dispo(self) -> bool:
         return self.attaque2_dispo
-    def get_cd_attaque3(self):
+    def get_cd_attaque3(self) -> float:
         return time.time() - self.cd_attaque3
-    def get_attaque3_dispo(self):
+    def get_attaque3_dispo(self) -> bool:
         return self.attaque3_dispo
-    def get_victoire(self):
+    def get_victoire(self) -> bool:
         return self.victoire
-    def get_cd_ulti(self):
+    def get_cd_ulti(self) -> float:
         return self.cd_ulti
-    def get_mort(self):
+    def get_mort(self) -> bool:
         return self.mort
-    def get_portee(self):
+    def get_portee(self) -> int:
         return self.portee
-    def get_poison(self):
+    def get_poison(self) -> float: # Le timestamp de l'application du poison
         return self.poison
-    def get_speed(self):
+    def get_speed(self) -> float:
         return self.speed
-    def get_speed_anim(self):
+    def get_speed_anim(self) -> float:
         return (self.speedanim)
-    def get_cd(self):
+    def get_cd(self) -> tuple:
         return (self.cd1,self.cd2,self.cd3)
-    def get_block(self):
+    def get_block(self) -> bool:
         return self.block
-    def get_fond(self):
+    def get_fond(self) -> list:
         return self.fond
-    def get_type(self):
+    def get_type(self) -> str:
         return self.type
-    def get_nomfond(self):
+    def get_nomfond(self) -> str:
         return self.nom_fond
-    def modif_pv(self, nb):
+    def modif_pv(self, nb:float):
         self.pv += nb
-    def modif_pos_x(self, nb):
+    def modif_pos_x(self, nb:int):
         self.pos_x += nb
-    def modif_pos_y(self, nb):
+    def modif_pos_y(self, nb:int):
         self.pos_y += nb
     def modif_img(self, img):
         self.image = img
@@ -103,31 +104,31 @@ class Boss:
         self.cd_img = time.time()
     def set_cd_attaque1(self):
         self.cd_attaque1 = time.time()
-    def set_attaque1_dispo(self, dispo):
+    def set_attaque1_dispo(self, dispo:bool):
         self.attaque1_dispo = dispo
     def set_cd_attaque2(self):
         self.cd_attaque2 = time.time()
-    def set_attaque2_dispo(self, dispo):
+    def set_attaque2_dispo(self, dispo:bool):
         self.attaque2_dispo = dispo
     def set_cd_attaque3(self):
         self.cd_attaque3 = time.time()
-    def set_attaque3_dispo(self, dispo):
+    def set_attaque3_dispo(self, dispo:bool):
         self.attaque3_dispo = dispo
-    def set_victoire(self, vict):
+    def set_victoire(self, vict:bool):
         self.victoire = vict
-    def set_cd_ulti(self, nb):
+    def set_cd_ulti(self, nb:float):
         self.cd_ulti = nb
-    def set_mort(self,mort):
+    def set_mort(self,mort:bool):
         self.mort = mort
-    def set_poison(self,poison):
+    def set_poison(self,poison:float): # Le timestamp de l'application du poison
         self.poison = poison
-    def set_block(self,block):
+    def set_block(self,block:bool):
         self.block = block
-    def set_collision(self,collision):
+    def set_collision(self,collision:bool):
         self.collision = collision
 
 class Michel:
-    def __init__(self):
+    def __init__(self) -> 'Michel':
         self.boss = Boss(100,360,3,0.15,4,0,0,'Neutre',chute,'Chute')
         self.images_attaque1 = [pygame.image.load(f'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm{i},70.png') for i in range(44,69)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/LancierBoss/Droite/Marche/_a_frm{i},70.png') for i in range(16)]
@@ -147,7 +148,7 @@ class Michel:
         '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
             - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - j1 : le héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         self.atk1 = True
@@ -172,7 +173,7 @@ class Michel:
                 j1.hero.modif_pv(-0.2)
                 # Image des dégâts subis
                 self.cd_dgt10 = time.time()
-                print(f'Attaque coup de poing : Pv hero {j1.hero.get_pv()}')
+                print(f'Attaque : Pv hero {j1.hero.get_pv()}')
         # Si le héros a bloqué l'attaque :
         if j1.hero.get_block():
             # Image du block
@@ -182,7 +183,7 @@ class Michel:
         self.frame += speed        
         self.boss.modif_img(self.images_attaque1[int(self.frame)])
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -198,8 +199,8 @@ class Michel:
     def inaction(self,speed:float,sens:str):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de l'inaction du boss (non utilisé pour ce boss)
         '''
         if int(self.frame) >= len(self.images_inaction)-1:
             self.frame = 0
@@ -209,8 +210,8 @@ class Michel:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -229,6 +230,9 @@ class Michel:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -236,15 +240,22 @@ class Michel:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
+        # Si le boss attaque, on fait progresser l'animation
         if self.atk1:
             self.attaque1(0.12,j1)
+        # Si le boss n'attaque pas et qu'il n'est pas à portée
         elif not self.atk1 and not self.atk2 and not -140 < distance(j1,self) < 50:
-            # Sinon, déplacement pour être à portée du héros
+            # Déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
+        # Sinon, on lance l'animation d'inaction
         else:
             self.inaction(0.12,'Gauche')
+        # Si le héros est à portée du boss, on lance les attaques
         if -140 < distance(j1,self) < 50:
             if self.boss.get_attaque1_dispo() and not self.atk2:
                 if not self.atk1:
@@ -252,7 +263,7 @@ class Michel:
                 self.atk1 = True
                 
 class TankBoss:
-    def __init__(self):
+    def __init__(self) -> 'TankBoss':
         self.boss = Boss(230,350,4.5,0.16,5.7,10,0,'Foudre',temple,'Temple')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Droite/Attaque1/_a_{i},60.png').convert_alpha() for i in range(19)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Gauche/Attaque1/_a_{i},60.png').convert_alpha() for i in range(19)]
@@ -271,10 +282,9 @@ class TankBoss:
         self.atk1 = False
         self.atk2 = False
 
-    def attaque1(self,speed:float,j1,s):
+    def attaque1(self,speed:float,j1,s:str):
         '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
             - j1 : le joueur
             - s : le sens de l'attaque
@@ -319,11 +329,12 @@ class TankBoss:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-            - sens (str) : le sens de la marche du boss'''
+            - sens (str) : le sens de la marche du boss
+        '''
         if int(self.frame) >= len(self.images_marche_d)-1:
             self.frame = 0
         self.frame += speed
@@ -332,11 +343,11 @@ class TankBoss:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -349,8 +360,8 @@ class TankBoss:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -369,6 +380,9 @@ class TankBoss:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -376,22 +390,28 @@ class TankBoss:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
-        print(self.boss.get_collison(),"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
+        # Si le boss attaque
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')
             else:
                 self.attaque1(0.18,j1,'Droite')
+        # Si le boss n'attaque pas et n'est pas à portée
         elif not self.atk1 and not self.boss.get_collison():
-            # Sinon, déplacement pour être à portée du héros
+            # Déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
+        # Sinon, on lance l'animation d'inaction
         else:
             if distance(j1,self) < 0:
                 self.inaction(0.14,'Gauche')
             else:
                 self.inaction(0.14,'Droite')
+        # On lance l'attaque si le boss est à portée
         if self.boss.get_collison():
             if self.boss.get_attaque1_dispo():
                 if not self.atk1:
@@ -399,7 +419,7 @@ class TankBoss:
                 self.atk1 = True
 
 class Cindera:
-    def __init__(self):
+    def __init__(self) -> 'Cindera':
         self.boss = Boss(160,400,4,0.15,4.5,0,0,'Feu',lave,'Lave')
         self.images_attaque1 = [pygame.image.load(f'images/Jeu de combat/Cindera/Gauche/Attaque1/_a_{i},100.png') for i in range(40)]
         self.images_marche_d = [pygame.image.load(f'images/Jeu de combat/Cindera/Droite/Marche/_a_frm{i},0.png') for i in range(8)]
@@ -420,7 +440,7 @@ class Cindera:
         '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
             - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - j1 : le héros combattu
         '''
         # L'attaque 1 est en train d'être jouée.
         self.atk1 = True
@@ -458,7 +478,7 @@ class Cindera:
         self.frame += speed        
         self.boss.modif_img(self.images_attaque1[int(self.frame)])
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -471,11 +491,11 @@ class Cindera:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de l'inaction du boss (non utilisé pour ce boss)
         '''
         if int(self.frame) >= len(self.images_inaction)-1:
             self.frame = 0
@@ -485,8 +505,8 @@ class Cindera:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -504,6 +524,9 @@ class Cindera:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -511,15 +534,22 @@ class Cindera:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
+        # Si le boss attaque
         if self.atk1:
             self.attaque1(0.15,j1)
+        # Si le boss n'attaque pas et n'est pas à portée
         elif not self.atk1 and not self.atk2 and not self.boss.get_collison():
-            # Sinon, déplacement pour être à portée du héros
+            # Déplacement pour être à portée du héros
             self.boss_vers_hero(j1)
+        # Sinon, on lance l'animation d'inaction
         else:
             self.inaction(0.12)
+        # On lance l'attaque si le boss est à portée
         if self.boss.get_collison():
             if self.boss.get_attaque1_dispo() and not self.atk2:
                 if not self.atk1:
@@ -527,7 +557,7 @@ class Cindera:
                 self.atk1 = True
 
 class DarkLord:
-    def __init__(self):
+    def __init__(self) -> 'DarkLord':
         self.boss = Boss(160,450,4,0.16,2.8,10,0,'Nuit',pluie,'Pluie')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/DarkLord/Droite/Attaque1/_a_frm{i},0.png') for i in range(23)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/DarkLord/Gauche/Attaque1/_a_frm{i},0.png') for i in range(23)]
@@ -546,11 +576,12 @@ class DarkLord:
         self.atk1 = False
         self.atk2 = False
         self.sens = 'Droite'
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -568,8 +599,6 @@ class DarkLord:
             self.atk1 = False
         # Si le héros a bloqué l'attaque :
         if j1.hero.get_block():
-            # Image du block
-            j1.cd_block_img = time.time()
             print("Bloqué !")
         # Faire progresser les images pour l'animation
         self.frame += speed        
@@ -578,7 +607,7 @@ class DarkLord:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -591,11 +620,11 @@ class DarkLord:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -608,8 +637,8 @@ class DarkLord:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -627,6 +656,9 @@ class DarkLord:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -634,8 +666,11 @@ class DarkLord:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')
@@ -656,7 +691,7 @@ class DarkLord:
                 self.atk1 = True
 
 class Astral:
-    def __init__(self):
+    def __init__(self) -> 'Astral':
         self.boss = Boss(160,440,4,0.16,3.2,10,0,'Esprit',eglise,'Eglise')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Astral/Droite/Attaque1/_a_{i},100.png') for i in range(29)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Astral/Gauche/Attaque1/_a_{i},100.png') for i in range(29)]
@@ -675,11 +710,12 @@ class Astral:
         self.atk1 = False
         self.atk2 = False
         self.sens = 'Droite'
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -702,8 +738,6 @@ class Astral:
                 print(f'Attaque2 : Pv hero : {j1.hero.get_pv()}')
         # Si le héros a bloqué l'attaque :
         if j1.hero.get_block():
-            # Image du block
-            j1.cd_block_img = time.time()
             print("Bloqué !")
         # Faire progresser les images pour l'animation
         self.frame += speed        
@@ -712,7 +746,7 @@ class Astral:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -725,11 +759,11 @@ class Astral:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -742,8 +776,8 @@ class Astral:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -761,6 +795,9 @@ class Astral:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -768,8 +805,11 @@ class Astral:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')
@@ -790,7 +830,7 @@ class Astral:
                 self.atk1 = True
 
 class EternityPainter:
-    def __init__(self):
+    def __init__(self) -> 'EternityPainter':
         self.boss = Boss(150,495,4,0.16,3.2,10,0,'Esprit',chute,'Chute')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Ep/Droite/Attaque1/_a_frm{i},60.png') for i in range(23)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Ep/Gauche/Attaque1/_a_frm{i},60.png') for i in range(23)]
@@ -812,11 +852,12 @@ class EternityPainter:
         self.dgt1 = False
         self.dgt2 = False
         self.dgt3 = False
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -858,7 +899,7 @@ class EternityPainter:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -871,11 +912,11 @@ class EternityPainter:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -888,8 +929,8 @@ class EternityPainter:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -907,6 +948,9 @@ class EternityPainter:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -914,8 +958,11 @@ class EternityPainter:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')
@@ -936,7 +983,7 @@ class EternityPainter:
                 self.atk1 = True
 
 class Shidai:
-    def __init__(self):
+    def __init__(self) -> 'Shidai':
         self.boss = Boss(180,445,4,0.16,2.8,4,0,'Air',chute,'Chute')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Shidai/Droite/Attaque1/_a_{i},60.png') for i in range(20)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Shidai/Gauche/Attaque1/_a_{i},60.png') for i in range(20)]
@@ -962,11 +1009,12 @@ class Shidai:
         self.dgt3 = False
         self.bonus = 0
         self.pv_actuels = self.boss.get_pv()
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1009,11 +1057,12 @@ class Shidai:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j1):
-        '''Permet de jouer l'animation de parade du héros.
+    def cp2(self, speed:float, sens:str, j1):
+        '''Permet de jouer la 2e compétence du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la compétence
+            - j1 : le joueur
         '''
         self.atk2 = True
         if self.boss.get_pv() > 0:
@@ -1033,7 +1082,7 @@ class Shidai:
             self.bonus += 0.05
             print(self.bonus)
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1046,11 +1095,11 @@ class Shidai:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -1063,8 +1112,8 @@ class Shidai:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -1082,6 +1131,9 @@ class Shidai:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -1089,8 +1141,11 @@ class Shidai:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')
@@ -1121,7 +1176,7 @@ class Shidai:
                 self.atk2 = True
 
 class Lilithe:
-    def __init__(self):
+    def __init__(self) -> 'Lilithe':
         self.boss = Boss(200,455,4,0.16,3.8,5,2.7,'Feu',lave,'Lave')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Lilithe/Droite/Attaque1/_a_{i},100.png') for i in range(12)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Lilithe/Gauche/Attaque1/_a_{i},100.png') for i in range(12)]
@@ -1151,11 +1206,12 @@ class Lilithe:
         self.bonus = 0
         self.pv_actuels = 160
 
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1180,11 +1236,12 @@ class Lilithe:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def attaque2(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque2(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque 2 du boss.
         Paramètres :
             - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - j1 : le héros combattu
+            - s (str) : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1221,11 +1278,12 @@ class Lilithe:
         else:
             self.boss.modif_img(self.images_attaque2_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j1):
-        '''Permet de jouer l'animation de parade du héros.
+    def cp2(self, speed:float, sens:str, j1):
+        '''Permet de jouer la 2e compétence du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la compétence
+            - j1 : le joueur
         '''
         if self.boss.get_pv() > 0:
             if self.frame >= len(self.cp2_d)-1:
@@ -1243,7 +1301,7 @@ class Lilithe:
             self.frame += speed
             self.bonus += 0.21
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1257,11 +1315,11 @@ class Lilithe:
             else:
                 self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -1274,8 +1332,8 @@ class Lilithe:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -1293,6 +1351,10 @@ class Lilithe:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu
+        '''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -1300,8 +1362,12 @@ class Lilithe:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu
+        '''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')
@@ -1346,7 +1412,7 @@ class Lilithe:
                 self.atk3 = True
 
 class Solfist:
-    def __init__(self):
+    def __init__(self) -> 'Solfist':
         self.boss = Boss(260,450,4,0.16,4.5,10,0,'FeuImmune',lave,'Lave')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Solfist/Droite/Attaque1/_a_{i},100.png') for i in range(41)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Solfist/Gauche/Attaque1/_a_{i},100.png') for i in range(41)]
@@ -1368,11 +1434,12 @@ class Solfist:
         self.dgt1 = False
         self.dgt2 = False
         self.dgt3 = False
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1406,7 +1473,7 @@ class Solfist:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1419,11 +1486,11 @@ class Solfist:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -1436,8 +1503,8 @@ class Solfist:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -1463,8 +1530,11 @@ class Solfist:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')
@@ -1485,7 +1555,7 @@ class Solfist:
                 self.atk1 = True
 
 class Elyx:
-    def __init__(self):
+    def __init__(self) -> 'Elyx':
         self.boss = Boss(240,470,3.5,0.16,5,10,0,'Neutre',chute,'Chute')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Elyx/Droite/Attaque1/_a_{i},100.png') for i in range(12)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Elyx/Gauche/Attaque1/_a_{i},100.png') for i in range(12)]
@@ -1507,11 +1577,12 @@ class Elyx:
         self.dgt1 = False
         self.dgt2 = False
         self.dgt3 = False
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1541,7 +1612,7 @@ class Elyx:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def marche(self,speed:float,sens,j1):
+    def marche(self,speed:float,sens:str,j1):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1560,11 +1631,11 @@ class Elyx:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -1577,8 +1648,8 @@ class Elyx:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -1596,6 +1667,10 @@ class Elyx:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu
+        '''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche',j1)
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -1603,8 +1678,12 @@ class Elyx:
             self.marche(self.boss.get_speed_anim(),'Droite',j1)
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu
+        '''
         if 1 < self.boss.get_cd_attaque2() < 1.5 :
             j1.hero.set_stun(False)
             j1.hero.set_speed(j1.hero.get_speed_base())
@@ -1631,7 +1710,7 @@ class Elyx:
                 self.atk1 = True
 
 class Embla:
-    def __init__(self):
+    def __init__(self) -> 'Embla':
         self.boss = Boss(150,440,4,0.16,2.8,4,0,'Glace',temple,'Temple')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Embla/Droite/Attaque1/_a_{i},60.png') for i in range(38)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Embla/Gauche/Attaque1/_a_{i},60.png') for i in range(38)]
@@ -1654,11 +1733,12 @@ class Embla:
         self.dgt2 = False
         self.dgt3 = False
         self.pv_actuels = self.boss.get_pv()
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1716,8 +1796,8 @@ class Embla:
     def inaction(self,speed:float,sens='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -1730,8 +1810,8 @@ class Embla:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -1749,6 +1829,9 @@ class Embla:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -1756,8 +1839,11 @@ class Embla:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')
@@ -1778,7 +1864,7 @@ class Embla:
                 self.atk1 = True
 
 class Sun:
-    def __init__(self):
+    def __init__(self) -> 'Sun':
         self.boss = Boss(260,450,4,0.16,5,10,0,'FeuImmune',lave,'Lave')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Sun/Droite/Attaque1/_a_{i},100.png') for i in range(33)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Sun/Gauche/Attaque1/_a_{i},100.png') for i in range(33)]
@@ -1800,11 +1886,12 @@ class Sun:
         self.dgt1 = False
         self.dgt2 = False
         self.dgt3 = False
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1841,7 +1928,7 @@ class Sun:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1854,11 +1941,11 @@ class Sun:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -1871,8 +1958,8 @@ class Sun:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -1890,6 +1977,9 @@ class Sun:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -1897,8 +1987,11 @@ class Sun:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')
@@ -1919,7 +2012,7 @@ class Sun:
                 self.atk1 = True
 
 class Skurge:
-    def __init__(self):
+    def __init__(self) -> 'Skurge':
         self.boss = Boss(140,510,5,0.16,6.5,10,0,'Nature',chute,'Chute')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Skurge/Droite/Attaque1/_a_{i},100.png') for i in range(14)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Skurge/Gauche/Attaque1/_a_{i},100.png') for i in range(14)]
@@ -1942,11 +2035,12 @@ class Skurge:
         self.dgt2 = False
         self.versladroite = False
         self.verslagauche = False
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -1976,7 +2070,7 @@ class Skurge:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1989,11 +2083,11 @@ class Skurge:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -2006,8 +2100,8 @@ class Skurge:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -2025,6 +2119,10 @@ class Skurge:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros
+        Paramètres :
+            - j1 : le héros combattu
+        '''
         if distance(j1,self) > 0:
             if self.boss.get_pos_x() < 200:
                 self.versladroite = True
@@ -2038,8 +2136,11 @@ class Skurge:
                 self.marche(self.boss.get_speed_anim(),'Droite')
                 self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')
@@ -2068,7 +2169,7 @@ class Skurge:
                 self.inaction(0.14,'Droite')
 
 class NoshRak:
-    def __init__(self):
+    def __init__(self) -> 'NoshRak':
         self.boss = Boss(150,470,4,0.16,2.8,4,0,'Foudre',desert,'Desert')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Nosh-Rak/Droite/Attaque1/_a_{i},60.png') for i in range(35)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Nosh-Rak/Gauche/Attaque1/_a_{i},60.png') for i in range(35)]
@@ -2091,11 +2192,12 @@ class NoshRak:
         self.dgt2 = False
         self.dgt3 = False
         self.pv_actuels = self.boss.get_pv()
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -2140,7 +2242,7 @@ class NoshRak:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -2153,11 +2255,11 @@ class NoshRak:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if self.frame >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -2170,8 +2272,8 @@ class NoshRak:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -2189,6 +2291,9 @@ class NoshRak:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -2196,8 +2301,11 @@ class NoshRak:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')
@@ -2218,7 +2326,7 @@ class NoshRak:
                 self.atk1 = True
 
 class Purgatos:
-    def __init__(self):
+    def __init__(self) -> 'Purgatos':
         self.boss = Boss(150,420,4,0.16,2.0,0,0,'Esprit',eglise,'Desert')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Purgatos/Droite/Attaque1/_a_{i},100.png') for i in range(23)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Purgatos/Gauche/Attaque1/_a_{i},100.png') for i in range(23)]
@@ -2241,11 +2349,12 @@ class Purgatos:
         self.dgt2 = False
         self.dgt3 = False
         self.pv_actuels = self.boss.get_pv()
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -2278,7 +2387,7 @@ class Purgatos:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -2291,11 +2400,11 @@ class Purgatos:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if self.frame >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -2308,8 +2417,8 @@ class Purgatos:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -2327,6 +2436,9 @@ class Purgatos:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -2334,8 +2446,11 @@ class Purgatos:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.25,j1,'Gauche')
@@ -2356,7 +2471,7 @@ class Purgatos:
                 self.atk1 = True
 
 class Ciphyron:
-    def __init__(self):
+    def __init__(self) -> 'Ciphyron':
         self.boss = Boss(150,420,4,0.16,2.0,0,0,'Foudre',desert,'Desert')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Ciphyron/Droite/Attaque1/_a_{i},60.png') for i in range(22)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Ciphyron/Gauche/Attaque1/_a_{i},60.png') for i in range(22)]
@@ -2380,11 +2495,12 @@ class Ciphyron:
         self.dgt3 = False
         self.dgt4 = False
         self.pv_actuels = self.boss.get_pv()
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -2435,7 +2551,7 @@ class Ciphyron:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -2448,11 +2564,11 @@ class Ciphyron:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if self.frame >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -2465,8 +2581,8 @@ class Ciphyron:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -2484,6 +2600,9 @@ class Ciphyron:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -2491,8 +2610,11 @@ class Ciphyron:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.25,j1,'Gauche')
@@ -2513,7 +2635,7 @@ class Ciphyron:
                 self.atk1 = True
 
 class Golem:
-    def __init__(self):
+    def __init__(self) -> 'Golem':
         self.boss = Boss(350,357,2.8,0.16,6.8,4,0,'Foudre',temple,'Temple')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Golem/Droite/Attaque1/_a_{i},70.png') for i in range(28)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Golem/Gauche/Attaque1/_a_{i},70.png') for i in range(28)]
@@ -2536,12 +2658,11 @@ class Golem:
         self.dgt2 = False
         self.dgt3 = False
         self.pv_actuels = self.boss.get_pv()
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque au poing du Boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque 1 du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
-            - j1 : le joueur
+            - j1 : le héros combattu
             - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
@@ -2592,7 +2713,7 @@ class Golem:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -2605,11 +2726,11 @@ class Golem:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -2622,8 +2743,8 @@ class Golem:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -2641,6 +2762,9 @@ class Golem:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -2648,8 +2772,11 @@ class Golem:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')
@@ -2700,11 +2827,12 @@ class Soji:
         self.bonus = 0
         self.pv_actuels = 160
 
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -2740,11 +2868,12 @@ class Soji:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def attaque2(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque2(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque 2 du boss.
         Paramètres :
             - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - j1 : le héros combattu
+            - s (str) : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -2787,11 +2916,12 @@ class Soji:
         else:
             self.boss.modif_img(self.images_attaque2_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j1):
-        '''Permet de jouer l'animation de parade du héros.
+    def cp2(self, speed:float, sens:str, j1):
+        '''Permet de jouer la 2e compétence du boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la compétence
+            - j1 : le joueur
         '''
         self.atk3 = True
         if self.boss.get_pv() > 0:
@@ -2810,7 +2940,7 @@ class Soji:
             self.frame += speed
             self.bonus += 0.18
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -2823,11 +2953,11 @@ class Soji:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -2840,8 +2970,8 @@ class Soji:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -2859,6 +2989,9 @@ class Soji:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -2866,8 +2999,11 @@ class Soji:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')
@@ -2911,7 +3047,7 @@ class Soji:
                     self.pv_actuels = self.boss.get_pv()
                 self.atk3 = True
 class Prophet:
-    def __init__(self):
+    def __init__(self) -> 'Prophet':
         self.boss = Boss(200,500,2.8,0.16,5.5,4,0,'Foudre',temple,'Temple')
         self.images_attaque1_d = [pygame.image.load(f'images/Jeu de combat/Prophet/Droite/Attaque1/_a_{i},100.png') for i in range(34)]
         self.images_attaque1_g = [pygame.image.load(f'images/Jeu de combat/Prophet/Gauche/Attaque1/_a_{i},100.png') for i in range(34)]
@@ -2934,11 +3070,12 @@ class Prophet:
         self.dgt2 = False
         self.dgt3 = False
         self.pv_actuels = self.boss.get_pv()
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -2964,8 +3101,6 @@ class Prophet:
             self.dgt1=False
         # Si le héros a bloqué l'attaque :
         if j1.hero.get_block():
-            # Image du block
-            j1.cd_block_img = time.time()
             print("Bloqué !")
         # Faire progresser les images pour l'animation
         self.frame += speed        
@@ -2974,7 +3109,7 @@ class Prophet:
         else:
             self.boss.modif_img(self.images_attaque1_d[int(self.frame)])
 
-    def marche(self,speed:float,sens):
+    def marche(self,speed:float,sens:str):
         '''Permet de jouer l'animation de marche du boss.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -2987,11 +3122,11 @@ class Prophet:
         else:
             self.boss.modif_img(self.images_marche_d[int(self.frame)])
 
-    def inaction(self,speed:float,sens='Gauche'):
+    def inaction(self,speed:float,sens:str='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -3004,8 +3139,8 @@ class Prophet:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -3023,6 +3158,9 @@ class Prophet:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -3030,8 +3168,11 @@ class Prophet:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')
@@ -3068,11 +3209,12 @@ class Prophet:
         self.atk1 = False
         self.dgt1 = False
         self.sens = 'Droite'
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -3117,8 +3259,8 @@ class Prophet:
     def inaction(self,speed:float,sens='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -3129,6 +3271,9 @@ class Prophet:
             self.boss.modif_img(self.images_inaction_d[int(self.frame)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -3181,11 +3326,12 @@ class Pandora:
         self.minion = None
         self.minion_spawn_x = 0
         self.minion_spawn_y = 0
-    def attaque1(self,speed:float,j1,s):
-        '''Permet de jouer l'attaque 1 du boss.
+    def attaque1(self,speed:float,j1,s:str):
+        '''Permet de jouer l'attaque au poing du Boss.
         Paramètres :
-            - speed (float) : la vitesse de l'animation
-            - j1 : la héros combattu
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : le joueur
+            - s : le sens de l'attaque
         '''
         # L'attaque 1 est en train d'être jouée.
         if self.frame < 1:
@@ -3242,8 +3388,8 @@ class Pandora:
     def inaction(self,speed:float,sens='Gauche'):
         '''Permet de jouer l'animation d'inaction du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : le sens de la marche du boss
         '''
         if int(self.frame) >= len(self.images_inaction_d)-1:
             self.frame = 0
@@ -3256,8 +3402,8 @@ class Pandora:
     def mort(self,speed:float,j1):
         '''Permet de jouer l'animation de mort du Boss.
         Paramètres :
-            - self
             - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j1 : héros combattu
         '''
         # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
         if not self.boss.get_mort():
@@ -3275,6 +3421,9 @@ class Pandora:
                 self.boss.modif_img(self.images_mort[int(self.frame_mort)])
 
     def boss_vers_hero(self,j1):
+        '''Permet au boss de se diriger vers le héros.
+        Paramètres :
+            - j1 : le héros combattu'''
         if distance(j1,self) < 0:
             self.marche(self.boss.get_speed_anim(),'Gauche')
             self.boss.modif_pos_x(-self.boss.get_speed())
@@ -3282,8 +3431,11 @@ class Pandora:
             self.marche(self.boss.get_speed_anim(),'Droite')
             self.boss.modif_pos_x(self.boss.get_speed())
 
-    def patern_boss(self,xhero,j1):
-        # Si le boss se trouve à portée, lancement des attaques
+    def patern_boss(self,xhero:float,j1):
+        '''Définit le comportement du boss
+        Paramètres :
+            - xhero (float) : la position du héros en x
+            - j1 : le héros combattu'''
         if self.atk1:
             if distance(j1,self) < 0:
                 self.attaque1(0.18,j1,'Gauche')

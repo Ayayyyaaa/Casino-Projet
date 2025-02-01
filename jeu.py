@@ -366,6 +366,7 @@ class Jeu():
             pygame.display.flip()
 
     def selectionheros(self):
+        '''Permet d'afficher l'animation des héros sur leur écran de selection'''
         for hero in [assassin,maehv,zendo,zukong,nighthero,lancier,spiritwarior,spirithero,hsuku,whistler,sanguinar,tethermancer,pureblade,aether,twilight,suzumebachi,yggdra,dusk]:
             if hero.ecran.get_actif():
                 hero.affiche(0.15)

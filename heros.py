@@ -7,7 +7,7 @@ from random import randint,choice
 from fonctions import afficher_ecran_chargement, distance
 
 class Hero:
-    def __init__(self,pv:int,y:int,speed:float,spanim1:float,marche:int,cd1:float,cd2:float,element:str):
+    def __init__(self,pv:int,y:int,speed:float,spanim1:float,marche:int,cd1:float,cd2:float,element:str) -> 'Hero':
         '''Permet d'initialiser la classe héros.
         Paramètres :
             - pv (int) : la vie du héros
@@ -42,87 +42,87 @@ class Hero:
         self.stun = False   # Bool qui indique si le héros est stun
         self.type = element  # Type du héros (pour les réactions élémentaire)
         self.collision = False  # Bool qui indique si le héros est en collision avec le boss
-    def get_collison(self):
+    def get_collison(self) -> bool:
         return self.colision 
     def get_img(self):
         return self.image
-    def get_pv(self):
+    def get_pv(self) -> float:
         return self.pv
-    def get_pv_base(self):
+    def get_pv_base(self) -> int:
         return self.pv_base
-    def get_pos_x(self):
+    def get_pos_x(self) -> float:
         return self.pos_x
-    def get_pos_y(self):
+    def get_pos_y(self) -> float:
         return self.pos_y
-    def get_attaque(self):
+    def get_attaque(self) -> bool:
         return self.attaque
-    def get_victoire(self):
+    def get_victoire(self) -> bool:
         return self.victoire
-    def get_cp2(self):
+    def get_cp2(self) -> float:
         return self.cp2
-    def get_cd_cp2(self):
+    def get_cd_cp2(self) -> float:
         return time.time() - self.cd_cp2    # Temps depuis la dernière compétence
-    def get_cd_atk(self):
+    def get_cd_atk(self) -> float:
         return time.time() - self.cd_atk    # Temps depuis la dernière compétence
-    def get_mort(self):
+    def get_mort(self) -> bool:
         return self.mort
-    def get_speed(self):
+    def get_speed(self) -> float:
         return self.speed
-    def get_speed_base(self):
+    def get_speed_base(self) -> float:
         return self.speed_base
-    def get_speed_anim(self):
+    def get_speed_anim(self) -> tuple:
         return (self.speed_anim1,self.speed_anim4)
-    def get_block(self):
+    def get_block(self) -> bool:
         return (self.block)
-    def get_combo(self):
+    def get_combo(self) -> bool:
         return self.combo
-    def get_portee(self):
+    def get_portee(self) -> int:
         return self.portee
-    def get_cd(self):
+    def get_cd(self) -> tuple:
         return self.cd
-    def get_poison(self):
+    def get_poison(self) -> float:
         return self.poison
-    def get_stun(self):
+    def get_stun(self) -> bool:
         return self.stun
-    def get_type(self):
+    def get_type(self) -> str:
         return self.type
-    def set_mort(self,mort):
+    def set_mort(self,mort:bool):
         self.mort = mort
-    def modif_pv(self, nb):
+    def modif_pv(self, nb:float):
         self.pv += nb
-    def modif_pos_x(self, nb):
+    def modif_pos_x(self, nb:float):
         self.pos_x += nb
-    def modif_pos_y(self, nb):
+    def modif_pos_y(self, nb:float):
         self.pos_y += nb
-    def set_attaque(self, actif):
+    def set_attaque(self, actif:bool):
         self.attaque = actif
-    def modif_img(self, img):
+    def modif_img(self, img:str):
         self.image = pygame.image.load(img).convert_alpha()
     def set_cd_img(self):
         self.cd_img = time.time()
-    def set_victoire(self,vict):
+    def set_victoire(self,vict:bool):
         self.victoire = vict
-    def set_cp2(self, actif):
+    def set_cp2(self, actif:bool):
         self.cp2 = actif
     def set_cd_cp2(self):
         self.cd_cp2 = time.time()
     def set_cd_atk(self):
         self.cd_atk = time.time()
-    def set_block(self,block):
+    def set_block(self,block:bool):
         self.block = block
-    def set_combo(self,combo):
+    def set_combo(self,combo:bool):
         self.combo = combo
-    def set_speed(self,s):
+    def set_speed(self,s:float):
         self.speed = s
-    def set_poison(self,poison):
+    def set_poison(self,poison:float):
         self.poison = poison
-    def set_stun(self,stun):
+    def set_stun(self,stun:bool):
         self.stun = stun
-    def set_collision(self,collision):
+    def set_collision(self,collision:bool):
         self.colision = collision
 
 class Night_Hero:
-    def __init__(self):
+    def __init__(self) -> 'Night_Hero':
         self.hero = Hero(100,540,4,0.25,0.2,1.2,5,'Nuit')
         self.images_coup_depee_d = [f'images/Jeu de combat/Hero/Attaque/Attaque_Droite/Attaque{i}.png' for i in range(1,13)]
         self.images_coup_depee_g = [f'images/Jeu de combat/Hero/Attaque/Attaque_Gauche/Attaque{i}.png' for i in range(1,13)]
@@ -139,7 +139,7 @@ class Night_Hero:
         self.cd_dgt5 = 0
         self.cd_block_img = 0
 
-    def inaction(self,sens):
+    def inaction(self,sens:str):
         return None
 
     def attaque(self,speed:float,sens,j2,multis:float):
@@ -188,7 +188,7 @@ class Night_Hero:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -207,7 +207,7 @@ class Night_Hero:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
         
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -229,6 +229,7 @@ class Night_Hero:
         self.frame_parade += speed
 
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
 class Spirit_Hero:
@@ -253,6 +254,9 @@ class Spirit_Hero:
         self.atk2 = False
 
     def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         if int(self.frame) >= len(self.inaction_d)-1:
             # On remet tout à 0
             self.frame = 0
@@ -262,7 +266,7 @@ class Spirit_Hero:
             self.hero.modif_img(self.inaction_d[int(self.frame)])
         self.frame += 0.125
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -333,7 +337,7 @@ class Spirit_Hero:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -351,7 +355,7 @@ class Spirit_Hero:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -380,6 +384,7 @@ class Spirit_Hero:
             self.frame += speed
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
 class Spirit_Warrior:
@@ -404,10 +409,13 @@ class Spirit_Warrior:
         self.cd_block_img = 0
         self.atk2 = False
 
-    def inaction(self,sens):
+    def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         return None
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -479,7 +487,7 @@ class Spirit_Warrior:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -497,7 +505,7 @@ class Spirit_Warrior:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -527,6 +535,7 @@ class Spirit_Warrior:
             self.frame += speed
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
 class Lancier:
@@ -549,10 +558,13 @@ class Lancier:
         self.cd_block_img = 0
         self.charge = False
 
-    def inaction(self,sens):
+    def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         return None
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -598,7 +610,7 @@ class Lancier:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -636,7 +648,7 @@ class Lancier:
                         print(f"Attaque Charge Héros : Pv boss : {j2.boss.get_pv()}")
                 self.hero.modif_img(self.cp2_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -653,6 +665,7 @@ class Lancier:
                 self.hero.set_speed(4)
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
 class Assassin:
@@ -679,7 +692,7 @@ class Assassin:
         self.cd_block_img = 0
         self.atk2 = False
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -750,7 +763,7 @@ class Assassin:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -779,7 +792,7 @@ class Assassin:
                     self.hero.modif_img(self.images_course_d[int(self.frame)])
                     self.hero.set_speed(6)
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -801,9 +814,13 @@ class Assassin:
             self.frame += speed
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
-    def inaction(self,sens):
+    def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         return None
 
 class Zukong:
@@ -828,7 +845,7 @@ class Zukong:
         self.cd_block_img = 0
         self.atk2 = False
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -873,7 +890,7 @@ class Zukong:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -891,7 +908,7 @@ class Zukong:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -915,9 +932,13 @@ class Zukong:
             self.frame += speed
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
     def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         if int(self.frame) >= len(self.inaction_d)-1:
             # On remet tout à 0
             self.frame = 0
@@ -953,7 +974,7 @@ class Maehv:
         self.dgt3 = False
         self.bonus = 0
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1008,7 +1029,7 @@ class Maehv:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1026,7 +1047,7 @@ class Maehv:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -1051,9 +1072,13 @@ class Maehv:
             print(self.bonus)
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
     def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         if int(self.frame) >= len(self.inaction_d)-1:
             # On remet tout à 0
             self.frame = 0
@@ -1088,7 +1113,7 @@ class Zendo:
         self.dgt3 = False
         self.dgt4 = False
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1097,6 +1122,7 @@ class Zendo:
             - multis (float) : le multiplicateur de dégâts
         '''
         if self.hero.get_pv() > 0:
+            # On inflige UNE fois les dégâts quand la frame atteint les frames de dégâts (12,18,24,30)
             if self.hero.get_collison() and int(self.frame) == 12 and not j2.boss.get_block():
                 if not self.dgt1:
                     aie_boss.play()
@@ -1150,7 +1176,7 @@ class Zendo:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1168,7 +1194,7 @@ class Zendo:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -1180,9 +1206,13 @@ class Zendo:
         return None
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
     def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         if int(self.frame) >= len(self.inaction_d)-1:
             # On remet tout à 0
             self.frame = 0
@@ -1217,7 +1247,7 @@ class Pureblade:
         self.dgt3 = False
         self.dgt4 = False
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1263,7 +1293,7 @@ class Pureblade:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1281,7 +1311,7 @@ class Pureblade:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -1293,9 +1323,13 @@ class Pureblade:
         return None
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
     def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         if int(self.frame) >= len(self.inaction_d)-1:
             # On remet tout à 0
             self.frame = 0
@@ -1330,7 +1364,7 @@ class Hsuku:
         self.dgt3 = False
         self.dgt4 = False
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1390,7 +1424,7 @@ class Hsuku:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1408,7 +1442,7 @@ class Hsuku:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -1420,9 +1454,13 @@ class Hsuku:
         return None
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
     def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         if int(self.frame) >= len(self.inaction_d)-1:
             # On remet tout à 0
             self.frame = 0
@@ -1457,7 +1495,7 @@ class Sanguinar:
         self.dgt3 = False
         self.dgt4 = False
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1513,7 +1551,7 @@ class Sanguinar:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1531,7 +1569,7 @@ class Sanguinar:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -1543,9 +1581,13 @@ class Sanguinar:
         return None
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
     def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         if int(self.frame) >= len(self.inaction_d)-1:
             # On remet tout à 0
             self.frame = 0
@@ -1580,7 +1622,7 @@ class Whistler:
         self.dgt3 = False
         self.dgt4 = False
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1625,7 +1667,7 @@ class Whistler:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1643,7 +1685,7 @@ class Whistler:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -1655,9 +1697,13 @@ class Whistler:
         return None
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
     def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         if int(self.frame) >= len(self.inaction_d)-1:
             # On remet tout à 0
             self.frame = 0
@@ -1692,7 +1738,7 @@ class Tethermancer:
         self.dgt3 = False
         self.dgt4 = False
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1738,7 +1784,7 @@ class Tethermancer:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1756,7 +1802,7 @@ class Tethermancer:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -1768,9 +1814,13 @@ class Tethermancer:
         return None
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
     def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         if int(self.frame) >= len(self.inaction_d)-1:
             # On remet tout à 0
             self.frame = 0
@@ -1804,7 +1854,7 @@ class Aether:
         self.dgt3 = False
         self.bonus = 0
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1848,7 +1898,7 @@ class Aether:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1867,7 +1917,7 @@ class Aether:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -1879,9 +1929,13 @@ class Aether:
         return None
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
     def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         if int(self.frame) >= len(self.inaction_d)-1:
             # On remet tout à 0
             self.frame = 0
@@ -1918,7 +1972,7 @@ class Twilight:
         self.dgt3 = False
         self.dgt4 = False
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1958,7 +2012,7 @@ class Twilight:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -1976,7 +2030,7 @@ class Twilight:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -1988,9 +2042,13 @@ class Twilight:
         return None
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
     def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         if int(self.frame) >= len(self.inaction_d)-1:
             # On remet tout à 0
             self.frame = 0
@@ -2022,7 +2080,7 @@ class Yggdra:
         self.atk2 = False
         self.dgt1 = False
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -2064,7 +2122,7 @@ class Yggdra:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -2082,7 +2140,7 @@ class Yggdra:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -2094,9 +2152,13 @@ class Yggdra:
         return None
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
     def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         if int(self.frame) >= len(self.inaction_d)-1:
             # On remet tout à 0
             self.frame = 0
@@ -2128,7 +2190,7 @@ class Suzumebachi:
         self.dgt2 = False
         self.coups = 0
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -2180,7 +2242,7 @@ class Suzumebachi:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -2198,7 +2260,7 @@ class Suzumebachi:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -2210,9 +2272,13 @@ class Suzumebachi:
         return None
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
     def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         if int(self.frame) >= len(self.inaction_d)-1:
             # On remet tout à 0
             self.frame = 0
@@ -2247,7 +2313,7 @@ class Dusk:
         self.dgt3 = False
         self.dgt4 = False
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -2301,7 +2367,7 @@ class Dusk:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -2319,7 +2385,7 @@ class Dusk:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -2331,9 +2397,13 @@ class Dusk:
         return None
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
     def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         if int(self.frame) >= len(self.inaction_d)-1:
             # On remet tout à 0
             self.frame = 0
@@ -2367,7 +2437,7 @@ class MauriceTicket:
         self.dgt2 = False
         self.dgt3 = False
 
-    def attaque(self,speed:float,sens,j2,multis):
+    def attaque(self,speed:float,sens:str,j2,multis:float):
         '''Permet de jouer l'animation d'attaque du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -2421,7 +2491,7 @@ class MauriceTicket:
                 j2.boss.set_victoire(True)
                 self.frame_mort = 0
 
-    def marche(self,speed:float,sens,j2):
+    def marche(self,speed:float,sens:str,j2):
         '''Permet de jouer l'animation de marche du héros.
         Paramètres :
             - speed (float) : la vitesse à laquelle va se jouer l'animation
@@ -2440,7 +2510,7 @@ class MauriceTicket:
         else:
             self.hero.modif_img(self.images_marche_d[int(self.frame)])
 
-    def cp2(self, speed:float, sens, j2,multis):
+    def cp2(self, speed:float, sens:str, j2,multis:float):
         '''Permet de jouer la compétence 2 du héros.
         Paramètres :
             - speed (float) : la vitesse de l'animation
@@ -2467,9 +2537,13 @@ class MauriceTicket:
             
     
     def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
         self.frame=0
 
     def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
         if int(self.frame) >= len(self.inaction_d)-1:
             # On remet tout à 0
             self.frame = 0

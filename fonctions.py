@@ -20,6 +20,14 @@ def dessiner_bouton(fenetre, message:str, x: int, y:int, largeur:int, hauteur:in
         - couleur_texte (tuple) : la couleur du texte du bouton
         - taille (int) : la taille de la police d'écriture
     '''
+    assert type(message) == str,'Erreur: message doit etre une chaine de caracteres'
+    assert type(x) == int,'Erreur: x doit etre un entier'
+    assert type(y) == int,'Erreur: y doit etre un entier'
+    assert type(largeur) == int,'Erreur: largeur doit etre un entier'
+    assert type(hauteur) == int,'Erreur: hauteur doit etre un entier'
+    assert type(couleur_fond) == tuple,'Erreur: couleur_fond doit etre un tuple'
+    assert type(couleur_texte) == tuple,'Erreur: couleur_texte doit etre un tuple'
+    assert type(taille) == int,'Erreur: taille doit etre un entier'
     pygame.draw.rect(fenetre, couleur_fond, (x, y, largeur, hauteur))
     police = pygame.font.Font('police.ttf', taille)
     texte = police.render(message, True, couleur_texte)
@@ -33,7 +41,7 @@ def dessiner_zone_texte(fenetre, rect, texte:str, actif:bool):
         - fenetre : la fenetre pygame concernée
         - rect : Le rectangle à dessiner, contenant la position x et y, ainsi que la largeur et la hauteur
         - texte (str) : Le texte à écrire
-        - actif (bool) : Le booléen indiquant si le champ est actif (ssi on peut écrire)
+        - actif (bool) : Le booléen indiquant si le champ est actif (si on peut écrire)
     '''
     pygame.draw.rect(fenetre, blanc, rect)
     couleur = gris
@@ -67,8 +75,7 @@ def valider_numero_carte_bancaire(numero:str) -> bool:
     "Fonction qui permet de valider un numéro de carte bancaire avec la methode de Luhn (oui on est motivés)"
     assert type(numero) == str, "Le numéro de carte bancaire doit être une chaîne de caractères"
     numero = ''.join(filter(str.isdigit, numero))
-    if len(numero) != 16:
-        return False
+    assert len(numero) == 16, "Le numéro de carte bancaire n'est pas valide"
     somme = 0
     inverse = numero[::-1]
     for i, chiffre in enumerate(inverse):
