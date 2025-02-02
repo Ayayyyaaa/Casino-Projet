@@ -3,12 +3,13 @@ import pygame
 from objets_et_variables import joueur1
 from img import chargement
 
-print("Chargement de SQL.py")
+print("Chargement du SQL...")
 
 def creer_table():
     '''Permet de créer les tables de la base de données si elles n'y sont pas présentes.'''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
+    # On crée toutes les tables de la base de données
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS "compte" (
             "id_compte"	INTEGER,
@@ -122,9 +123,11 @@ def det_id_compte(pseudo:str,mdp:str) -> int:
     assert type(mdp) == str, "Le mot de passe doit être une chaîne de caractères."
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
+    # On récupère l'id du compte dans la bdd grace au pseudo et mdp
     cursor.execute("SELECT id_compte FROM compte WHERE pseudo = ? AND mdp = ?", (pseudo,mdp))
     id_compte = cursor.fetchone()
     conn.close()
+    # On renvoie l'id du compte, None s'il n'existe pas encore
     return id_compte[0] if id_compte else None
 
 def recup_donnees(id_compte:int) -> float:
@@ -138,9 +141,11 @@ def recup_donnees(id_compte:int) -> float:
     assert type(id_compte) == int, "L'id du compte doit être un nombre entier."
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
+    # On récupère le solde du joueur dans la bdd grace à son id
     cursor.execute("SELECT solde FROM compte WHERE id_compte = ?", (id_compte,))
     solde = cursor.fetchone()
     conn.close()
+    # On renvoie le solde du joueur, 200000 s'il n'existe pas encore
     return solde[0] if solde else 200000
 
 def ajouter_connexion(id_compte:int):

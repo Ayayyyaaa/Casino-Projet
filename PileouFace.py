@@ -4,7 +4,7 @@ from objets_et_variables import *
 from sons import *
 
 afficher_ecran_chargement(chargement[4])
-print("Chargement de PileouFace.py")
+print("Chargement du Babel Face...")
 
 class Pile_ou_face:
     def __init__(self):

@@ -6,7 +6,7 @@ from objets_et_variables import joueur1
 from sons import click
 
 afficher_ecran_chargement(chargement[7])
-print("Chargement de Machine_a_sous.py")
+print("Chargement du Babel Gambling")
 
 class Emplacement(pygame.sprite.Sprite):
 

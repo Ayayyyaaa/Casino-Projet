@@ -5,7 +5,7 @@ from fonctions import afficher_ecran_chargement
 from img import chargement
 
 afficher_ecran_chargement(chargement[4])
-print("Chargement de Roulette_Russe.py")
+print("Chargement de la Babel Roulette...")
 
 class RouletteRusse:
     def __init__(self, pos_x, pos_y,son,son_blanc):

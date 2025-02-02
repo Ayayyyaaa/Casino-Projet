@@ -1,6 +1,6 @@
 import pygame
 import time
-print("Chargement de img.py")
+print("Chargement des images...")
 
 pygame.init()
 pygame.display.set_caption("Le Babelcasino")

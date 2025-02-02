@@ -23,17 +23,16 @@ def obs_niveau1():
     Returns : 
         - dictionnaire (dict) avec les obstacles et leur position sur le terrain.'''
     pic1 = Pique(1600,550,'Jeu_platforme/Obs/Rocher.png')
-    pic2 = Pique(1600,425,'Jeu_platforme/Obs/Requin.png')
+    pic2 = Pique(1600,425,'Jeu_platforme/Obs/Requin.png',12)
     pic3 = Pique(1600,525,'Jeu_platforme/Obs/Requin2.png')
     pic4 = Pique(1600,625,'Jeu_platforme/Obs/rocher2.png')
     pic5 = Pique(1600,550,'Jeu_platforme/Obs/Rocher.png')
-    pic6 = Pique(1600,425,'Jeu_platforme/Obs/Requin.png')
+    pic6 = Pique(1600,425,'Jeu_platforme/Obs/Requin.png',12)
     pic7 = Pique(1600,525,'Jeu_platforme/Obs/Requin2.png')
     pic8 = Pique(1600,625,'Jeu_platforme/Obs/rocher2.png')
-    poisson = Pique(1600,500,'Jeu_platforme/Obs/poisson.png',15)
-    poisson2 = Pique(1600,600,'Jeu_platforme/Obs/poisson.png',15)
+    poisson = Pique(1600,500,'Jeu_platforme/Obs/Poisson2.png',15)
     poisson3 = Pique(1600,300,'Jeu_platforme/Obs/poisson.png',15)
-    poisson4 = Pique(1600,600,'Jeu_platforme/Obs/poisson.png',15)
+    poisson4 = Pique(1600,580,'Jeu_platforme/Obs/Poisson2.png',15)
     return {pic1:200, pic2:350, pic3:550, pic4:750, pic5:1100, pic6:820, pic7:890, pic8:970, poisson:250, poisson4:250, poisson3:350, poisson4:950}
 
 #---------Fin---------#
@@ -206,7 +205,7 @@ class BabelRace:
             x_fond -= 10  # Déplacement du fond vers la gauche
             self.x_simule += 1 # Augmentation de la position x simulée de la voiture
             # Condition de fin de niveau
-            if self.x_simule >= 1600:
+            if self.x_simule >= 1500:
                 self.run = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:  # Fermeture de la fenêtre
@@ -233,7 +232,6 @@ class BabelRace:
                     voiture.set_y(voiture.get_y() + 7)  # Chute
             else:
                 voiture.set_cd(False)
-            print(self.sol)
             # Gestion des décors (pentes et plateformes)
             for decor, pos in self.pentes.items():
                 # Activation du décor quand on arrive à sa position

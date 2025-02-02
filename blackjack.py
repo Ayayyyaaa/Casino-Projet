@@ -10,7 +10,7 @@ from Ecrans import ecran2,ecran_black,ecran_mort
 
 
 afficher_ecran_chargement(chargement[9])
-print("Chargement de blackjack.py")
+print("Chargement du Babel Jack...")
 
 class Blackjack:
     def __init__(self):

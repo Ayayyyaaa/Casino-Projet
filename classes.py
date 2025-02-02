@@ -2,7 +2,7 @@
 import pygame
 from img import fenetre
 
-print("Chargement de classes.py")
+print("Chargement des classes...")
 
 class Joueur:
     def __init__(self, pseudo:str = '') -> 'Joueur':

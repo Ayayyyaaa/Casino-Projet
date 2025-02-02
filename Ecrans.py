@@ -10,7 +10,7 @@ from fonctions import achat
 from Jeu_platforme import *
 
 afficher_ecran_chargement(chargement[6])
-print("Chargement de Ecrans.py")
+print("Chargement des Ecrans...")
 
 class Ecran:
     def __init__(self, actif:bool = False):
@@ -228,18 +228,23 @@ class EcranBoutique:
         '''
         Permet d'afficher l'écran de la boutique, ainsi que gérer les interactions avec les boutons.
         '''
+        # Affichage du fond et des boutons
         fenetre.blit(self.fond, (0, 0))
         btn_fleche.draw(fenetre,pygame.mouse.get_pos())
         btn_alcool.draw(fenetre,pygame.mouse.get_pos())
+        # Bouton retour
         if btn_fleche.collision(clic.get_clic()):
             ecran_boutique.ecran.set_actif(False),ecran2.ecran.set_actif(True)
             clic.set_clic((0,0))
+        # Bouton pour la page d'achat des héros
         elif btn_hero.collision(clic.get_clic()):
             ecran_boutique.ecran.set_actif(False),hero.ecran.set_actif(True)
             clic.set_clic((0,0))
+        # Bouton pour la page d'achat des alcools
         elif btn_alcool.collision(clic.get_clic()):
             ecran_boutique.ecran.set_actif(False),alcool.ecran.set_actif(True)
             clic.set_clic((0,0))
+        # Animation du bouton des héros
         elif btn_hero.collision(pygame.mouse.get_pos()):
             self.anim(0.1)
         else:
@@ -247,7 +252,10 @@ class EcranBoutique:
             self.frame = 0
 
     def anim(self,speed:float):
+        '''
+        Permet d'animer le bouton des héros'''
         self.frame += speed
+        # Si on arrive au bout de l'animation on recommence
         if self.frame >= len(self.btn_heros)-1:
             self.frame = 0
         fenetre.blit(pygame.image.load(self.btn_heros[int(self.frame)]).convert_alpha(), (215, 130))
@@ -267,6 +275,7 @@ class EcranAlcool:
         '''
         Permet d'afficher l'écran des alcools, ainsi que gérer les interactions avec les boutons pour l'achat de ceux-ci.'''
         fenetre.blit(self.fond, (0, 0))
+        # Quand on survole un bouton, on affiche les effets de l'alcool
         if btn_whisky.collision(pygame.mouse.get_pos()):
             self.whisky = True
         elif btn_biere.collision(pygame.mouse.get_pos()):
@@ -275,14 +284,18 @@ class EcranAlcool:
             self.vodka = True
         elif btn_mojito.collision(pygame.mouse.get_pos()):
             self.mojito = True
+        # Sinon, on désactive tous les effets
         else:
             self.vodka,self.biere,self.whisky,self.mojito = False,False,False,False
+        # Bouton retour
         if btn_fleche.collision(clic.get_clic()):
             clic.set_clic((0,0))
             alcool.ecran.set_actif(False),ecran_boutique.ecran.set_actif(True)
+        # Si on clique sur un bouton d'achat de la vodka, on lance le gif de Poutine
         elif btn_vodka.collision(clic.get_clic()):
             alcool.ecran.set_actif(False),vodka.ecran.set_actif(True)
             pygame.mixer.music.unload()
+        # Si on clique sur un alcool, on lance l'achat
         elif btn_biere.collision(clic.get_clic()):
             achat('Biere')
         elif btn_whisky.collision(clic.get_clic()):

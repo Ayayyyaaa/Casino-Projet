@@ -2,7 +2,7 @@ import pygame
 from objets_et_variables import *
 from SQL import ajouter_objet_inventaire,det_id_compte
 
-print("Chargement de fonctions.py")
+print("Chargement des fonctions...")
 
 fond2 = pygame.image.load('images/Fonds d\'ecran/casino.jpg').convert()
 

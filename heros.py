@@ -6,6 +6,8 @@ from sons import son_epee,aie_boss,aie_hero
 from random import randint,choice
 from fonctions import afficher_ecran_chargement, distance
 
+print("Chargement des héros...")
+
 class Hero:
     def __init__(self,pv:int,y:int,speed:float,spanim1:float,marche:int,cd1:float,cd2:float,element:str) -> 'Hero':
         '''Permet d'initialiser la classe héros.

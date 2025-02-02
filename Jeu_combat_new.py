@@ -10,7 +10,7 @@ from boss import *
 from heros import *
 
 afficher_ecran_chargement(chargement[8])
-print("Chargement du jeu de combat...")
+print("Chargement de la Babel Arena...")
 
 class JeuCombat:
     def __init__(self,j1,j2,nom_boss:str) -> 'JeuCombat':
