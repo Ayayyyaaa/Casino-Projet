@@ -80,7 +80,7 @@ class Joueur:
 class Coin:
     def __init__(self, pos_x:int, pos_y:int) -> 'Coin':
         self.tourne_animation = False
-        self.sprites = [pygame.image.load('pieces/coin-{i}.png.png') for i in range(1,5)]
+        self.sprites = [pygame.image.load(f'pieces/coin-{i}.png.png') for i in range(1,5)]
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.actuel_sprite = 0
@@ -206,8 +206,8 @@ class Biere:
         self.nom = 'Biere'
     def get_nom(self):
         return self.nom
-    def boire(self,joueur1:'Joueur'):
-        assert isinstance(joueur1,'Joueur'),'Erreur: joueur1 doit etre un objet de la classe Joueur'
+    def boire(self,joueur1:Joueur):
+        assert isinstance(joueur1,Joueur),'Erreur: joueur1 doit etre un objet de la classe Joueur'
         joueur1.set_gains('Roulette',0.9)
         joueur1.set_probas('Roulette',-1)
 
@@ -216,16 +216,16 @@ class Whisky:
         self.nom = 'Whisky'
     def get_nom(self):
         return self.nom
-    def boire(self,joueur1:'Joueur'):
-        assert isinstance(joueur1,'Joueur'),'Erreur: joueur1 doit etre un objet de la classe Joueur'
+    def boire(self,joueur1:Joueur):
+        assert isinstance(joueur1,Joueur),'Erreur: joueur1 doit etre un objet de la classe Joueur'
         joueur1.set_gains('Blackjack',1.1)
 
 class Mojito:
-    def __init__(self) -> 'Whisky':
+    def __init__(self) -> 'Mojito':
         self.nom = 'Mojito'
     def get_nom(self):
         return self.nom
-    def boire(self,joueur1:'Joueur'):
-        assert isinstance(joueur1,'Joueur'),'Erreur: joueur1 doit etre un objet de la classe Joueur'
+    def boire(self,joueur1:Joueur):
+        assert isinstance(joueur1,Joueur),'Erreur: joueur1 doit etre un objet de la classe Joueur'
         joueur1.set_gains('Roulette',1.3)
         joueur1.set_probas('Roulette',1)

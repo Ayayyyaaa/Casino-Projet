@@ -87,6 +87,7 @@ class Ecran2:
         '''
         Permet d'afficher l'écran principal et de gérer l'animation des boutons et mettre à jour les animations des jeux.
         '''
+        # On gère les effets spécifiques à certains pseudos 
         if joueur1.get_pseudo().lower() == 'fredou':
             self.fond = pygame.image.load('images/Fonds d\'ecran/coeurfredou.png').convert()
         elif joueur1.get_pseudo().lower() == 'mr.maurice' or joueur1.get_pseudo().lower() == 'mr maurice' or joueur1.get_pseudo().lower() == 'maurice':
@@ -102,6 +103,7 @@ class Ecran2:
         else:
             self.fond = pygame.image.load('images/Fonds d\'ecran/casino.jpg').convert()
         fenetre.blit(self.fond, (0, 0))
+        # On fait progresser l'animation de la toute pitite piece à côté du solde du joueur (Elle est trop chou)
         coin.activer_rotation()
         dessiner_bouton(fenetre, joueur1.get_pseudo(), bouton2.get_x(), bouton2.get_y(), bouton2.get_largeur(), bouton2.get_hauteur(), blanc, noir, 20)
         dessiner_bouton(fenetre, f"Solde : {int(joueur1.get_cagnotte())}", bouton3.get_x(), bouton3.get_y(), bouton3.get_largeur(), bouton3.get_hauteur(), blanc, noir, 25)
@@ -195,12 +197,10 @@ class EcranVictoire:
         Permet d'afficher l'écran de victoire.
         '''
         fenetre.blit(paradis, (0, 0))
-       
         if not pygame.mixer.music.get_busy():
             pygame.mixer.music.unload()
             pygame.mixer.music.load(musique_victoire)
             pygame.mixer.music.play(-1)
-
         btn_retour.draw(fenetre,pygame.mouse.get_pos())
         if btn_retour.collision(clic.get_clic()):
             clic.set_clic((0,0))
@@ -305,7 +305,7 @@ class EcranAlcool:
             fenetre.blit(effet_mojito, (pygame.mouse.get_pos()[0]-180, pygame.mouse.get_pos()[1]-30))
 
 class EcranSelection:
-    def __init__(self, caracteristiques_hero, liste, hero:tuple, y:int, x:int = 50):
+    def __init__(self, caracteristiques_hero, liste:list, hero:tuple, y:int, x:int = 50):
         self.police = pygame.font.Font('babelcasino.ttf', 8)
         self.ecran = Ecran()
         self.fond = pygame.image.load('images/arene.png').convert_alpha()
@@ -330,21 +330,25 @@ class EcranSelection:
             - Un bouton pour revenir en arrière
         '''
         fenetre.blit(self.fond, (0, 0))
+        # On joue l'animation de chaque héros pendant l'écran de selection
         fenetre.blit(pygame.image.load(self.anim[int(self.frame)]).convert_alpha(), (self.x, self.y))
         self.frame += speed
         if self.frame >= len(self.anim)-1:
             self.frame = 0
+        # On affiche les caractéristiques du héros si le joueur a cliqué sur le bouton
         if self.infos:
             fenetre.blit(self.caracteristiques, (30, 50))
+        # Si le joueur possède le héros on écrit 'Valider' sur le bouton
         elif self.hero[0] in joueur1.get_heros():
             btn_select.draw(fenetre,pygame.mouse.get_pos())
             fenetre.blit(self.valider, (185, 340))
+        # Sinon on écrit le prix du héros sur le bouton
         else:
             btn_select.draw(fenetre,pygame.mouse.get_pos())
             fenetre.blit(self.prix, (185, 340))
+        # On affiche les boutons
         btn_fleche.draw(fenetre,pygame.mouse.get_pos())
         btn_info.draw(fenetre,pygame.mouse.get_pos())
-        
     def get_heros(self):
         return self.hero
         
@@ -357,7 +361,7 @@ class EcranVodka:
         self.frame = 'Vodkaa/_a_frm0,70.png'
         self.num_frame = 0
         self.musique_de_fond = vodkaaa
-    def affiche(self,speed):
+    def affiche(self,speed:float):
         '''Permet d'afficher l'écran de Poutine.'''
         self.num_frame += speed
         self.frame = self.frames[int(self.num_frame)]
@@ -366,6 +370,7 @@ class EcranVodka:
             # On remet tout à 0
             self.num_frame = 0
         fenetre.blit(pygame.image.load(self.frame),(-80,0))
+        # On lance la musique associée au gif
         if not pygame.mixer.music.get_busy():
             pygame.mixer.music.load(self.musique_de_fond)
             pygame.mixer.music.set_volume(0.3)  # Volume pour la musique de fond générale
@@ -404,7 +409,7 @@ class EcranChargement:
         self.frame = 'images/Fonds d\'ecran/Chargement/frm (2).png'
         self.num_frame = 0
         self.stop = True
-    def affiche(self,speed):
+    def affiche(self,speed:float):
         '''Permet d'afficher l'animation l'écran de chargement.'''
         if self.num_frame <= 73 or not self.stop:
             self.num_frame += speed
@@ -433,38 +438,50 @@ class EcranInventaire:
         Pour chaque alcool dispo, on affiche le bouton correspondant avec la qté en dessous.
         Si le bouton est cliqué, l'alcool est sélectionné et peut être utilisé.
         '''
+        # On affiche les boutons
         fenetre.blit(self.fond,(0,0))
         btn_valider.draw(fenetre,pygame.mouse.get_pos())
         btn_flecheretour.draw(fenetre,pygame.mouse.get_pos())
         fenetre.blit(banniere,(136,285))
+        # Pour chaque item dispo
         for item in self.items:
             item.draw(fenetre,pygame.mouse.get_pos())
+            # On affiche la quantité de l'objet présente dans l'inventaire du joueur
             if self.alcools[item] in joueur1.get_inventaire().keys():
                 fenetre.blit(self.police.render(('x ' + str(joueur1.get_inventaire()[self.alcools[item]])), True, noir),(item.get_pos()[0]+15, item.get_pos()[1]+60))
             else:
                 fenetre.blit(self.police.render(('x 0'), True, noir),(item.get_pos()[0]+15, item.get_pos()[1]+60))
+            # Si on clique sur un item
             if item.collision(clic.get_clic()):
+                # On affiche le croix de sélection à l'emplacement du l'item
+                click.play()
                 self.selectione = self.alcools[item]
                 curseur_selection.set_pos(item.get_pos())
                 curseur_selection.set_actif(True)
                 clic.set_clic((0,0))
             elif btn_valider.collision(clic.get_clic()):
+                # Si l'item selectionné est présent dans l'inventaire du joueur
                 if self.selectione in joueur1.get_inventaire().keys() and joueur1.get_inventaire()[self.selectione] > 0:
+                    # On l'enlève de l'inventaire et de la bdd, puis on active l'effet
                     joueur1.get_inventaire()[self.selectione] -= 1
                     ajouter_objet_inventaire(-1, det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()), self.selectione)
                     self.alcools_effets[self.selectione].boire(joueur1)
                 curseur_selection.set_actif(False)
                 clic.set_clic((0,0))
+            # Si on clique ailleurs, on desselectionne les items
             elif clic.get_clic() != (0,0):
                 curseur_selection.set_actif(False)
                 self.selectione = None
+            # On affiche le nom de l'alcool selectionné
             if self.selectione:
                 texte = self.police2.render((self.selectione), True, noir)
                 fenetre.blit(texte,(136 + (128 - texte.get_width()) // 2, 299))
+        # Bouton de retour
         if btn_flecheretour.collision(clic.get_clic()):
             click.play()
             clic.set_clic((0,0))
             ecran2.ecran.set_actif(True), inventaire.ecran.set_actif(False)
+        # On joue l'animation de la croix de selection
         if curseur_selection.get_actif():
             curseur_selection.update(0.2)
 

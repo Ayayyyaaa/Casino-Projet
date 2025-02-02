@@ -82,25 +82,31 @@ def creer_table():
 def verifier_et_ajouter_pseudo(pseudo:str, mdp:str):
     '''
     Vérifie si la combinaison pseudo et mdp existe déjà. Si non, l'ajoute.
+    Paramètres :
+        - pseudo (str) : Le pseudo du joueur
+        - mdp (str) : Le mot de passe du joueur
     '''
+    assert type(pseudo) == str, "Le pseudo doit être une chaîne de caractères."
+    assert type(mdp) == str, "Le mot de passe doit être une chaîne de caractères."
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
+    # On regarde dans la base de données les données associées au compte
     cursor.execute("SELECT * FROM compte WHERE pseudo = ? AND mdp = ?", (pseudo, mdp))
     compte = cursor.fetchone()
     if compte is None:
         # Ajouter le compte à la base
         cursor.execute("INSERT INTO compte (pseudo, mdp,solde) VALUES (?, ?,?)", (pseudo, mdp,joueur1.get_cagnotte()))
         conn.commit()
+        # On regarde l'id du compte
         cursor.execute("SELECT id_compte FROM compte WHERE pseudo = ? AND mdp = ?", (pseudo, mdp))
         joueur1.set_cagnotte(200000)
         id_ = cursor.fetchone()
+        # On met à jour toutes les données dans la bdd
         mettre_a_jour_solde(joueur1.get_cagnotte(), id_[0])
         ajouter_hero_casier(id_[0],'Night_Hero')
         cursor.execute("INSERT INTO inventaire (id_compte) VALUES (?)", (id_[0],))
         conn.commit()
         print(f"Compte créé avec succès ! Bienvenue '{pseudo}' !")
-        
-
     conn.close()
 
 def det_id_compte(pseudo:str,mdp:str) -> int:
@@ -124,7 +130,12 @@ def det_id_compte(pseudo:str,mdp:str) -> int:
 def recup_donnees(id_compte:int) -> float:
     '''
     Récupère le solde du joueur dans la base de données.
+    Paramètres :
+        - id_compte (int) : L'id du compte du joueur
+    Returns :
+        - Le solde du joueur dans la base de données
     '''
+    assert type(id_compte) == int, "L'id du compte doit être un nombre entier."
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     cursor.execute("SELECT solde FROM compte WHERE id_compte = ?", (id_compte,))
@@ -135,19 +146,30 @@ def recup_donnees(id_compte:int) -> float:
 def ajouter_connexion(id_compte:int):
     '''
     Met à jour la date de dernière connexion dans la base de données.
+    Paramètres :
+        - id_compte (int) : L'id du compte du joueur
     '''
+    if id_compte:
+        assert type(id_compte) == int, "L'id du compte doit être un nombre entier."
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
+    # On met à jour la date du la dernière connexion du compte dans la bdd
     cursor.execute("UPDATE compte SET derniere_connexion = CURRENT_TIMESTAMP WHERE id_compte = ?", (id_compte,))
     conn.commit()
     conn.close()
 
-def mettre_a_jour_solde(solde:int, id_compte:int):
+def mettre_a_jour_solde(solde:float, id_compte:int):
     '''
     Met à jour le solde du joueur dans la base de données.
+    Paramètres :
+        - solde (float) : Le solde du joueur
+        - id_compte (int) : L'id du compte du joueur
     '''
+    if id_compte:
+        assert type(id_compte) == int, "L'id du compte doit être un nombre entier."
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
+    # On met à jour le solde du joueur dans la bdd (en temps réel)
     cursor.execute("UPDATE compte SET solde = ? WHERE id_compte = ?", (solde, id_compte))
     conn.commit()
     conn.close()
@@ -155,21 +177,31 @@ def mettre_a_jour_solde(solde:int, id_compte:int):
 def verifier_et_ajouter_cb(id_compte:int, num:str, code:str) -> bool:
     '''
     Vérifie si la combinaison id est associée au numéro de code de cb. Si non, l'ajoute.
+    Paramètres :
+        - id_compte (int) : L'id du compte du joueur
+        - num (str) : Le numéro de carte bancaire du joueur
+        - code (str) : Le code de sécurité de la carte bancaire du joueur
+    Returns :
+        - True si la combinaison correspond
+        - False si la combinaison est incorrecte
     '''
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
+    # On regarde dans la base de données les données bancaires associées au compte
     cursor.execute("SELECT code_cb,numero_cb FROM compte WHERE id_compte = ?", (id_compte,))
     compte = cursor.fetchone()
+    # Si le compte n'a pas enregistré de données bancaires
     if compte == (None,None):
-        # Ajouter le compte à la base de données
+        # Ajouter les données bancaires à la base
         cursor.execute("UPDATE compte SET code_cb = ?, numero_cb = ? WHERE id_compte = ?", (code,num,id_compte))
         conn.commit()
+        # On resélectionne les coordonnées bancaires
         cursor.execute("SELECT code_cb,numero_cb FROM compte WHERE id_compte = ?", (id_compte,))
-        coordonnes = cursor.fetchone()
+        coordonnees = cursor.fetchone()
         conn.commit()
-        if coordonnes:
-            print(f"Coordonnées enregistrées avec succès !")
+        assert coordonnees, "Coordonnees bancaires non ajoutées."
     conn.close()
+    # On return True si la combinaison est correcte, False sinon
     return True if compte[0] == code and compte[1] == num else False
 
 def ajout_des_attributs():
@@ -283,8 +315,11 @@ def ajouter_hero_casier(id_compte:int, nom_hero:str):
         - id_compte (int) : l'id du compte auquel il faut rajouter le héros
         - nom_hero (str) : le nom du héros à rajouter dans la base de données
     '''
+    assert type(id_compte) == int, "L'id du compte doit être un nombre entier."
+    assert type(nom_hero) == str, "Le nom du héros doit être une chaîne de caractères."
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
+    # On ajoute le héros dans le casier du compte
     cursor.execute("INSERT INTO casier VALUES (?,?)", (id_compte, nom_hero))
     conn.commit()
     conn.close()
@@ -297,6 +332,9 @@ def ajouter_objet_inventaire(quantite_objet:int, id_compte:int, nom_objet:str):
         - id_compte (int): l'id du compte que l'on souhaite modifier
         - nom_objet (str) : le nom de l'objet que l'on souhaite ajouter à l'inventaire
     '''
+    assert type(quantite_objet) == int, "La quantité de l'objet doit être un nombre entier."
+    assert type(id_compte) == int, "L'id du compte doit être un nombre entier."
+    assert type(nom_objet) == str, "Le nom de l'objet doit être une chaîne de caractères."
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
     # Vérifier si l'objet existe déjà pour ce compte
@@ -306,7 +344,7 @@ def ajouter_objet_inventaire(quantite_objet:int, id_compte:int, nom_objet:str):
     cursor.execute("SELECT nom_objet, quantite_objet FROM inventaire WHERE id_compte = ?", (id_compte,))
     inv = cursor.fetchone()
     if resultat:
-        # Si l'objet existe déjà on met a jour la qte
+        # Si l'objet existe déjà on met a jour la quantité
         nouvelle_quantite = resultat[0] + quantite_objet
         cursor.execute("UPDATE inventaire SET quantite_objet = ? WHERE id_compte = ? AND nom_objet = ?", 
                        (nouvelle_quantite, id_compte, nom_objet))
@@ -319,7 +357,6 @@ def ajouter_objet_inventaire(quantite_objet:int, id_compte:int, nom_objet:str):
             # Sinon, on insere la nouvelle valeur
             cursor.execute("INSERT INTO inventaire (id_compte, nom_objet, quantite_objet) VALUES (?, ?, ?)", 
                            (id_compte, nom_objet, quantite_objet))
-    
     conn.commit()
     conn.close()
 
@@ -330,8 +367,10 @@ def recup_objet(nom_objet:str) -> bool:
     Returns :
         - True si l'objet est présent dans l'inventaire du joueur
         - False si il n'y est pas'''
+    assert type(nom_objet) == str, "Le nom de l'objet doit être une chaîne de caractères."
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
+    # On regarde si l'objet est présent dans l'inventaire du joueur
     cursor.execute("SELECT inventaire.quantite_objet FROM inventaire JOIN compte ON compte.id_compte = inventaire.id_compte WHERE compte.pseudo = ? AND compte.mdp = ? AND inventaire.nom_objet = ?",
                    (joueur1.get_pseudo(),joueur1.get_mdp(),nom_objet))
     dispo = cursor.fetchone()
@@ -359,8 +398,10 @@ def det_heros(id_compte:int) -> list:
     Returns :
         - liste_heros (list) : la liste des héros possédés par le joueur
     '''
+    assert type(id_compte) == int, "L'id du compte doit être un nombre entier."
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
+    # On récupère les héros possédés par le joueur
     cursor.execute("SELECT nom_heros FROM casier WHERE id_compte = ?", (id_compte,))
     id_compte = cursor.fetchall()
     conn.close()
@@ -374,14 +415,19 @@ def det_objets(id_compte:int):
     Returns :
         - dico_objets (dict) : Le dictionnaire ayant pour clef les noms des objets possédés par la joueur, et pour valeur leur quantités.
     '''
+    assert type(id_compte) == int, "L'id du compte doit être un nombre entier."
     conn = sqlite3.connect("base_de_donnee2.db")
     cursor = conn.cursor()
+    # On récupère les données de l'inventaire du joueur
     cursor.execute("SELECT nom_objet, quantite_objet FROM inventaire WHERE id_compte = ?", (id_compte,))
     objets = cursor.fetchall()
     conn.close()
     dico_objets = {}
+    # Créer le dictionnaire avec les objets et leurs quantités
     for objet in objets:
+        # Si l'objet existe dans l'inventaire du joueur
         if objet[0] is not None and objet[1] is not None:
+            # On ajoute l'objet et sa quantité dans le dictionnaire
             dico_objets[objet[0]] = objet[1]
     return dico_objets
 

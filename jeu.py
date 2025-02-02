@@ -213,38 +213,7 @@ class Jeu():
                                 ecran_machine_a_sous.lancement()
                                 joueur1.modifier_cagnotte(-100 - joueur1.get_cagnotte()//100)
                         
-                        elif hero.ecran.get_actif():
-                            if btn_suivant.collision(clic.get_clic()):
-                                clic.set_clic((0,0))
-                                hero.ecran.set_actif(False),hero2.ecran.set_actif(True)
 
-                        elif hero2.ecran.get_actif():
-                            if btn_suivant.collision(clic.get_clic()):
-                                clic.set_clic((0,0))
-                                hero.ecran.set_actif(True),hero2.ecran.set_actif(False)
-                        for perso in self.heros:
-                            if perso.ecran.get_actif():
-                                if btn_fleche.collision(clic.get_clic()):
-                                    clic.set_clic((0,0))
-                                    hero.ecran.set_actif(True),perso.ecran.set_actif(False)
-                                elif btn_info.collision(clic.get_clic()):
-                                    clic.set_clic((0,0))
-                                    perso.setinfos(not perso.getinfos())
-                                elif btn_select.collision(clic.get_clic()):
-                                    if perso.get_heros()[0] in joueur1.get_heros():
-                                        clic.set_clic((0,0))
-                                        self.hero = self.correspondance[perso]
-                                        hero.ecran.set_actif(True),perso.ecran.set_actif(False)
-                                    else:
-                                        if joueur1.get_cagnotte() > perso.get_heros()[1]:
-                                            ajouter_hero_casier(det_id_compte(joueur1.get_pseudo(), joueur1.get_mdp()), perso.get_heros()[0])
-                                            joueur1.ajouter_heros(perso.get_heros()[0])
-                                            joueur1.modifier_cagnotte(-perso.get_heros()[1])
-                                            print(f"{perso.get_heros()[0]} acheté !")
-                                        else:
-                                            print("Solde insuffisant !")
-                                
-                        
                     elif event.type == pygame.KEYDOWN:
                         # Gérer la saisie du nom de joueur
                         if connexion.ecran.get_actif():
@@ -274,11 +243,17 @@ class Jeu():
                             # Gérer la saisie du code de carte bleue
                             if event.key == pygame.K_RETURN:
                                 if len(self.txt_nbr_cb) == 19 and len(self.txt_codee_cb) == 3:
+                                    # On regarde si le numéro de carte est valide (méthode de Luhn)
                                     code_correct = valider_numero_carte_bancaire(self.txt_nbr_cb)
+                                    # Si le code est correct et que le numéro de carte n'est pas celui du casino 
+                                    # (en vrai c'est juste qu'il respecte la méthode de Luhn mais est trop simple à retenir)
                                     if code_correct and self.txt_nbr_cb != '8888 8888 8888 8888':
                                         joueur1.set_code_cb(self.txt_codee_cb), joueur1.set_num_cb(self.txt_nbr_cb)
+                                        # On ajoute les coordonnées à la bdd si elles ne sont pas enregistrées
                                         verifier_et_ajouter_cb(det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()),joueur1.get_code_cb(),joueur1.get_num_cb())
+                                        # Si les coordonnées correspondent
                                         if verifier_et_ajouter_cb(det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp()),joueur1.get_code_cb(),joueur1.get_num_cb()):
+                                            # On remet de l'argent sur le compte du joueur et on le fait revenir dans le casino
                                             self.txt_nbr_cb = ''
                                             self.txt_codee_cb = ''
                                             joueur1.set_cagnotte(2000)
@@ -290,18 +265,50 @@ class Jeu():
                                     else:
                                         print(f"Coordonnées bancaires incorrectes ! N'ESSAYEZ PAS DE DUPER LE BABEL CASINO, MORTEL !")
                                     click.play()
+                            # On permet de remplir le champ du numéro de carte bancaire en récupérant les caractères du clavier        
                             elif event.key == pygame.K_BACKSPACE:
                                 self.txt_codee_cb = self.txt_codee_cb[:-1]
                             elif len(self.txt_codee_cb) < 3 and event.unicode in "0123456789":
                                 self.txt_codee_cb += event.unicode
+                        # Combinaison pour lancer le jeu de voiture (Temporaire le temps d'avoir des boutons)
                         else:
                             if event.unicode == 'v':
                                 ecran2.ecran.set_actif(False), niveaux.ecran.set_actif(True)
                             if event.unicode == '1' and ecran2.ecran.get_actif():
                                 babelrace.actif(True)
                                 babelrace.lancer()
-
-
+                # Permet de gérer la passage du 1er onglet au 2e pour l'écran d'achat de héros dans la boutique
+                if hero.ecran.get_actif():
+                    if btn_suivant.collision(clic.get_clic()):
+                        clic.set_clic((0,0))
+                        hero.ecran.set_actif(False),hero2.ecran.set_actif(True)
+                # Permet de gérer la passage du 2e onglet au 1er pour l'écran d'achat de héros dans la boutique
+                elif hero2.ecran.get_actif():
+                    if btn_suivant.collision(clic.get_clic()):
+                        clic.set_clic((0,0))
+                        hero.ecran.set_actif(True),hero2.ecran.set_actif(False)
+                # Permet de gérer l'écran de selection pour chaque héros du jeu dans la boutique
+                for perso in self.heros:
+                    if perso.ecran.get_actif(): #Si l'écran est actif
+                        if btn_fleche.collision(clic.get_clic()):   # Bouton de retour
+                            clic.set_clic((0,0))
+                            hero.ecran.set_actif(True),perso.ecran.set_actif(False) # On revient à l'écran général
+                        elif btn_info.collision(clic.get_clic()):   # Bouton pour afficher les caractéristiques du héros
+                            clic.set_clic((0,0))
+                            perso.setinfos(not perso.getinfos())    # On affiche ou on cache les infos
+                        elif btn_select.collision(clic.get_clic()): # Bouton pour sélectionner le héros
+                            if perso.get_heros()[0] in joueur1.get_heros(): # Si le joueur possède le héros alors le héros est selectionné et devient le héros actif
+                                clic.set_clic((0,0))
+                                self.hero = self.correspondance[perso]
+                                hero.ecran.set_actif(True),perso.ecran.set_actif(False) # On revient à l'écran général des héros
+                            else:                                   # Sinon si le joueur n'a pas acheté le héros
+                                if joueur1.get_cagnotte() > perso.get_heros()[1]:   # Si le joueur a assez d'argent pour acheter les héros
+                                    ajouter_hero_casier(det_id_compte(joueur1.get_pseudo(), joueur1.get_mdp()), perso.get_heros()[0])   # On ajoute le héros au casier du joueur dans la bdd
+                                    joueur1.ajouter_heros(perso.get_heros()[0])  # On ajoute le héros à la liste des héros du joueur
+                                    joueur1.modifier_cagnotte(-perso.get_heros()[1])    # On retire le prix du héros de la cagnotte du joueur
+                                    print(f"{perso.get_heros()[0]} acheté !")
+                                else:
+                                    print("Solde insuffisant !")        
                 # Afficher l'ecran du Blackjack
                 if ecran_black.ecran.get_actif():
                     pygame.mouse.set_visible(True)
@@ -310,8 +317,7 @@ class Jeu():
                 # Supprimer le pile ou face au changement d'ecran
                 if not ecran2.ecran.get_actif():
                     pileouface.set_actif(False)
-
-
+                # Permet d'afficher l'animation à la fin de l'écran de chargement
                 if ecran0.ecran.get_actif():
                     ecran0.affiche(0.45)
                 # Affichage de l'écran de connexion
@@ -323,21 +329,27 @@ class Jeu():
                 elif ecran2.ecran.get_actif():
                     son_joue = False
                     ecran2.affiche()
+                # Affichage du gif de la * vodka *
                 elif vodka.ecran.get_actif():
                     vodka.affiche(0.3)
+                # Affichage du gif du Rick Roll
                 elif rr.ecran.get_actif():
                     rr.affiche(0.45)
+                # Affichage de l'écran du Babel Jack
                 elif ecran_black.ecran.get_actif():
                     ecran_black.affiche(blackjack)
+                # Pour tous les autres écrans
                 for ecran in self.ecrans:
                     assert isinstance(ecran, object), f"L'écran {ecran} est un {type(ecran)}, et non pas un écran !"
-                    if ecran.ecran.get_actif():
-                        ecran.affiche()
+                    if ecran.ecran.get_actif():     # Si ils sont actifs
+                        ecran.affiche()     # On les affiche
+                # Affichage de l'écran de mort et dans champs pour rentrer les coordonnées bancaires
                 if ecran_mort.ecran.get_actif():
                     dessiner_zone_texte(fenetre, self.nb_cb, self.txt_nbr_cb, self.nb_cb_actif)
                     dessiner_zone_texte(fenetre, self.code_cb, self.txt_codee_cb, self.code_cb_actif)
+                # On affiche les écrans personnalisés de chaque héros s'ils sont actifs
                 self.selectionheros()
-
+                # On affiche la souris Maskottchen ou Princesse si le joueur est Maskottchen ou Abel
                 if joueur1.get_pseudo().lower() in ['rulian','maskottchen','maskot']:
                     self.maskotte, self.curseurabel = True, False
                 elif joueur1.get_pseudo().lower() == 'abel':
