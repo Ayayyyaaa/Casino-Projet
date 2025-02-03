@@ -512,8 +512,10 @@ ecran_black = EcranBlack()
 rr = EcranRR()
 alcool = EcranAlcool()
 niveaux = EcranNiveaux()
-klaxon = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Maehv.png').convert_alpha(),[f'images/Jeu de combat/Klaxon/Droite/Inaction/_a_{i},80.png' for i in range(18)],('Klaxon',35000),25,50)
-cryoblade = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Maehv.png').convert_alpha(),[f'images/Jeu de combat/Cryoblade/Droite/Inaction/_a_{i},80.png' for i in range(16)],('Cryoblade',35000),25,50)
+klaxon = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Maehv.png').convert_alpha(),[f'images/Jeu de combat/Klaxon/Droite/Inaction/_a_{i},80.png' for i in range(18)],('Klaxon',35000),90,112)
+cryoblade = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Maehv.png').convert_alpha(),[f'images/Jeu de combat/Cryoblade/Droite/Inaction/_a_{i},80.png' for i in range(16)],('Cryoblade',35000),80,105)
+reeju = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Maehv.png').convert_alpha(),[f'images/Jeu de combat/Reeju/Droite/Inaction/_a_{i},100.png' for i in range(14)],('Reeju',40000),25,50)
+windcliffe = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Maehv.png').convert_alpha(),[f'images/Jeu de combat/Windcliffe/Droite/Inaction/_a_{i},80.png' for i in range(9)],('Windcliffe',70000),55,75)
 maehv = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Maehv.png').convert_alpha(),[f'images/Jeu de combat/Maehv/Droite/Inaction/_a_{i},80.png' for i in range(14)],('Maehv',350000),5)
 zendo = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Zendo.png').convert_alpha(),[f'images/Jeu de combat/Zendo/Droite/Inaction/_a_frm{i},60.png' for i in range(14)],('Zendo',200000),5)
 zukong = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/NightHero.png').convert_alpha(),[f'images/Jeu de combat/Zukong/Droite/Inaction/_a_frm{i},80.png' for i in range(14)],('Zukong',45000),56,75)
@@ -531,24 +533,27 @@ yggdra = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Suzumebach
 
 
 class EcranHeros:
-    def __init__(self,btns):
+    def __init__(self,btns:dict):
         self.ecran = Ecran()
         self.fond = pygame.image.load('images/Fonds d\'ecran/Boutique.png').convert_alpha()
         self.btns = btns
     def affiche(self):
+        '''Permet d'afficher l'écran de la boutique des héros, et de passer de chaque bouton de hero et l'écran du heros corrsepondant'''
         fenetre.blit(self.fond, (0, 0))
-        btn_suivant.draw(fenetre,pygame.mouse.get_pos())
-        for btn,ecran in self.btns.items():
-            btn.draw(fenetre,pygame.mouse.get_pos())
-            if btn.collision(clic.get_clic()):
-                clic.set_clic((0,0))
-                ecran.ecran.set_actif(True),self.ecran.set_actif(False)
+        btn_suivant.draw(fenetre,pygame.mouse.get_pos())    # Pour passer à l'onglet 2
+        for btn,ecran in self.btns.items():    # Pour chaque bouton de héros
+            btn.draw(fenetre,pygame.mouse.get_pos())    # On affiche le bouton
+            if btn.collision(clic.get_clic()):  # Si on clique dessus
+                clic.set_clic((0,0))    # On reset le clic
+                ecran.ecran.set_actif(True),self.ecran.set_actif(False)   # On affiche l'écran du héros
 
 hero = EcranHeros({
             btn_fleche : ecran_boutique,
             btn_nighthero : nighthero,
             btn_klaxon : klaxon,
+            btn_reeju : reeju,
             btn_cryoblade :cryoblade,
+            btn_windcliffe : windcliffe,
             btn_zukong : zukong,
             btn_zendo : zendo,
             btn_maehv : maehv,

@@ -96,16 +96,19 @@ class Jeu():
         self.klaxon = Klaxon()
         self.cryoblade = Cryoblade()
         self.reeju = Reeju()
+        self.windcliffe = Windcliffe()
         self.benji = MauriceTicket()
         self.maskotte = False
         self.curseurabel = False
         self.combat = JeuCombat(self.nighthero,self.m, 'Michel')
-        self.hero = self.reeju
-        self.heros = [maehv,zendo,zukong,nighthero,hsuku,whistler,sanguinar,tethermancer,pureblade,aether,twilight,suzumebachi,yggdra,dusk,klaxon,cryoblade] # Ecrans
+        self.hero = self.nighthero
+        self.heros = [maehv,zendo,zukong,nighthero,hsuku,whistler,sanguinar,tethermancer,pureblade,aether,twilight,suzumebachi,yggdra,dusk,klaxon,cryoblade,reeju,windcliffe] # Ecrans
         self.bosss = self.prophet
         self.correspondance = {nighthero:self.nighthero,
                                klaxon:self.klaxon, 
                                cryoblade:self.cryoblade,
+                               reeju:self.reeju,
+                               windcliffe:self.windcliffe,
                                zukong:self.zukong,
                                maehv:self.maehv,
                                zendo:self.zendo,
@@ -125,7 +128,7 @@ class Jeu():
         dernier_son = time.time()
         id_compte = det_id_compte(joueur1.get_pseudo(),self.mdp)
         ajouter_connexion(id_compte)
-        joueur1.set_cagnotte(2000)
+        joueur1.set_cagnotte(2000000)
         while self.run:
             clic.set_clic((0,0))
             if not self.combat.get_actif():

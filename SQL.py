@@ -239,6 +239,10 @@ def ajout_des_attributs():
     cursor.execute('''INSERT INTO heros VALUES ('Klaxon', 35000, 'Abyss', 'Esprit', 2, 'blabla')''')
     # Cryoblade
     cursor.execute('''INSERT INTO heros VALUES ('Cryoblade', 35000, 'Abyss', 'Glace', 2, 'blabla')''')
+    # Reeju
+    cursor.execute('''INSERT INTO heros VALUES ('Reeju', 40000, 'Empire', 'Esprit', 2, 'blabla')''')
+    # Windcliffe
+    cursor.execute('''INSERT INTO heros VALUES ('Windcliffe', 70000, 'Empire', 'Neutre', 3, 'blabla')''')
     #Zukong
     cursor.execute('''INSERT INTO heros VALUES ('Zukong', 45000, 'Murim', 'Neutre', 2, 'blabla')''')
     #Maevh
@@ -292,7 +296,7 @@ def ajout_des_attributs():
     #Sun
     cursor.execute('''INSERT INTO boss VALUES ('Sun', 'Feu', 2, 'blabla')''')
     #Skurge
-    cursor.execute('''INSERT INTO boss VALUES ('Skurge', 'Feu', 4,  'blabla')''')
+    cursor.execute('''INSERT INTO boss VALUES ('Skurge', 'Nature', 4,  'blabla')''')
     #NoshRak
     cursor.execute('''INSERT INTO boss VALUES ('NoshRak', 'Foudre', 5, 'blabla')''')
     #Purgatos
@@ -472,6 +476,6 @@ def maj_stats(id_compte:int,victoire:int,defaite:int,boss:str):
     conn.close()
 
 
-supprimer_table()
+#supprimer_table()
 creer_table()
-ajout_des_attributs()
+#ajout_des_attributs()

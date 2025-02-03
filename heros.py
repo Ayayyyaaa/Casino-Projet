@@ -744,9 +744,119 @@ class Klaxon:
             self.hero.modif_img(self.inaction_g[int(self.frame)])
         self.frame += 0.2
 
+class Windcliffe:
+    def __init__(self):
+        self.hero = Hero(220,490,3.5,0.18,0.14,4.5,1000,'Neutre')
+        self.atk1_d = [f'images/Jeu de combat/Windcliffe/Droite/Attaque1/_a_{i},70.png' for i in range(21)]
+        self.atk1_g = [f'images/Jeu de combat/Windcliffe/Gauche/Attaque1/_a_{i},70.png' for i in range(21)]
+        self.images_marche_d = [f'images/Jeu de combat/Windcliffe/Droite/Marche/_a_{i},70.png' for i in range(8)] 
+        self.images_marche_g = [f'images/Jeu de combat/Windcliffe/Gauche/Marche/_a_{i},70.png' for i in range(8)]
+        self.images_mort = [f'images/Jeu de combat/Windcliffe/Mort/_a_{i},70.png' for i in range(14)] 
+        self.inaction_g = [f'images/Jeu de combat/Windcliffe/Gauche/Inaction/_a_{i},80.png' for i in range(9)]
+        self.inaction_d = [f'images/Jeu de combat/Windcliffe/Droite/Inaction/_a_{i},80.png' for i in range(9)]
+        self.image = 'images/Jeu de combat/Hero/Attaque/Attaque_Droite/Attaque1.png'
+        self.dgt5 = pygame.image.load("images/Jeu de combat/-5.png")
+        self.block = pygame.image.load("images/Jeu de combat/Block.png")
+        self.frame = 0
+        self.frame_mort = 0
+        self.frame_parade = 0
+        self.cd_dgt5 = 0
+        self.cd_block_img = 0
+        self.atk2 = False
+        self.atk2 = False
+        self.dgt1 = False
+
+    def attaque(self,speed:float,sens:str,j2,multis:float):
+        '''Permet de jouer l'animation d'attaque du héros.
+        Paramètres :
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de l'attaque ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
+        '''
+        if self.hero.get_pv() > 0:
+            if self.hero.get_collison() and int(self.frame) == 12 and not j2.boss.get_block():
+                if not self.dgt1:
+                    aie_boss.play()
+                    j2.boss.modif_pv(-25*multis)
+                    self.dgt1 = True
+            if self.frame >= len(self.atk1_d)-1:
+                self.frame = 0
+                self.hero.set_attaque(False)
+                self.dgt1 = False
+            elif sens == 'Gauche':
+                self.hero.modif_img(self.atk1_g[int(self.frame)])
+            elif sens == 'Droite':
+                self.hero.modif_img(self.atk1_d[int(self.frame)])
+            self.frame += speed
+
+    def mort(self,speed:float,j2):
+        '''Permet de jouer l'animation de mort du héros.
+        Paramètres :
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - j2 : le boss combattu
+        '''
+        # Permet d'attendre la fin de l'animation de mort pour mettre fin au combat
+        if not self.hero.get_mort():
+            # Faire progresser les images pour l'animation
+            self.frame_mort += speed
+            self.hero.modif_img(self.images_mort[int(self.frame_mort)])
+            # Si toutes les images ont été jouées :
+            if int(self.frame_mort) == len(self.images_mort)-1:
+                # On déclare le boss vainqueur, le combat prend fin
+                self.hero.set_mort(True)
+                j2.boss.set_victoire(True)
+                self.frame_mort = 0
+
+    def marche(self,speed:float,sens:str,j2):
+        '''Permet de jouer l'animation de marche du héros.
+        Paramètres :
+            - speed (float) : la vitesse à laquelle va se jouer l'animation
+            - sens (str) : la direction de la marche ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+        '''
+        # Si toutes les images ont été jouées :
+        self.frame += speed
+        if int(self.frame) >= len(self.images_marche_d)-1:
+            # On remet tout à 0
+            self.frame = 0
+        # Faire progresser les images pour l'animation
+        if sens == 'Gauche':
+            self.hero.modif_img(self.images_marche_g[int(self.frame)])
+        else:
+            self.hero.modif_img(self.images_marche_d[int(self.frame)])
+
+    def cp2(self, speed:float, sens:str, j2,multis:float):
+        '''Permet de jouer la compétence 2 du héros.
+        Paramètres :
+            - speed (float) : la vitesse de l'animation
+            - sens (str) : la direction de la compétence ('Gauche' ou 'Droite')
+            - j2 : le boss combattu
+            - multis (float) : le multiplicateur de dégâts
+        '''
+        self.hero.set_cp2(False)
+        return None
+    
+    def reset_frame(self):
+        '''Permet de remettre le frame à 0'''
+        self.frame=0
+
+    def inaction(self,j2):
+        '''Permet de jouer l'animation d'inaction du héros.
+        Paramètres :
+            - j2 : le boss combattu'''
+        if int(self.frame) >= len(self.inaction_d)-1:
+            # On remet tout à 0
+            self.frame = 0
+        if distance(self,j2) < 0:
+            self.hero.modif_img(self.inaction_d[int(self.frame)])
+        else:
+            self.hero.modif_img(self.inaction_g[int(self.frame)])
+        self.frame += 0.2
+
 class Reeju:
     def __init__(self):
-        self.hero = Hero(120,470,4,0.18,0.14,3.8,1000,'Esprit')
+        self.hero = Hero(180,470,4,0.18,0.14,3.8,1000,'Esprit')
         self.atk1_d = [f'images/Jeu de combat/Reeju/Droite/Attaque1/_a_{i},100.png' for i in range(25)]
         self.atk1_g = [f'images/Jeu de combat/Reeju/Gauche/Attaque1/_a_{i},100.png' for i in range(25)]
         self.images_marche_d = [f'images/Jeu de combat/Reeju/Droite/Marche/_a_{i},100.png' for i in range(8)] 
@@ -780,19 +890,19 @@ class Reeju:
             if self.hero.get_collison() and int(self.frame) == 7 and not j2.boss.get_block():
                 if not self.dgt1:
                     aie_boss.play()
-                    j2.boss.modif_pv(-6*multis)
+                    j2.boss.modif_pv(-5*multis)
                     j2.boss.set_poison(time.time())
                     self.dgt1 = True
             elif self.hero.get_collison() and int(self.frame) == 12 and not j2.boss.get_block():
                 if not self.dgt2:
                     aie_boss.play()
-                    j2.boss.modif_pv(-4*multis)
+                    j2.boss.modif_pv(-2*multis)
                     j2.boss.set_poison(time.time())
                     self.dgt2 = True
             elif self.hero.get_collison() and int(self.frame) == 18 and not j2.boss.get_block():
                 if not self.dgt3:
                     aie_boss.play()
-                    j2.boss.modif_pv(-7*multis)
+                    j2.boss.modif_pv(-8*multis)
                     j2.boss.set_poison(time.time())
                     self.dgt3 = True
             if self.frame >= len(self.atk1_d)-1:
