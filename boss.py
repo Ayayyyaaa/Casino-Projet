@@ -20,7 +20,7 @@ class Boss:
             - element (str) : l'élément du boss (sert pour les réactions élémentaires et multiplicateurs de dégâts)
             - fond : le fond à charger pour le combat (liste d'images)
             - nom_fond (str) : le nom du fond du boss (sert pour le décalage de hauteur à appliquer par rapport au sol)'''
-        self.image = self.image = pygame.image.load('images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png')
+        self.image = self.image = pygame.image.load('images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png')
         self.pv = pv
         self.pos_x = 1000
         self.pos_y = y
@@ -137,7 +137,7 @@ class Michel:
         self.images_inaction = [pygame.image.load(f'images/Jeu de combat/LancierBoss/Gauche/Inaction/_a_frm{i},70.png') for i in range(16,28)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -274,7 +274,7 @@ class TankBoss:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/ThunderBoss/Gauche/Inaction/_a_{i},80.png').convert_alpha() for i in range(15)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -428,7 +428,7 @@ class Cindera:
         self.images_inaction = [pygame.image.load(f'images/Jeu de combat/Cindera/Gauche/Inaction/_a_frm{i},0.png') for i in range(12)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -568,7 +568,7 @@ class DarkLord:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/DarkLord/Gauche/Inaction/_a_frm{i},0.png') for i in range(16)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -702,7 +702,7 @@ class Astral:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Astral/Gauche/Inaction/_a_frm{i},100.png') for i in range(12)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -730,8 +730,7 @@ class Astral:
             self.boss.set_attaque1_dispo(False)
             self.atk1 = False
         if self.boss.get_collison() and not j1.hero.get_block() and 16 <= self.frame <= 25:
-                # Le héros perd 20 Pv
-                j1.hero.modif_pv(-0.5)
+                j1.hero.modif_pv(-1.5)
                 aie_hero.play()
                 # Image des dégâts subis
                 self.cd_dgt20 = time.time()
@@ -841,7 +840,7 @@ class EternityPainter:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Ep/Gauche/Inaction/_a_frm{i},80.png') for i in range(12)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -996,7 +995,7 @@ class Shidai:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Shidai/Gauche/Inaction/_a_{i},80.png') for i in range(14)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -1191,7 +1190,7 @@ class Lilithe:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Lilithe/Gauche/Inaction/_a_{i},80.png') for i in range(20)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -1423,7 +1422,7 @@ class Solfist:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Solfist/Gauche/Inaction/_a_{i},100.png') for i in range(12)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -1566,7 +1565,7 @@ class Elyx:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Elyx/Gauche/Inaction/_a_{i},100.png') for i in range(11)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -1721,7 +1720,7 @@ class Embla:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Embla/Gauche/Inaction/_a_{i},80.png') for i in range(18)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -1875,7 +1874,7 @@ class Sun:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Sun/Gauche/Inaction/_a_{i},100.png') for i in range(26)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -2023,7 +2022,7 @@ class Skurge:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Skurge/Gauche/Inaction/_a_{i},100.png') for i in range(11)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = pygame.image.load('images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png')
+        self.image = pygame.image.load('images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png')
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -2180,7 +2179,7 @@ class NoshRak:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Nosh-Rak/Gauche/Inaction/_a_{i},80.png') for i in range(20)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -2337,7 +2336,7 @@ class Purgatos:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Purgatos/Gauche/Inaction/_a_{i},100.png') for i in range(14)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -2482,7 +2481,7 @@ class Ciphyron:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Ciphyron/Gauche/Inaction/_a_{i},80.png') for i in range(16)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -2646,7 +2645,7 @@ class Golem:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Golem/Gauche/Inaction/_a_{i},80.png') for i in range(16)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -2812,7 +2811,7 @@ class Soji:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Soji/Gauche/Inaction/_a_{i},80.png') for i in range(14)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -3058,7 +3057,7 @@ class Prophet:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Prophet/Gauche/Inaction/_a_{i},100.png') for i in range(18)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -3200,7 +3199,7 @@ class Prophet:
         self.images_marche_g = [pygame.image.load(f'images/Jeu de combat/Pandora/{nom}/Gauche/Marche/_a_{i},100.png') for i in range(8)]
         self.images_inaction_d = [pygame.image.load(f'images/Jeu de combat/Pandora/{nom}/Droite/Inaction/_a_{i},100.png') for i in range(12)]
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Pandora/{nom}/Gauche/Inaction/_a_{i},100.png') for i in range(12)]
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0
@@ -3315,7 +3314,7 @@ class Pandora:
         self.images_inaction_g = [pygame.image.load(f'images/Jeu de combat/Pandora/Gauche/Inaction/_a_frm{i},100.png') for i in range(10)]
         self.dgt10 = pygame.image.load("images/Jeu de combat/-10.png")
         self.dgt20 = pygame.image.load("images/Jeu de combat/-20.png")
-        self.image = 'images/Jeu de combat/Boss/Attaque1/Coup_de_poing1.png'
+        self.image = 'images/Jeu de combat/LancierBoss/Gauche/Attaque1/_a_frm44,70.png'
         self.cd_dgt10 = 0
         self.cd_dgt20 = 0
         self.frame = 0

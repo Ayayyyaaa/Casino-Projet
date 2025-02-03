@@ -60,10 +60,6 @@ class Jeu():
         self.txt_codee_cb = ""  
         self.victoire = False
         self.nighthero = Night_Hero()
-        self.spirithero = Spirit_Hero()
-        self.spiritwarior = Spirit_Warrior()
-        self.lancier = Lancier()
-        self.assassin = Assassin()
         self.m = Michel()
         self.tb = TankBoss()
         self.c = Cindera()
@@ -97,19 +93,20 @@ class Jeu():
         #self.pandora = Pandora()
         self.dusk = Dusk()
         self.prophet = Prophet()
+        self.klaxon = Klaxon()
+        self.cryoblade = Cryoblade()
+        self.reeju = Reeju()
         self.benji = MauriceTicket()
         self.maskotte = False
         self.curseurabel = False
         self.combat = JeuCombat(self.nighthero,self.m, 'Michel')
-        self.hero = self.nighthero
-        self.heros = [assassin,maehv,zendo,zukong,nighthero,lancier,spiritwarior,spirithero,hsuku,whistler,sanguinar,tethermancer,pureblade,aether,twilight,suzumebachi,yggdra,dusk]
+        self.hero = self.reeju
+        self.heros = [maehv,zendo,zukong,nighthero,hsuku,whistler,sanguinar,tethermancer,pureblade,aether,twilight,suzumebachi,yggdra,dusk,klaxon,cryoblade] # Ecrans
         self.bosss = self.prophet
         self.correspondance = {nighthero:self.nighthero,
-                               spiritwarior:self.spiritwarior,
-                               lancier:self.lancier,
-                               assassin:self.assassin,
+                               klaxon:self.klaxon, 
+                               cryoblade:self.cryoblade,
                                zukong:self.zukong,
-                               spirithero:self.spirithero,
                                maehv:self.maehv,
                                zendo:self.zendo,
                                hsuku:self.hsuku,
@@ -379,7 +376,7 @@ class Jeu():
 
     def selectionheros(self):
         '''Permet d'afficher l'animation des héros sur leur écran de selection'''
-        for hero in [assassin,maehv,zendo,zukong,nighthero,lancier,spiritwarior,spirithero,hsuku,whistler,sanguinar,tethermancer,pureblade,aether,twilight,suzumebachi,yggdra,dusk]:
+        for hero in self.heros:
             if hero.ecran.get_actif():
                 hero.affiche(0.15)
         

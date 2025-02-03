@@ -235,14 +235,10 @@ def ajout_des_attributs():
 
     #Night_Hero
     cursor.execute('''INSERT INTO heros VALUES ('Night_Hero', 0, 'Abyss', 'Nuit', 1, 'blabla')''')
-    #Spirit_Hero
-    cursor.execute('''INSERT INTO heros VALUES ('Spirit_Hero', 45000, 'Nécrons', 'Esprit', 2, 'blabla')''')
-    #Spirit_Warrior
-    cursor.execute('''INSERT INTO heros VALUES ('Spirit_Warrior', 30000, 'Nécrons', 'Esprit', 2, 'blabla')''')
-    #Lancier
-    cursor.execute('''INSERT INTO heros VALUES ('Lancier', 45000, 'Nécrons', 'Esprit', 2, 'blabla')''')
-    #Assassin
-    cursor.execute('''INSERT INTO heros VALUES ('Assassin', 60000, 'Mercenaire', 'Neutre', 3, 'blabla')''')
+    # Klaxon
+    cursor.execute('''INSERT INTO heros VALUES ('Klaxon', 35000, 'Abyss', 'Esprit', 2, 'blabla')''')
+    # Cryoblade
+    cursor.execute('''INSERT INTO heros VALUES ('Cryoblade', 35000, 'Abyss', 'Glace', 2, 'blabla')''')
     #Zukong
     cursor.execute('''INSERT INTO heros VALUES ('Zukong', 45000, 'Murim', 'Neutre', 2, 'blabla')''')
     #Maevh
@@ -268,7 +264,7 @@ def ajout_des_attributs():
     #Dusk
     cursor.execute('''INSERT INTO heros VALUES ('Dusk', 200000, 'Mercenaire', 'Foudre', 4, 'blabla')''')
     #Suzumebachi
-    cursor.execute('''INSERT INTO heros VALUES ('Suzumebachi', 180000, 'Empire', 'Feu', 4, 'blabla')''')
+    cursor.execute('''INSERT INTO heros VALUES ('Suzumebachi', 150000, 'Empire', 'Feu', 3, 'blabla')''')
 
     #Création des boss
     #Michel
@@ -476,6 +472,6 @@ def maj_stats(id_compte:int,victoire:int,defaite:int,boss:str):
     conn.close()
 
 
-#supprimer_table()
+supprimer_table()
 creer_table()
-#ajout_des_attributs()
+ajout_des_attributs()
