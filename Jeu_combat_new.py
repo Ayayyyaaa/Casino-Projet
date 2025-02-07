@@ -37,7 +37,7 @@ class JeuCombat:
         self.run = False
         self.vie_hero = pygame.image.load("images/Jeu de combat/compteur.png")
         self.vie_boss = pygame.image.load("images/Jeu de combat/compteur.png")
-        self.police = pygame.font.Font('8-bitanco.ttf', 15)
+        self.police = pygame.font.Font('babelcasino.ttf', 15)
         self.dmg = False
         self.j1 = j1
         self.j2 = j2
@@ -281,7 +281,7 @@ class JeuCombat:
             # On affiche la vie du boss et du héros
             pvheros = self.police.render("Pv du heros : " + str(int(self.j1.hero.get_pv())), True, noir)
             pvboss = self.police.render("Pv du boss : " + str(int(self.j2.boss.get_pv())), True, noir)
-            fenetre.blit(pvheros, (60, 70))
+            fenetre.blit(pvheros, (52, 70))
             fenetre.blit(pvboss, (1010, 70))
             # On affiche la souris
             fenetre.blit(souris, pygame.mouse.get_pos())

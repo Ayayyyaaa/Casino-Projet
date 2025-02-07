@@ -30,13 +30,13 @@ class Blackjack:
         self.arreter = pygame.Rect(7, 7, 125, 50)
         self.bouton_rejouer = pygame.Rect(15, 290, 80, 50)
         self.score = pygame.Rect(7, 343, 100, 50)
-        self.croupier = pygame.Rect(293, 343, 100, 50)
+        self.croupier = pygame.Rect(283, 343, 110, 50)
         self.actif = False
         self.img_joker = pygame.image.load("cartes/joker.png")
         self.img = [[f"cartes/{couleur}/carte-{i}.png" for i in range(2, 11)] for couleur in ['Carreau', 'Coeur', 'Pique', 'Trefle']] 
         self.dos_de_carte = pygame.image.load("cartes/dos_de_carte.png")
         self.solde = pygame.image.load("images/Jeu de combat/valider.png")
-        self.police = pygame.font.Font('8-bitanco.ttf', 15)
+        self.police = pygame.font.Font('babelcasino.ttf', 15)
         self.retour = False # Booléen qui determine si la souris est sur la fleche
         self.img_carte = pygame.image.load("images/None.png")
         self.fin = False
@@ -57,9 +57,9 @@ class Blackjack:
             #vérification si la carte tirée est un joker
             if val_j == 1:
                 # créer le bouton pour mettre la valeur de la carte à 11
-                dessiner_bouton(fenetre, "le joker prend la valeur 1", self.bouton_val1.x, self.bouton_val1.y, self.bouton_val1[2], self.bouton_val1[3], blanc, noir, 20)
+                dessiner_bouton(fenetre, "le joker prend la valeur 1", self.bouton_val1.x, self.bouton_val1.y, self.bouton_val1[2], self.bouton_val1[3], blanc, noir, 15)
                 # créer le bouton pour mettre la valeur de la carte à 11
-                dessiner_bouton(fenetre, "le joker prend la valeur 11", self.bouton_val11.x, self.bouton_val11.y, self.bouton_val11[2], self.bouton_val11[3], blanc, noir, 20)
+                dessiner_bouton(fenetre, "le joker prend la valeur 11", self.bouton_val11.x, self.bouton_val11.y, self.bouton_val11[2], self.bouton_val11[3], blanc, noir, 15)
                 fenetre.blit(self.img_joker, (171, 287))
                 fenetre.blit(souris, pygame.mouse.get_pos())
                 # Mettre à jour l'affichage pour que les boutons soient visibles
@@ -261,10 +261,10 @@ class Blackjack:
         fenetre.blit(solde, texte_rect)
         #on change le score du joueur
         self.score_j = "score: " + str(self.valeur_joueur)
-        dessiner_bouton(fenetre, self.score_j , self.score.x, self.score.y, self.score[2], self.score[3], blanc, noir, 20)
+        dessiner_bouton(fenetre, self.score_j , self.score.x, self.score.y, self.score[2], self.score[3], blanc, noir, 15)
         #on affiche le score du croupier
         self.score_croupier = "croupier: " + str(self.valeur_croupier)
-        dessiner_bouton(fenetre, self.score_croupier , self.croupier.x, self.croupier.y, self.croupier[2], self.croupier[3], blanc, noir, 20)
+        dessiner_bouton(fenetre, self.score_croupier , self.croupier.x, self.croupier.y, self.croupier[2], self.croupier[3], blanc, noir, 15)
         fenetre.blit(self.img_carte, (171, 287))
         if 7 <= pygame.mouse.get_pos()[0] <= 87 and 17 <= pygame.mouse.get_pos()[1] <= 77 and not self.retour:
                 fenetre.blit(bouton_stop_bj2, (7, 7))

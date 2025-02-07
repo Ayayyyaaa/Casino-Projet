@@ -29,9 +29,9 @@ def dessiner_bouton(fenetre, message:str, x: int, y:int, largeur:int, hauteur:in
     assert type(couleur_texte) == tuple,'Erreur: couleur_texte doit etre un tuple'
     assert type(taille) == int,'Erreur: taille doit etre un entier'
     pygame.draw.rect(fenetre, couleur_fond, (x, y, largeur, hauteur))
-    police = pygame.font.Font('police.ttf', taille)
+    police = pygame.font.Font('babelcasino.ttf', taille)
     texte = police.render(message, True, couleur_texte)
-    fenetre.blit(texte, (x + 10, y + (hauteur - texte.get_height()) // 2))
+    fenetre.blit(texte, (x + 5, y + (hauteur - texte.get_height()) // 2))
 
 
 def dessiner_zone_texte(fenetre, rect, texte:str, actif:bool):
@@ -48,7 +48,7 @@ def dessiner_zone_texte(fenetre, rect, texte:str, actif:bool):
     if actif:
         couleur = noir
     pygame.draw.rect(fenetre, couleur, rect, 2)
-    police = pygame.font.Font('police.ttf', 25)
+    police = pygame.font.Font('babelcasino.ttf', 15)
     texte_surface = police.render(texte, True, noir)
     fenetre.blit(texte_surface, (rect.x + 5, rect.y + 5))
 

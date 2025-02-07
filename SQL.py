@@ -476,6 +476,17 @@ def maj_stats(id_compte:int,victoire:int,defaite:int,boss:str):
     conn.close()
 
 
+def ordre_classement():
+    conn = sqlite3.connect("base_de_donnee2.db")
+    cursor = conn.cursor()
+    # Vérifier le joueur a deja combattu ce boss
+    cursor.execute("SELECT pseudo,solde FROM compte ORDER BY solde DESC LIMIT 5")
+    resultat = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    print(resultat)
+    return resultat
+
 #supprimer_table()
 creer_table()
 #ajout_des_attributs()

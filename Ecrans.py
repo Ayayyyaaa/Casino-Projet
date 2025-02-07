@@ -1,5 +1,5 @@
 import pygame
-from fonctions import dessiner_zone_texte, dessiner_bouton
+from fonctions import dessiner_bouton
 from objets_et_variables import *
 from img import *
 from Roulette_Russe import pistolet
@@ -13,30 +13,35 @@ afficher_ecran_chargement(chargement[6])
 print("Chargement des Ecrans...")
 
 class Ecran:
-    def __init__(self, actif:bool = False):
+    def __init__(self, actif:bool = False) -> 'Ecran':
         self.actif = actif
-    def get_actif(self):
+    def get_actif(self) -> bool:
         return self.actif
-    def set_actif(self, actif):
+    def set_actif(self, actif:bool):
         self.actif = actif
 
 class Ecran1:
-    def __init__(self):
+    def __init__(self) -> 'Ecran1':
         self.ecran = Ecran()
         self.ancien_pseudo = joueur1.get_pseudo()
         self.fin_combat = False
     def affiche(self):
         '''Permet d'afficher l'écran de connexion et de passer à l'écran principal.
         '''
-        if self.ecran.get_actif():          #Si l'écran est actif
-            fenetre.blit(fond, (0, 0))          #On dessine tous les éléments
+        # Si l'écran est actif
+        if self.ecran.get_actif():    
+            # On dessine tous les éléments      
+            fenetre.blit(fond, (0, 0))          
             btn_entrer.draw(fenetre,pygame.mouse.get_pos())
-            if btn_entrer.collision(clic.get_clic()):           #Si on clique sur le bouton entrer
+            # Si on clique sur le bouton entrer
+            if btn_entrer.collision(clic.get_clic()):           
                 click.play()
-                if joueur1.get_pseudo() != '':          #Si le joueur a entré ses identifiants
-                    connexion.ecran.set_actif(False)            #On passe à l'écran suivant, en mettant a jour la musique
-                    ecran2.ecran.set_actif(True)
+                # Si le joueur a entré ses identifiants
+                if joueur1.get_pseudo() != '':          
+                    # On passe à l'écran suivant, en mettant a jour la musique
+                    connexion.ecran.set_actif(False) , ecran2.ecran.set_actif(True)
                     clic.set_clic((0,0))
+                    # On met à jour la musique de fond
                     self.choisir_musique()
     def choisir_musique(self):
         '''Permet de chosir la musique de fond
@@ -47,40 +52,66 @@ class Ecran1:
             - Si le joueur a un pseudo qui s'apparente a un RickRoll, on lance celui-ci.
             - Sinon, s'il n'y a pas de musique de fond, que le joueur change de pseudo ou que le combat a été réussi, on charge un nouvelle musique (musique_de_fond)
         '''
+        # Si le joueur s'appelle fredou
         if joueur1.get_pseudo().lower() == 'fredou':
+            # S'il n'y a pas du musique de fond ou que le joueur a changé de pseudo (Il se connecte avec le pseudo fredou)
             if not pygame.mixer.music.get_busy() or self.ancien_pseudo != joueur1.get_pseudo():
+                # On enelève la musique de fond
                 pygame.mixer.music.unload()
+                # On charge la musique de fredou
                 pygame.mixer.music.load(son_champignon)
+                # On met le volume à 0.1
                 pygame.mixer.music.set_volume(0.1)
+                # On la joue en boucle
                 pygame.mixer.music.play(-1)
+                # On met à jour l'ancien pseudo
                 self.ancien_pseudo = joueur1.get_pseudo()
                 self.fin_combat = True
+        # Si le joueur s'appelle Rick Astley (Pour la musique du Rick Roll)
         elif joueur1.get_pseudo().lower() in ['rick','rickroll','rick roll', 'rickastley', 'rick astley']:
+            # S'il n'y a pas du musique de fond ou que le joueur a changé de pseudo (Il se connecte avec le pseudo Rick)
             if not pygame.mixer.music.get_busy() or self.ancien_pseudo != joueur1.get_pseudo():
+                # On passe à l'écran du Rick Roll
                 rr.ecran.set_actif(True),ecran2.ecran.set_actif(False)
+                # On enlève la musique de fond
                 pygame.mixer.music.unload()
+                # On charge le Rick Roll
                 pygame.mixer.music.load(rickr)
+                # On met le volume à 1
                 pygame.mixer.music.set_volume(1)
+                # On la joue en boucle
                 pygame.mixer.music.play(-1)
+                # On met à jour l'ancien pseudo
                 self.ancien_pseudo = joueur1.get_pseudo()
                 self.fin_combat = True
+        # Sinon
         else:
-            if not pygame.mixer.music.get_busy() or self.ancien_pseudo != joueur1.get_pseudo() and joueur1.get_pseudo() not in ['rick','rickroll','rick roll', 'rickastley', 'rick astley']:
+            # S'il n'y a pas du musique de fond ou que le joueur a changé de pseudo (Il se connecte avec un autre pseudo)
+            if not pygame.mixer.music.get_busy() or self.ancien_pseudo != joueur1.get_pseudo():
+                # On enlève la musique de fond
                 pygame.mixer.music.unload()
+                # On charge la musique de fond générale
                 pygame.mixer.music.load(musique_de_fond)
+                # On met le volume à 0.3
                 pygame.mixer.music.set_volume(0.3)  # Volume pour la musique de fond générale
+                # On la joue en boucle
                 pygame.mixer.music.play(-1)
+                # On met à jour l'ancien pseudo
                 self.ancien_pseudo = joueur1.get_pseudo()
                 self.fin_combat = True
 
 
 class Ecran2:
-    def __init__(self):
+    def __init__(self) -> 'Ecran2':
         self.ecran = Ecran()
         self.fond = pygame.image.load('images/Fonds d\'ecran/casino.jpg').convert()
         self.musique = False
-        self.btns = [btn_boutique, btn_retour, btn_roulette, btn_pile_ou_face, btn_machine_a_sous, btn_blackjack, btn_jeu_combat, btn_inventaire]
-        self.choix_fait = False
+        self.btns = [btn_boutique, btn_retour, btn_roulette, btn_pile_ou_face, btn_machine_a_sous, btn_blackjack, btn_jeu_combat, btn_inventaire]  # Boutons à afficher
+        self.choix_fait = False     # Pour le Babel Face
+        self.btn_classement = [f'images/Bouton Classement/_a_frm{i},40.png' for i in range(18)]  # Animatin de bouton
+        self.btn = pygame.image.load(self.btn_classement[0]).convert_alpha()     # Image du bouton
+        self.anim = False
+        self.frame = 0
     def set_musique(self):
         self.musique = False
     def affiche(self):
@@ -89,24 +120,39 @@ class Ecran2:
         '''
         # On gère les effets spécifiques à certains pseudos 
         if joueur1.get_pseudo().lower() == 'fredou':
+            # On affiche le fond d'écran spécial de Fredou
             self.fond = pygame.image.load('images/Fonds d\'ecran/coeurfredou.png').convert()
+        # Cas du joueur Mr Morrhysse
         elif joueur1.get_pseudo().lower() == 'mr.maurice' or joueur1.get_pseudo().lower() == 'mr maurice' or joueur1.get_pseudo().lower() == 'maurice':
-            joueur1.set_pseudo('Le meilleur')  #Mettez nous des tickets et un 20/20 svp
+            # On change le pseudo pour gratter des tickets
+            joueur1.set_pseudo('Le meilleur')  # Mettez nous des tickets et un 20/20 svp
+            # On refait les vérifications de compte avec le nouveau pseudo
             verifier_et_ajouter_pseudo(joueur1.get_pseudo(),joueur1.get_mdp()) 
+            # On récupère l'identifiant du compte
             id_compte = det_id_compte(joueur1.get_pseudo(),joueur1.get_mdp())
+            # On récupère le solde du compte
             joueur1.set_cagnotte(recup_donnees(id_compte))
+            # On met à jour la dernière connexion du compte
             ajouter_connexion(id_compte)
+        # Cas de joueur Mr Mhorrhyce quand le changement de pseudo a été effectué
         elif joueur1.get_pseudo() == 'Le meilleur':
+            # On charge le fond d'écran spécifique de toute beauté
             self.fond = pygame.image.load('images/Fonds d\'ecran/Metteznous20sur20svp.jpg').convert()
+        # Si le joueur est un démon (un arbre dégénéré)
         elif joueur1.get_pseudo().lower() == 'abel':
+            # On affiche le fond d'écran spécifique de l'arbre dégénéré Abel
             self.fond = pygame.image.load('images/Fonds d\'ecran/FondAbel.png').convert()
+        # Sinon
         else:
+            # On charge le fond d'écran normal
             self.fond = pygame.image.load('images/Fonds d\'ecran/casino.jpg').convert()
+        # On affiche le fond d'écran
         fenetre.blit(self.fond, (0, 0))
         # On fait progresser l'animation de la toute pitite piece à côté du solde du joueur (Elle est trop chou)
         coin.activer_rotation()
-        dessiner_bouton(fenetre, joueur1.get_pseudo(), bouton2.get_x(), bouton2.get_y(), bouton2.get_largeur(), bouton2.get_hauteur(), blanc, noir, 20)
-        dessiner_bouton(fenetre, f"Solde : {int(joueur1.get_cagnotte())}", bouton3.get_x(), bouton3.get_y(), bouton3.get_largeur(), bouton3.get_hauteur(), blanc, noir, 25)
+        # On affiche les boutons (affichage du pseudo et du solde du joueur)
+        dessiner_bouton(fenetre, joueur1.get_pseudo(), bouton2.get_x(), bouton2.get_y(), bouton2.get_largeur(), bouton2.get_hauteur(), blanc, noir, 15)
+        dessiner_bouton(fenetre, f"Solde : {int(joueur1.get_cagnotte())}", bouton3.get_x(), bouton3.get_y(), bouton3.get_largeur(), bouton3.get_hauteur(), blanc, noir, 15)
         # Si on clique sur le bouton pour accéder à la boutique
         if btn_boutique.collision(clic.get_clic()):
             ecran_boutique.ecran.set_actif(True),ecran2.ecran.set_actif(False)
@@ -141,6 +187,12 @@ class Ecran2:
             click.play()
             clic.set_clic((0,0))
             ecran2.ecran.set_actif(False), inventaire.ecran.set_actif(True) # On définit l'inventaire comme ecran actif
+        # Si on ouvre le classement
+        elif btn_classement.collision(clic.get_clic()):   
+            print("aled")
+            ecran2.ecran.set_actif(False),classement.ecran.set_actif(True)  # On définit l'écran du classement comme ecran actif
+            classement.actualiser_classement()  
+            clic.set_clic((0,0))
         elif pileouface.get_actif():
             # Pari sur le côté Face de la piece
             if btn_face.collision(clic.get_clic()):
@@ -156,13 +208,20 @@ class Ecran2:
             if self.choix_fait:
                 pileouface.activer_animation()
                 self.choix_fait = False
-
+        # On lance l'animation du bouton du classement
+        elif btn_classement.collision(pygame.mouse.get_pos()):
+            self.anim = True
+        else:
+            btn_classement.draw(fenetre,pygame.mouse.get_pos())
         fenetre.blit(coin.get_image(),coin.get_pos())
         coin.update(0.04)
         fenetre.blit(pistolet.get_image(),pistolet.get_pos())
         pistolet.update_def(0.16,joueur1)  
         pistolet.update_vict(0.16,joueur1)  
         fenetre.blit(pileouface.get_image(),(170,140))
+        # On joue l'animation du bouton du classement
+        if self.anim:
+            self.btn_classement_anim(0.3)
         if pileouface.get_actif():
             pileouface.update(0.20, joueur1)
         # Petit Easter egg
@@ -174,8 +233,22 @@ class Ecran2:
         # Affichage des boutons des choix du pile ou face
         if pileouface.get_actif():
             btn_pile.draw(fenetre,pygame.mouse.get_pos()),btn_face.draw(fenetre,pygame.mouse.get_pos())
+        # Si le joueur est Mr Meaurisse 
         if joueur1.get_pseudo().lower() == 'Le meilleur' and not self.benji in joueur1.get_heros():
+            # On ajoute le héros Benji à la liste des héros du joueur
             joueur1.ajouter_hero(self.benji)
+    def btn_classement_anim(self,speed:float):
+        '''
+        Permet d'animer le bouton des héros. On dait progresser l'indice de l'image, si on arrive à la fin on le remet à 0.
+        Paramètres :
+            - speed (float) : Vitesse de l'animation
+        '''
+        self.frame += speed
+        # Si on arrive au bout de l'animation on recommence
+        if self.frame >= len(self.btn_classement)-1:
+            self.frame = 0
+            self.anim = False
+        fenetre.blit(pygame.image.load(self.btn_classement[int(self.frame)]).convert_alpha(), (188, -5))
 
 class EcranMort:
     def __init__(self):
@@ -196,16 +269,24 @@ class EcranVictoire:
         '''
         Permet d'afficher l'écran de victoire.
         '''
+        # On affiche le fond
         fenetre.blit(paradis, (0, 0))
+        # Nouvelle musique propre au paradis
         if not pygame.mixer.music.get_busy():
+            # On enlève l'ancienne musique
             pygame.mixer.music.unload()
+            # On met la nouvelle et on la joue
             pygame.mixer.music.load(musique_victoire)
             pygame.mixer.music.play(-1)
+        # On affiche le bouton de retour
         btn_retour.draw(fenetre,pygame.mouse.get_pos())
+        # Si on clique sur le bouton retour
         if btn_retour.collision(clic.get_clic()):
+            # On enlève la musique de victoire et on remet l'ancienne
             clic.set_clic((0,0))
             pygame.mixer.music.unload()
             connexion.choisir_musique()
+            # On remet l'écran principal en tant qu'écran actif
             ecran_victoire.ecran.set_actif(False)
             ecran2.ecran.set_actif(True)
 
@@ -260,6 +341,67 @@ class EcranBoutique:
             self.frame = 0
         fenetre.blit(pygame.image.load(self.btn_heros[int(self.frame)]).convert_alpha(), (215, 130))
 
+class EcranClassement:
+    def __init__(self):
+        self.ecran = Ecran()  # Assure-toi que cette classe est définie ailleurs dans ton code
+        self.fond = pygame.image.load('images/Fonds d\'ecran/fond_classement.png').convert_alpha()
+        self.police = pygame.font.Font('babelcasino.ttf', 15)
+        self.frame = 0
+        self.sprites = [pygame.image.load(f'images/Fonds d\'ecran/Demon_classement/_a_{i},80.png').convert_alpha() for i in range(14)]
+        self.gens = []
+        self.cartouche0 = Button(cartouche_classement2, cartouche_classement, 10, 75)
+        self.cartouche1 = Button(cartouche_classement2, cartouche_classement, 10, 115)
+        self.cartouche2 = Button(cartouche_classement2, cartouche_classement, 10, 155)
+        self.cartouche3 = Button(cartouche_classement2, cartouche_classement, 10, 195)
+        self.cartouche4 = Button(cartouche_classement2, cartouche_classement, 10, 235)
+        self.cartouches = [self.cartouche0, self.cartouche1, self.cartouche2, self.cartouche3, self.cartouche4]
+
+    def actualiser_classement(self):
+        # Mise à jour de la liste des joueurs avec leurs informations
+        self.gens = [(ordre_classement()[0][0], int(ordre_classement()[0][1])),  # 1er joueur et son solde
+                     (ordre_classement()[1][0], int(ordre_classement()[1][1])),  # 2ème joueur et son solde
+                     (ordre_classement()[2][0], int(ordre_classement()[2][1])),  # 3ème joueur et son solde
+                     (ordre_classement()[3][0], int(ordre_classement()[3][1])),  # 4ème joueur et son solde
+                     (ordre_classement()[4][0], int(ordre_classement()[4][1]))]  # 5ème joueur et son solde
+
+    def affiche(self):
+        '''
+        Permet d'afficher l'écran du classement, ainsi que gérer les interactions avec les boutons.
+        '''
+        # Affichage du fond et des boutons
+        fenetre.blit(self.fond,(0,0))  # Remplir l'écran avec une couleur de fond
+        btn_fleche.draw(fenetre, pygame.mouse.get_pos())  # Affichage du bouton 
+        # Bouton retour
+        if btn_fleche.collision(clic.get_clic()):
+            print("aled")
+            classement.ecran.set_actif(False)  # Passage à l'écran de la boutique
+            ecran2.ecran.set_actif(True)  # Passage à un autre écran
+            clic.set_clic((0, 0))  # Réinitialisation du clic
+
+        # Affichage des informations du classement
+        x = 30
+        y = 81  # Position de départ pour l'affichage
+        # Affichage des cartouches
+        for cartouche in self.cartouches:
+            cartouche.draw(fenetre, pygame.mouse.get_pos())
+        # On affiche le pseudo et le solde de chaque joueur du top 5
+        for i, (nom_joueur, solde) in enumerate(self.gens):
+            # Affichage du classement et du solde de chaque joueur
+            fenetre.blit(self.police.render(f"{i+1}. {nom_joueur} - {solde} Babel Coins", True, (255, 255, 255)), (x, y))
+            y += 40  # Décalage pour afficher les informations du joueur suivant
+        # Animation du démon
+        self.anim(0.1)
+
+    def anim(self,speed:float):
+        '''
+        Permet d'animer le démon du classement'''
+        # On fait progresser l'animation
+        self.frame += speed
+        # Si on arrive au bout de l'animation on recommence
+        if self.frame >= len(self.sprites)-1:
+            self.frame = 0
+        # On affiche l'image actuelle
+        fenetre.blit(self.sprites[int(self.frame)].convert_alpha(), (100, 230))
 
 class EcranAlcool:
     def __init__(self):
@@ -333,7 +475,7 @@ class EcranSelection:
         self.caracteristiques = caracteristiques_hero
     def getinfos(self):
         return self.infos
-    def setinfos(self,actif):
+    def setinfos(self,actif:bool):
         self.infos = actif
     def affiche(self,speed:float):
         '''Permet d'afficher l'écran de selection pour chaque heros, avec :
@@ -504,6 +646,7 @@ ecran0 = EcranChargement()
 inventaire = EcranInventaire()
 connexion = Ecran1()
 ecran2 = Ecran2()
+classement = EcranClassement()
 ecran_boutique = EcranBoutique()
 vodka = EcranVodka()
 ecran_mort = EcranMort()

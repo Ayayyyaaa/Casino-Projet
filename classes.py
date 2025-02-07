@@ -87,9 +87,9 @@ class Coin:
         self.image = self.sprites[self.actuel_sprite]
     def activer_rotation(self):
         self.tourne_animation = True
-    def get_image(self):
+    def get_image(self) -> 'pygame.Surface':
         return self.image
-    def get_pos(self):
+    def get_pos(self) -> tuple:
         return(self.pos_x,self.pos_y)
     def update(self, speed:float):
         '''Permet d'effectuer l'animation de la rotation de la piece.'''

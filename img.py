@@ -101,5 +101,8 @@ select2 = pygame.image.load('images/select2.png').convert_alpha()
 flecheretour1 = pygame.image.load('images/Inventaire/retourr1.png').convert_alpha()
 flecheretour2 = pygame.image.load('images/Inventaire/retourr2.png').convert_alpha()
 banniere = pygame.image.load('images/Inventaire/Bannière.png').convert_alpha()
+img_podium = pygame.image.load('images/Bouton Classement/_a_frm0,40.png').convert_alpha()
+cartouche_classement = pygame.image.load('images/cartouche_classement.png').convert_alpha()
+cartouche_classement2 = pygame.image.load('images/cartouche_classement2.png').convert_alpha()
 
 pygame.display.set_icon(icone)
