@@ -149,7 +149,7 @@ class BabelRace:
         self.run = etat
     def get_actif(self) -> bool:
         return self.run
-    def def_sol(self, img, x:int, obj:'Decor',hauteur_img:int,sol:int) -> int: 
+    def def_sol(self, img:'pygame.Surface', x:int, obj:'Decor',hauteur_img:int,sol:int) -> int: 
         '''Permet de déterminer la hauteur de l'image et donc le niveau du sol
         Paramètres : 
             - img : Surface sur laquelle on cherche le sol
@@ -319,6 +319,7 @@ class BabelRace:
             joueur1.modifier_cagnotte(joueur1.get_cagnotte()/6+100)
             
         # Retour à la fenêtre de menu
+        self.defaite = False
         pygame.display.set_mode((400,400))
         self.actif(False)
         

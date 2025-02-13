@@ -276,9 +276,6 @@ class Jeu():
                         else:
                             if event.unicode == 'v':
                                 ecran2.ecran.set_actif(False), niveaux.ecran.set_actif(True)
-                            if event.unicode == '1' and ecran2.ecran.get_actif():
-                                babelrace.actif(True)
-                                babelrace.lancer()
                 # Permet de gérer la passage du 1er onglet au 2e pour l'écran d'achat de héros dans la boutique
                 if hero.ecran.get_actif():
                     if btn_suivant.collision(clic.get_clic()):

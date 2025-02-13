@@ -10,8 +10,6 @@ chargement = [pygame.image.load(f'images/Fonds d\'ecran/Chargement/c{i}.png').co
 fenetre.blit(chargement[0], (0, 0))  # Afficher le fond
 pygame.display.flip()  # Mettre à jour l'affichage
 
-time.sleep(3)
-
 souris = pygame.image.load('images/curseur.cur').convert_alpha()
 fond = pygame.image.load('images/Fonds d\'ecran/Croupier2.png').convert()
 chute = [pygame.image.load(f'images/Jeu de combat/Fonds/Chute/_a_frm{i},100.png') for i in range(4)]
@@ -104,5 +102,8 @@ banniere = pygame.image.load('images/Inventaire/Bannière.png').convert_alpha()
 img_podium = pygame.image.load('images/Bouton Classement/_a_frm0,40.png').convert_alpha()
 cartouche_classement = pygame.image.load('images/cartouche_classement.png').convert_alpha()
 cartouche_classement2 = pygame.image.load('images/cartouche_classement2.png').convert_alpha()
+babelrace1 = pygame.image.load('images/babelrace1.png').convert_alpha()
+babelrace2 = pygame.image.load('images/babelrace2.png').convert_alpha()
+
 
 pygame.display.set_icon(icone)

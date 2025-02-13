@@ -106,7 +106,7 @@ class Ecran2:
         self.ecran = Ecran()
         self.fond = pygame.image.load('images/Fonds d\'ecran/casino.jpg').convert()
         self.musique = False
-        self.btns = [btn_boutique, btn_retour, btn_roulette, btn_pile_ou_face, btn_machine_a_sous, btn_blackjack, btn_jeu_combat, btn_inventaire]  # Boutons à afficher
+        self.btns = [btn_boutique, btn_retour, btn_roulette, btn_pile_ou_face, btn_machine_a_sous, btn_blackjack, btn_jeu_combat, btn_inventaire, btn_babelrace]  # Boutons à afficher
         self.choix_fait = False     # Pour le Babel Face
         self.btn_classement = [f'images/Bouton Classement/_a_frm{i},40.png' for i in range(18)]  # Animatin de bouton
         self.btn = pygame.image.load(self.btn_classement[0]).convert_alpha()     # Image du bouton
@@ -171,7 +171,7 @@ class Ecran2:
             clic.set_clic((0,0))
             pileouface.set_actif(not pileouface.get_actif())
             pileouface.set_cote(None)
-        # Si on clique sur le bouton pour lancer le blackjack de mort d'abel plus ramais je touche à ça vraiment c'est une horreur en plus la doc est inexistante c'est juste des commentaires et des commentaires vraiment je suis traumatisé aled
+        # Si on clique sur le bouton pour lancer le blackjack de mort d'abel plus jamais je touche à ça vraiment c'est une horreur en plus la doc est inexistante c'est juste des commentaires et des commentaires vraiment je suis traumatisé aled
         elif btn_blackjack.collision(clic.get_clic()):
             click.play()
             clic.set_clic((0,0))
@@ -193,6 +193,11 @@ class Ecran2:
             ecran2.ecran.set_actif(False),classement.ecran.set_actif(True)  # On définit l'écran du classement comme ecran actif
             classement.actualiser_classement()  
             clic.set_clic((0,0))
+        elif btn_babelrace.collision(clic.get_clic()):
+            click.play()
+            clic.set_clic((0,0))
+            babelrace.actif(True)
+            babelrace.lancer()
         elif pileouface.get_actif():
             # Pari sur le côté Face de la piece
             if btn_face.collision(clic.get_clic()):
@@ -344,7 +349,7 @@ class EcranBoutique:
 class EcranClassement:
     def __init__(self):
         self.ecran = Ecran()  # Assure-toi que cette classe est définie ailleurs dans ton code
-        self.fond = pygame.image.load('images/Fonds d\'ecran/fond_classement.png').convert_alpha()
+        self.fond = pygame.image.load('images/Fonds d\'ecran/fond_classement5.png').convert_alpha()
         self.police = pygame.font.Font('babelcasino.ttf', 15)
         self.frame = 0
         self.sprites = [pygame.image.load(f'images/Fonds d\'ecran/Demon_classement/_a_{i},80.png').convert_alpha() for i in range(14)]
@@ -370,6 +375,7 @@ class EcranClassement:
         '''
         # Affichage du fond et des boutons
         fenetre.blit(self.fond,(0,0))  # Remplir l'écran avec une couleur de fond
+        #fenetre.fill((0,0,0))
         btn_fleche.draw(fenetre, pygame.mouse.get_pos())  # Affichage du bouton 
         # Bouton retour
         if btn_fleche.collision(clic.get_clic()):
