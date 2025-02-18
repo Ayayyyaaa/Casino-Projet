@@ -45,11 +45,12 @@ class Jeu():
         - self.hero : hero sélectionné par la joueur pour le jeu de combat
         - self.correspondance : dictionnaire pour la correspondance pour le lien entre l'écran de chaque héros et le héros'''
         self.run = True
-        self.ecrans = [ecran_machine_a_sous,ecran_mort,ecran_victoire,ecran_boutique,alcool,hero,hero2,niveaux,inventaire,classement]
+        self.ecrans = [ecran_machine_a_sous,ecran_mort,ecran_victoire,ecran_boutique,alcool,hero,hero2,niveaux,inventaire,classement,lore,digicode]
         self.champ_joueur = pygame.Rect(110, 210, 190, 32)
         self.code_cb = pygame.Rect(130, 325, 140, 32)
         self.nb_cb = pygame.Rect(100, 275, 200, 32)
         self.champ_mdp = pygame.Rect(110, 250, 190, 32)
+        self.mdp_acces_digicode = ""
         self.nom_actif = False 
         self.nb_cb_actif = False  
         self.code_cb_actif = False  
@@ -276,6 +277,13 @@ class Jeu():
                         else:
                             if event.unicode == 'v':
                                 ecran2.ecran.set_actif(False), niveaux.ecran.set_actif(True)
+                            else:
+                                self.mdp_acces_digicode += event.unicode
+                                print(self.mdp_acces_digicode)
+                                if event.unicode == '0':
+                                    self.mdp_acces_digicode = ""
+                            if self.mdp_acces_digicode == "666":
+                                ecran2.ecran.set_actif(False), digicode.ecran.set_actif(True)
                 # Permet de gérer la passage du 1er onglet au 2e pour l'écran d'achat de héros dans la boutique
                 if hero.ecran.get_actif():
                     if btn_suivant.collision(clic.get_clic()):

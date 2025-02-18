@@ -61,9 +61,23 @@ btn_valider = Button(valider2, valider1, 152, 330)
 btn_select = Button(select2, select1, 152, 330)
 btn_flecheretour = Button(flecheretour2, flecheretour1, 360, 60)
 btn_babelrace = Button(babelrace2, babelrace1, 10, 150)
+
 biere = Biere()
 whisky = Whisky()
 mojito = Mojito()
+
+btn1 = Button(img1,img1, 75, 65)
+btn2 = Button(img2,img2, 175, 65)
+btn3 = Button(img3,img3, 275, 65)
+btn4 = Button(img4,img4, 75, 130)
+btn5 = Button(img5,img5, 175, 130)
+btn6 = Button(img6,img6, 275, 130)
+btn7 = Button(img7,img7, 75, 195)
+btn8 = Button(img8,img8, 175, 195)
+btn9 = Button(img9,img9, 275, 195)
+btn0 = Button(img0,img0, 175, 260)
+btnvalider = Button(imgvalider,imgvalider, 275, 260)
+btneffacer = Button(imgeffacer,imgeffacer, 75, 260)
 
 coin = Coin(120, -7)
 

@@ -105,5 +105,17 @@ cartouche_classement2 = pygame.image.load('images/cartouche_classement2.png').co
 babelrace1 = pygame.image.load('images/babelrace1.png').convert_alpha()
 babelrace2 = pygame.image.load('images/babelrace2.png').convert_alpha()
 
+img0 = pygame.image.load('images/Digicode/0.png').convert_alpha()
+img1 = pygame.image.load('images/Digicode/1.png').convert_alpha()
+img2 = pygame.image.load('images/Digicode/2.png').convert_alpha()
+img3 = pygame.image.load('images/Digicode/3.png').convert_alpha()
+img4 = pygame.image.load('images/Digicode/4.png').convert_alpha()
+img5 = pygame.image.load('images/Digicode/5.png').convert_alpha()
+img6 = pygame.image.load('images/Digicode/6.png').convert_alpha()
+img7 = pygame.image.load('images/Digicode/7.png').convert_alpha()
+img8 = pygame.image.load('images/Digicode/8.png').convert_alpha()
+img9 = pygame.image.load('images/Digicode/9.png').convert_alpha()
+imgeffacer = pygame.image.load('images/Digicode/effacer.png').convert_alpha()
+imgvalider = pygame.image.load('images/Digicode/valider.png').convert_alpha()
 
 pygame.display.set_icon(icone)

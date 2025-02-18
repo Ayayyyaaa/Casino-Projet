@@ -1,5 +1,6 @@
 import pygame
 from fonctions import dessiner_bouton
+from random import randint
 from objets_et_variables import *
 from img import *
 from Roulette_Russe import pistolet
@@ -580,7 +581,7 @@ class EcranChargement:
         if int(self.num_frame) == len(self.frames)-1:
             # On remet tout à 0
             self.num_frame = 0
-            connexion.ecran.set_actif(True),self.ecran.set_actif(False)
+            lore.ecran.set_actif(True),self.ecran.set_actif(False)
         self.frame = self.frames[int(self.num_frame)]
         fenetre.blit(pygame.image.load(self.frame),(0,0))
 
@@ -646,12 +647,88 @@ class EcranInventaire:
         if curseur_selection.get_actif():
             curseur_selection.update(0.2)
 
+class Intro:
+    def __init__(self):
+        self.ecran = Ecran()
+        self.i_ecran = 0
+        self.txt = ""
+        self.indice = 0
+        self.texte1 = "Oyez brave héros ! Durant votre voyage, vous arrivez sur le territoire\n du Royaume. En ces périodes troublées, marquées de raids de pillards \nqui s'intensifient, de démons qui terrorisent les populations, de disparissions \ninexpliquées et de la guerre qui gronde aux frontières, le roi Harold vous \nconfie une mission : Faire chuter un mystérieux casino qui s'est implanté \ndans la région. Son nom : Le Babel Casino. \nDes nombreuses expéditions lancées, pourtant menées par la garde du roi ou \ndes aventuriers chevronnés, aucune n'est revenue...Si bien qu'on raconte \ntoutes sortes de légendes sur ce casino mystérieux, selon lesquelles le casino \nserait géré par le diable lui même. Alors, n'attendez plus héros ! \nL'avenir du Royaume dépend de vous !Accompagné de votre fidèle ami \nNight Hero, formé à l'art du combat, vous poussez les lourdes portes du \nBabel Casino...Le plan : mener le Babel Casino à la faillite : pour cela, il \nfaut prendre la casino à son propre jeu : soyez malins,faites preuve \nde chance et investiguez pour réussir à rassembler la somme de \n10 000 000 Babel Coins. Le roi Harold vous a fourni un bourse contenant \n200 000 Babel Coins, à vous d'en faire bon usage ! Ainsi, vous pourrez jouer \naux divers jeux proposés par le Babel Casino : votre chance sera de mise si \nvous vous laissez tenter par la Babel Roulette, le Babel Face ou encore\nle Babel Gambling. Vous préférez vous reposer sur votre habilité seule ? "
+        self.texte2 = "Soit, la Babel Race est faite pour vous. Enfin, vous pourrez mettre à l'épreuve \nvos capacités guerrières (enfin celles de votre ami, Night Hero : c'est à peine \nsi vous savez tenir une arme.) Vous serez face aux démons et pécheurs du \nBabel Casino, ceux ayant échoué face à celui-ci...Mais prenez garde : un seul \nfaux pas et vous les rejoindrez ! Vous rencontrerez peut-être certains \nvoyageurs de passage pour vous prêter main forte contre quelque \nrémunération, en mettant leurs habilités au combat à votre service. Pour finir, \nexplorez le Babel Casino, investiguez, peut être parviendrez vous à trouver \ndes objets qui vous aideront dans votre quête, tels que les alcools du bar, ou \nmême les crampons dorés, l'arme de prédilection du légendaire guerrier \nBenyamine, surnommé la Meaurylle aux mille victoires. Alors héros, au nom de la \nsurvie du Royaume...\nBonne chance ! "
+        self.police = pygame.font.Font('babelcasino.ttf', 8)
+        self.page = 0
+        self.pages = [self.texte1,self.texte2]
+
+    def affiche(self):
+        fenetre.fill((255, 255, 255))  # Remplir l'écran en noir
+        if self.indice < len(self.pages[self.page]) - 1:  # Si le texte n'est pas entièrement affiché
+            self.indice += 0.48  # On incrémente l'index du texte affiché
+        elif clic.get_clic() != (0,0):
+            if self.page == 0:
+                self.page += 1
+                self.indice = 0  # Réinitialiser l'index pour afficher le texte entier à nouveau
+            else:
+                lore.ecran.set_actif(False),connexion.ecran.set_actif(True)
+            clic.set_clic((0,0))
+        if clic.get_clic() != (0,0):
+            self.indice = len(self.pages[self.page]) - 1
+            clic.set_clic((0,0))
+        self.txt = self.pages[self.page][:int(self.indice)]  # Affichage lettre par lettre
+
+        # Utilisation de textwrap pour gérer les retours à la ligne
+        lignes = self.txt.splitlines()  # Diviser le texte par les retours à la ligne
+
+        # Affichage ligne par ligne avec un décalage vertical
+        y_offset = 5  # Position de départ pour afficher le texte (au pixel y=5)
+        for ligne in lignes:
+            fenetre.blit(self.police.render(ligne, True, noir), (10, y_offset))
+            y_offset += 20  # Augmenter le décalage vertical pour la prochaine ligne
+
+class CoffreFort:
+    def __init__(self):
+        self.ecran = Ecran()
+        self.fond = pygame.image.load('images/Digicode/fond.png').convert_alpha()
+        self.combinaison = ""
+        self.code_a_trouver = self.definir_code()
+        self.trouve = False
+        self.boutons = [btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btnvalider, btneffacer]
+        self.chiffres = {btn0 : '0', btn1 : '1', btn2 : '2', btn3 : '3', btn4 : '4', btn5 : '5', btn6 : '6', btn7 : '7', btn8 : '8', btn9 : '9'}
+    def definir_code(self):
+        combi = ""
+        for i in range(3):
+            combi += str(randint(0,9))
+            print(combi)
+        return combi
+    def affiche(self):
+        fenetre.blit(self.fond, (0, 0))
+        if not self.trouve:
+            print(self.code_a_trouver)
+        for bouton in self.boutons:
+            bouton.draw(fenetre,pygame.mouse.get_pos())
+            if bouton.collision(clic.get_clic()):
+                click.play()
+                clic.set_clic((0,0))
+                if bouton == btnvalider:
+                    if self.combinaison == self.code_a_trouver:
+                        print("code trouvé")
+                        self.trouve = True
+                        self.combinaison = ""
+                        self.code_a_trouver = self.definir_code()
+                    else:
+                        self.combinaison = ""
+                elif bouton == btneffacer:
+                    self.combinaison = self.combinaison[:-1]
+                else:
+                    self.combinaison += self.chiffres[bouton]
+
+
 
 
 ecran0 = EcranChargement()
-inventaire = EcranInventaire()
+lore = Intro()
 connexion = Ecran1()
 ecran2 = Ecran2()
+inventaire = EcranInventaire()
 classement = EcranClassement()
 ecran_boutique = EcranBoutique()
 vodka = EcranVodka()
@@ -659,6 +736,7 @@ ecran_mort = EcranMort()
 ecran_victoire = EcranVictoire()
 ecran_black = EcranBlack()
 rr = EcranRR()
+digicode = CoffreFort()
 alcool = EcranAlcool()
 niveaux = EcranNiveaux()
 klaxon = EcranSelection(pygame.image.load('images/Jeu de Combat/Infos/Maehv.png').convert_alpha(),[f'images/Jeu de combat/Klaxon/Droite/Inaction/_a_{i},80.png' for i in range(18)],('Klaxon',35000),90,112)
